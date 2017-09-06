@@ -9,7 +9,7 @@ Blockhead is a game that is based on the 3D puzzle game bloxors, in which the pl
 ### Architecture and Technologies:
 
 ### Wireframes:
-![wireframes](https://github.com/mjohnson324/Blockhead/wireframe/blockhead.png)
+![wireframes](https://github.com/mjohnson324/Blockhead/blob/master/Wireframes/blockhead.png)
 
 ### Implementation Timeline:
 
