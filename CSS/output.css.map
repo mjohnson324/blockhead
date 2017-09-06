@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,CAAE;EACA,MAAM,EAAE,CAAC;EACV,OAAO,EAAE,CAAC;EACV,MAAM,EAAE,CAAC;EACT,SAAS,EAAE,IAAI;EACd,IAAI,EAAE,OAAO;;ACLf,IAAK;EACH,gBAAgB,EAAE,KAAK",
+"sources": ["partials/_reset.scss","partials/_homepage.scss"],
+"names": [],
+"file": "output.css"
+}
