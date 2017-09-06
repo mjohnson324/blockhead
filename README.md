@@ -2,24 +2,22 @@
 
 ### Background:
 
-Blockhead is a game that is based on the 3D puzzle game bloxors, in which the players must move a rectangular prism across a board into a hole. The main differences with this game will be as follows:
-
-1. The view will be strictly overhead.
-2. Players will have a limited number of moves at their disposal. Step onto the same space too many times and it disappears.
+Blockhead is a game that is based on the 3D puzzle game bloxors, in which the players must move a rectangular prism across a board into a hole. The main difference with this game is that the view will be strictly overhead.
 
 ### Functionality & MVP:
 
 Blockhead
 
-- [ ] Render boards to the screen
+- [ ] Render tiles to the screen
+- [ ] Make block movable with arrow keys
+- [ ] Block falls off board if not set on tiles, resetting level
 - [ ] Make board tiles change color/disappear depending number of steps taken
-- [ ] Make block movable with arrow keys.
 - [ ] production README
 
 ### Architecture and Technologies:
 
 - 'JavaScript' (game logic)
-- 'React' (?) (rendering of board tiles)
+- 'Canvas' (rendering of board tiles and block)
 - 'Webpack' (bundle JS files)
 
 The game will require the following files:
@@ -29,17 +27,19 @@ The game will require the following files:
 - 'level.js' to handle transitioning between levels on success
 
 ### Wireframes:
-[View Wireframes][Wireframes]
-[wireframes]: wireframes
 
-The app is contained in one screen with nav links to my Github and LinkedIn in the top left corner. Control of the game is toggled with the mouse, and in the game players can move the block with the arrow keys.
+![wireframe](./Wireframes/BlockHead.png)
+
+The app is contained in one screen with nav links to my Github and LinkedIn in the top left corner. Control of the game is toggled with the mouse, and in the game players can move the block with the arrow keys. Instructions are provided on the bottom of the page for the player's convenience, and a tutorial level will also be provided to give the player room to feel out the game.
 
 ### Implementation Timeline:
 
-**Day 1:** Setup Node modules
+**Day 1:** Setup the project.
 
-**Day 2:** Render the board with basic logic.
+**Day 2:** Render the board and movable block.
 
-**Day 3:** Create the controllable block to move around.
+**Day 3:** Set rules for block falling off board reaching goal.
 
 ### Bonus Features:
+
+- [ ] Make floor destructible: Tiles will disappear after being stepped on x times. The current status of a tile will be marked by color.
