@@ -30,6 +30,7 @@ The game will require the following files:
 
 ### Wireframes:
 [View Wireframes][Wireframes]
+[wireframes]: wireframes
 
 The app is contained in one screen with nav links to my Github and LinkedIn in the top left corner. Control of the game is toggled with the mouse, and in the game players can move the block with the arrow keys.
 
