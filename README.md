@@ -18,13 +18,14 @@ Blockhead
 
 - 'JavaScript' (game logic)
 - 'Canvas' (rendering of board tiles and block)
-- 'Webpack' (bundle JS files)
 
 The game will require the following files:
 
-- 'board.js' to handle the board logic in response to player input
+- 'floor.js' to group tiles and handle the board logic in response to player input
+- 'tile.js' to render individual tiles onto the screen
 - 'block.js' to handle the movement logic for the block
 - 'level.js' to handle transitioning between levels on success
+- 'root.js' to bundle all the files together
 
 ### Wireframes:
 
