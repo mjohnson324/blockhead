@@ -28,7 +28,8 @@ The game will require the following files:
 - 'block.js' to handle the movement logic for the block
 - 'level.js' to handle transitioning between levels on success
 
-### Wireframes: [Wireframes][Blockhead]
+### Wireframes:
+[View Wireframes][Wireframes]
 
 The app is contained in one screen with nav links to my Github and LinkedIn in the top left corner. Control of the game is toggled with the mouse, and in the game players can move the block with the arrow keys.
 
