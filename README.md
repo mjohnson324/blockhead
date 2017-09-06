@@ -29,10 +29,8 @@ The game will require the following files:
 - 'level.js' to handle transitioning between levels on success
 
 ### Wireframes:
-[View Wireframes][Wireframes]
-[wireframes]: wireframes
 
-The app is contained in one screen with nav links to my Github and LinkedIn in the top left corner. Control of the game is toggled with the mouse, and in the game players can move the block with the arrow keys.
+The app is contained in one screen with nav links to my Github and LinkedIn in the top left corner. Control of the game is toggled with the mouse, and in the game players can move the block with the arrow keys. Instructions are provided on the bottom of the page for the player's convenience.
 
 ### Implementation Timeline:
 
