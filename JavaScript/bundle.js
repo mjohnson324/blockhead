@@ -73,7 +73,9 @@ const Display = __webpack_require__(5);
 document.addEventListener("DOMContentLoaded", () => {
   const blockheadBoard = document.getElementById("blockhead");
   const ctx = blockheadBoard.getContext("2d");
-
+  blockheadBoard.width = 900;
+  blockheadBoard.height = 500;
+  
   const game = new Game(ctx);
   new Display(game, ctx).start();
 });
@@ -84,17 +86,21 @@ document.addEventListener("DOMContentLoaded", () => {
 /***/ (function(module, exports, __webpack_require__) {
 
 const Floor = __webpack_require__(2);
-const tutorial = __webpack_require__(4);
+const Tutorial = __webpack_require__(4);
+const Block = __webpack_require__(6);
 
 class Game {
   constructor(ctx) {
-    this.tutorial = tutorial;
+    this.tutorial = Tutorial;
     this.ctx = ctx;
+    this.block = new Block(ctx, this.tutorial[0]);
   }
 
   draw() {
     const ctx = this.ctx;
+    const tutorial = this.tutorial;
     const floor = new Floor(tutorial, ctx);
+    this.block.draw();
   }
 }
 
@@ -111,7 +117,7 @@ class Floor {
   constructor(positions, ctx) {
     this.positions = positions;
     this.ctx = ctx;
-
+    
     this.layTiles();
   }
 
@@ -144,8 +150,8 @@ class Tile {
     const { x, y } = this.position;
     const ctx = this.ctx;
     ctx.fillStyle = 'rgb(0, 255, 0)';
-    ctx.fillRect(x, y, 20, 20);
-    ctx.strokeRect(x, y, 20, 20);
+    ctx.fillRect(x, y, 30, 30);
+    ctx.strokeRect(x, y, 30, 30);
   }
 }
 
@@ -157,35 +163,35 @@ module.exports = Tile;
 /***/ (function(module, exports) {
 
 const tutorial = [
-  { x: 500, y: 200 },
-  { x: 500, y: 220 },
-  { x: 500, y: 240 },
-  { x: 500, y: 260 },
-  { x: 500, y: 280 },
+  { x: 375, y: 175 },
+  { x: 375, y: 205 },
+  { x: 375, y: 235 },
+  { x: 375, y: 265 },
+  { x: 375, y: 295 },
 
-  { x: 520, y: 200 },
-  { x: 520, y: 220 },
-  { x: 520, y: 240 },
-  { x: 520, y: 260 },
-  { x: 520, y: 280 },
+  { x: 405, y: 175 },
+  { x: 405, y: 205 },
+  { x: 405, y: 235 },
+  { x: 405, y: 265 },
+  { x: 405, y: 295 },
 
-  { x: 540, y: 200 },
-  { x: 540, y: 220 },
-  { x: 540, y: 240 },
-  { x: 540, y: 260 },
-  { x: 540, y: 280 },
+  { x: 435, y: 175 },
+  { x: 435, y: 205 },
+  { x: 435, y: 235 },
+  { x: 435, y: 265 },
+  { x: 435, y: 295 },
 
-  { x: 560, y: 200 },
-  { x: 560, y: 220 },
-  { x: 560, y: 240 },
-  { x: 560, y: 260 },
-  { x: 560, y: 280 },
+  { x: 465, y: 175 },
+  { x: 465, y: 205 },
+  { x: 465, y: 235 },
+  { x: 465, y: 265 },
+  { x: 465, y: 295 },
 
-  { x: 580, y: 200 },
-  { x: 580, y: 220 },
-  { x: 580, y: 240 },
-  { x: 580, y: 260 },
-  { x: 580, y: 280 },
+  { x: 495, y: 175 },
+  { x: 495, y: 205 },
+  { x: 495, y: 235 },
+  { x: 495, y: 265 },
+  { x: 495, y: 295 },
 ];
 
 module.exports = tutorial;
@@ -199,14 +205,65 @@ class Display {
   constructor(game, ctx) {
     this.ctx = ctx;
     this.game = game;
+    this.block = this.game.block;
+  }
+
+  handleBlock() {
+    document.addEventListener("keydown", (e) => {
+      e.preventDefault();
+      switch (e.keyCode) {
+        case 40:
+          this.block.move(0, 30);
+          break;
+        case 38:
+          this.block.move(0, -30);
+          break;
+        case 37:
+          this.block.move(-30, 0);
+          break;
+        case 39:
+          this.block.move(30, 0);
+          break;
+    }});
   }
 
   start() {
     this.game.draw();
+    // this.animate.bind(this);
+    this.handleBlock();
   }
 }
 
 module.exports = Display;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+class Block {
+  constructor(ctx, startPos) {
+    this.position = startPos;
+    this.ctx = ctx;
+  }
+
+  move(i, j) {
+    const { x, y } = this.position;
+    this.ctx.clearRect(x, y, 30, 30);
+    this.position.x += i;
+    this.position.y += j;
+    this.draw();
+  }
+
+  draw() {
+    const { x, y } = this.position;
+    this.ctx.fillStyle = 'rgb(75, 0, 130)';
+    this.ctx.fillRect(x, y, 30, 30);
+    this.ctx.strokeRect(x, y, 30, 30);
+  }
+}
+
+module.exports = Block;
 
 
 /***/ })
