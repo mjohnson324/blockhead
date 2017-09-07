@@ -4,3 +4,5 @@ class Display {
     this.game = game;
   }
 }
+
+module.exports = Display;

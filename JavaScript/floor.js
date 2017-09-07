@@ -1,13 +1,17 @@
 const Tile = require("./tile");
 
 class Floor {
-  constructor(positions) {
+  constructor(positions, ctx) {
     this.positions = positions;
+    this.ctx = ctx;
   }
 
   layTiles() {
+    const ctx = this.ctx;
     this.positions.forEach(pos => {
-      ctx.fillStyle = 'rgb(0, 255, 0)';
+      const options = { position: pos, isGoal: false, isStart: false };
+      const tile = new Tile(ctx, options);
+      tile.draw();
     });
   }
 }
