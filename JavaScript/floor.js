@@ -4,7 +4,7 @@ class Floor {
   constructor(positions, ctx) {
     this.positions = positions;
     this.ctx = ctx;
-
+    
     this.layTiles();
   }
 

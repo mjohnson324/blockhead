@@ -1,14 +1,15 @@
 const Floor = require('./floor');
-const tutorial = require('./levels/tutorial');
+const Tutorial = require('./levels/tutorial');
 
 class Game {
   constructor(ctx) {
-    this.tutorial = tutorial;
+    this.tutorial = Tutorial;
     this.ctx = ctx;
   }
 
   draw() {
     const ctx = this.ctx;
+    const tutorial = this.tutorial;
     const floor = new Floor(tutorial, ctx);
   }
 }
