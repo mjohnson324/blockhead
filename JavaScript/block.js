@@ -6,7 +6,6 @@ class Block {
 
   move(i, j) {
     const { x, y } = this.position;
-    this.ctx.clearRect(x, y, 30, 30);
     this.position.x += i;
     this.position.y += j;
     this.draw();
