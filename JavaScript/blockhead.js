@@ -5,6 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const blockheadBoard = document.getElementById("blockhead");
   const ctx = blockheadBoard.getContext("2d");
 
-  const game = new Game();
+  const game = new Game(ctx);
   new Display(game, ctx).start();
 });
