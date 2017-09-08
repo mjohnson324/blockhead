@@ -68,7 +68,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const Game = __webpack_require__(1);
-const Display = __webpack_require__(5);
+const Display = __webpack_require__(6);
 
 document.addEventListener("DOMContentLoaded", () => {
   const blockheadBoard = document.getElementById("blockhead");
@@ -87,19 +87,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const Floor = __webpack_require__(2);
 const Tutorial = __webpack_require__(4);
-const Block = __webpack_require__(6);
+const Block = __webpack_require__(5);
 
 class Game {
   constructor(ctx) {
     this.tutorial = Tutorial;
     this.ctx = ctx;
-    this.block = new Block(ctx, this.tutorial[0]);
+    const blockStart = Object.assign({}, this.tutorial[0]);
+    this.block = new Block(ctx, blockStart);
+    this.floor = new Floor(this.tutorial, ctx);
+  }
+
+  handleBoard() {
+    document.addEventListener("keydown", (e) => {
+      e.preventDefault();
+      switch (e.keyCode) {
+        case 40:
+          this.move(0, 30);
+          break;
+        case 38:
+          this.move(0, -30);
+          break;
+        case 37:
+          this.move(-30, 0);
+          break;
+        case 39:
+          this.move(30, 0);
+          break;
+    }});
+  }
+
+  move(x, y) {
+    this.ctx.clearRect(0 , 0, 900, 500);
+    this.floor.layTiles();
+    this.block.move(x, y);
   }
 
   draw() {
-    const ctx = this.ctx;
-    const tutorial = this.tutorial;
-    const floor = new Floor(tutorial, ctx);
+    this.floor.layTiles();
     this.block.draw();
   }
 }
@@ -117,14 +142,16 @@ class Floor {
   constructor(positions, ctx) {
     this.positions = positions;
     this.ctx = ctx;
-    
-    this.layTiles();
   }
 
   layTiles() {
     const ctx = this.ctx;
     this.positions.forEach(pos => {
-      const options = { position: pos, isGoal: false, isStart: false };
+      const options = {
+        position: { x: pos.x, y: pos.y },
+        isGoal: pos.isGoal,
+        isStart: pos.isStart
+      };
       const tile = new Tile(ctx, options);
       tile.draw();
     });
@@ -149,9 +176,19 @@ class Tile {
   draw() {
     const { x, y } = this.position;
     const ctx = this.ctx;
-    ctx.fillStyle = 'rgb(0, 255, 0)';
+    ctx.fillStyle = this.statusCheck();
     ctx.fillRect(x, y, 30, 30);
     ctx.strokeRect(x, y, 30, 30);
+  }
+
+  statusCheck() {
+    if (this.isStart) {
+      return 'rgb(255, 0, 0)';
+    } else if (this.isGoal) {
+      return 'rgb(0, 255, 0)';
+    } else {
+      return 'rgb(192, 192, 192)';
+    }
   }
 }
 
@@ -163,7 +200,7 @@ module.exports = Tile;
 /***/ (function(module, exports) {
 
 const tutorial = [
-  { x: 375, y: 175 },
+  { x: 375, y: 175, isStart: true },
   { x: 375, y: 205 },
   { x: 375, y: 235 },
   { x: 375, y: 265 },
@@ -177,7 +214,7 @@ const tutorial = [
 
   { x: 435, y: 175 },
   { x: 435, y: 205 },
-  { x: 435, y: 235 },
+  { x: 435, y: 235, isGoal: true },
   { x: 435, y: 265 },
   { x: 435, y: 295 },
 
@@ -201,69 +238,87 @@ module.exports = tutorial;
 /* 5 */
 /***/ (function(module, exports) {
 
-class Display {
-  constructor(game, ctx) {
+class Block {
+  constructor(ctx, startPos) {
+    this.position = startPos;
     this.ctx = ctx;
-    this.game = game;
-    this.block = this.game.block;
+    this.dimensions = { width: 30, height: 30 };
   }
 
-  handleBlock() {
-    document.addEventListener("keydown", (e) => {
-      e.preventDefault();
-      switch (e.keyCode) {
-        case 40:
-          this.block.move(0, 30);
-          break;
-        case 38:
-          this.block.move(0, -30);
-          break;
-        case 37:
-          this.block.move(-30, 0);
-          break;
-        case 39:
-          this.block.move(30, 0);
-          break;
-    }});
+  move(i, j) {
+    const { dx, dy } = this.checkStanding(i, j);
+    this.position.x += dx;
+    this.position.y += dy;
+    this.draw();
   }
 
-  start() {
-    this.game.draw();
-    // this.animate.bind(this);
-    this.handleBlock();
+  checkStanding(i, j) {
+    if (this.dimensions.width === this.dimensions.height) {
+      if (i > 0) {
+        this.dimensions.width = 60;
+        return { dx: i, dy: j };
+      } else if ( i < 0) {
+        this.dimensions.width = 60;
+        return { dx: 2 * i, dy: j };
+      } else if (j > 0) {
+        this.dimensions.height = 60;
+        return { dx: i, dy: j };
+      } else {
+        this.dimensions.height = 60;
+        return { dx: i, dy: 2 * j };
+      }
+    } else if (this.dimensions.width > this.dimensions.height) {
+      if (i > 0) {
+        this.dimensions.width = 30;
+        return { dx: 2 * i, dy: j };
+      } else if ( i < 0) {
+        this.dimensions.width = 30;
+        return { dx: i, dy: j };
+      } else {
+        return { dx: i, dy: j };
+      }
+    } else {
+      if (j > 0) {
+        this.dimensions.height = 30;
+        return { dx: i, dy: 2 * j };
+      } else if (j < 0) {
+        this.dimensions.height = 30;
+        return { dx: i, dy: j };
+      } else {
+        return { dx: i, dy: j };
+      }
+    }
+  }
+
+  draw() {
+    const { x, y } = this.position;
+    const { width, height } = this.dimensions;
+    this.ctx.fillStyle = 'rgb(200, 0, 255)';
+    this.ctx.fillRect(x, y, width, height);
+    this.ctx.strokeRect(x, y, width, height);
   }
 }
 
-module.exports = Display;
+module.exports = Block;
 
 
 /***/ }),
 /* 6 */
 /***/ (function(module, exports) {
 
-class Block {
-  constructor(ctx, startPos) {
-    this.position = startPos;
+class Display {
+  constructor(game, ctx) {
     this.ctx = ctx;
+    this.game = game;
   }
 
-  move(i, j) {
-    const { x, y } = this.position;
-    this.ctx.clearRect(x, y, 30, 30);
-    this.position.x += i;
-    this.position.y += j;
-    this.draw();
-  }
-
-  draw() {
-    const { x, y } = this.position;
-    this.ctx.fillStyle = 'rgb(75, 0, 130)';
-    this.ctx.fillRect(x, y, 30, 30);
-    this.ctx.strokeRect(x, y, 30, 30);
+  start() {
+    this.game.draw();
+    this.game.handleBoard();
   }
 }
 
-module.exports = Block;
+module.exports = Display;
 
 
 /***/ })
