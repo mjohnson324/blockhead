@@ -9,7 +9,11 @@ class Floor {
   layTiles() {
     const ctx = this.ctx;
     this.positions.forEach(pos => {
-      const options = { position: pos, isGoal: false, isStart: false };
+      const options = {
+        position: { x: pos.x, y: pos.y },
+        isGoal: pos.isGoal,
+        isStart: pos.isStart
+      };
       const tile = new Tile(ctx, options);
       tile.draw();
     });
