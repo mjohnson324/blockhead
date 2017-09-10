@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const ctx = blockheadBoard.getContext("2d");
   blockheadBoard.width = 900;
   blockheadBoard.height = 500;
-  
-  const game = new Game(ctx);
+
+  const game = new Game(ctx, 30);
   new Display(game, ctx).start();
 });

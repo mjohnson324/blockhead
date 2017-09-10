@@ -1,17 +1,21 @@
 const Tile = require("./tile");
 
 class Floor {
-  constructor(positions, ctx) {
+  constructor(positions, ctx, tileSize) {
     this.positions = positions;
     this.ctx = ctx;
-    
-    this.layTiles();
+    this.tileSize = tileSize;
   }
 
   layTiles() {
     const ctx = this.ctx;
     this.positions.forEach(pos => {
-      const options = { position: pos, isGoal: false, isStart: false };
+      const options = {
+        size: this.tileSize,
+        position: { x: pos.x, y: pos.y },
+        isGoal: pos.isGoal,
+        isStart: pos.isStart
+      };
       const tile = new Tile(ctx, options);
       tile.draw();
     });
