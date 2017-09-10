@@ -68,7 +68,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const Game = __webpack_require__(1);
-const Display = __webpack_require__(7);
+const Display = __webpack_require__(10);
 
 document.addEventListener("DOMContentLoaded", () => {
   const blockheadBoard = document.getElementById("blockhead");
@@ -87,15 +87,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const Floor = __webpack_require__(2);
 const Levels = __webpack_require__(4);
-const Block = __webpack_require__(6);
+const Block = __webpack_require__(9);
 
 class Game {
   constructor(ctx, tileSize) {
-    this.tutorial = Levels(tileSize)[0];
+    this.levels = Levels(tileSize);
+    this.currentLevel = this.levels[0];
     this.ctx = ctx;
-    const blockStart = Object.assign({}, this.tutorial[0]);
-    this.block = new Block(ctx, blockStart, tileSize);
-    this.floor = new Floor(this.tutorial, ctx, tileSize);
+    this.blockStart = Object.assign({}, this.currentLevel[0]);
+    this.block = new Block(ctx, this.blockStart, tileSize);
+    this.floor = new Floor(this.currentLevel, ctx, tileSize);
     this.tileSize = tileSize;
   }
 
@@ -120,18 +121,25 @@ class Game {
   }
 
   resetBlock() {
+    this.ctx.clearRect(0 , 0, 900, 500);
+    this.block = new Block(this.ctx, this.blockStart, this.tileSize);
+    this.draw();
+  }
+
+  checkBlock() {
 
   }
 
   move(x, y) {
-    const step = this.tileSize;
-    this.ctx.clearRect(0 , 0, 900, 500);
+    this.ctx.fillStyle = 'rgb(0, 0, 0)';
+    this.ctx.fillRect(0, 0, 900, 500);
     this.floor.layTiles();
     this.block.move(x, y);
+    this.checkBlock();
+    this.block.draw();
   }
 
   draw() {
-    const step = this.tileSize;
     this.floor.layTiles();
     this.block.draw();
   }
@@ -212,11 +220,17 @@ module.exports = Tile;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Tutorial = __webpack_require__(5);
+const LevelOne = __webpack_require__(6);
+const LevelTwo = __webpack_require__(7);
+const LevelThree = __webpack_require__(8);
 
 const levels = (tileSize) => {
   return(
     [
-      Tutorial(tileSize, 360, 180)
+      Tutorial(tileSize, 360, 180),
+      LevelOne(tileSize, 330, 240),
+      LevelTwo(tileSize, 270, 210),
+      LevelThree(tileSize, 210, 280)
     ]);
 };
 
@@ -270,6 +284,225 @@ module.exports = tutorial;
 /* 6 */
 /***/ (function(module, exports) {
 
+const levelOne = (size, startX, startY) => {
+  return(
+    [
+      { x: startX, y: startY, isStart: true },
+
+      { x: startX - size, y: startY - size },
+      { x: startX - size, y: startY },
+      { x: startX - size, y: startY + size },
+
+      { x: startX, y: startY - size },
+      { x: startX, y: startY + size },
+      { x: startX, y: startY + size * 2 },
+
+      { x: startX + size, y: startY - size },
+      { x: startX + size, y: startY },
+      { x: startX + size, y: startY + size },
+      { x: startX + size, y: startY + size * 2 },
+
+      { x: startX + size * 2, y: startY },
+      { x: startX + size * 2, y: startY + size },
+      { x: startX + size * 2, y: startY + size * 2 },
+
+      { x: startX + size * 3, y: startY },
+      { x: startX + size * 3, y: startY + size },
+      { x: startX + size * 3, y: startY + size * 2 },
+
+      { x: startX + size * 4, y: startY },
+      { x: startX + size * 4, y: startY + size },
+      { x: startX + size * 4, y: startY + size * 2 },
+      { x: startX + size * 4, y: startY + size * 3 },
+
+      { x: startX + size * 5, y: startY + size },
+      { x: startX + size * 5, y: startY + size * 2 },
+      { x: startX + size * 5, y: startY + size * 3 },
+      { x: startX + size * 5, y: startY + size * 4 },
+
+      { x: startX + size * 6, y: startY + size },
+      { x: startX + size * 6, y: startY + size * 2 },
+      { x: startX + size * 6, y: startY + size * 3, isGoal: true },
+      { x: startX + size * 6, y: startY + size * 4 },
+
+      { x: startX + size * 7, y: startY + size },
+      { x: startX + size * 7, y: startY + size * 2 },
+      { x: startX + size * 7, y: startY + size * 3 },
+      { x: startX + size * 7, y: startY + size * 4 },
+
+      { x: startX + size * 8, y: startY + size * 2 },
+      { x: startX + size * 8, y: startY + size * 3 },
+    ]
+  );
+};
+
+module.exports = levelOne;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+const levelTwo = (size, startX, startY) => {
+  return(
+    [
+      { x: startX, y: startY, isStart: true },
+
+      { x: startX - size, y: startY + size * 2 },
+      { x: startX - size, y: startY + size },
+      { x: startX - size, y: startY },
+      { x: startX - size, y: startY - size },
+
+      { x: startX, y: startY + size * 2 },
+      { x: startX, y: startY + size },
+      { x: startX, y: startY - size },
+
+      { x: startX + size, y: startY + size * 2 },
+      { x: startX + size, y: startY + size },
+      { x: startX + size, y: startY },
+      { x: startX + size, y: startY - size },
+
+      { x: startX + size * 2, y: startY + size * 2 },
+      { x: startX + size * 2, y: startY + size },
+      { x: startX + size * 2, y: startY },
+      { x: startX + size * 2, y: startY - size },
+
+      { x: startX + size * 3, y: startY + size },
+
+      { x: startX + size * 4, y: startY + size },
+
+      { x: startX + size * 5, y: startY + size * 3 },
+      { x: startX + size * 5, y: startY + size * 2 },
+      { x: startX + size * 5, y: startY + size },
+
+      { x: startX + size * 6, y: startY + size * 3 },
+      { x: startX + size * 6, y: startY + size * 2 },
+      { x: startX + size * 6, y: startY + size },
+
+      { x: startX + size * 7, y: startY + size * 3 },
+      { x: startX + size * 7, y: startY + size * 2 },
+      { x: startX + size * 7, y: startY + size },
+
+      { x: startX + size * 8, y: startY + size * 3 },
+
+      { x: startX + size * 9, y: startY + size * 3 },
+
+      { x: startX + size * 10, y: startY + size * 3 },
+      { x: startX + size * 10, y: startY + size * 2 },
+      { x: startX + size * 10, y: startY + size },
+      { x: startX + size * 10, y: startY },
+      { x: startX + size * 10, y: startY - size },
+
+      { x: startX + size * 11, y: startY + size * 3 },
+      { x: startX + size * 11, y: startY + size * 2 },
+      { x: startX + size * 11, y: startY + size },
+      { x: startX + size * 11, y: startY },
+      { x: startX + size * 11, y: startY - size },
+      { x: startX + size * 11, y: startY - size * 2 },
+
+      { x: startX + size * 12, y: startY + size },
+      { x: startX + size * 12, y: startY, isGoal: true },
+      { x: startX + size * 12, y: startY - size },
+      { x: startX + size * 12, y: startY - size * 2 },
+
+      { x: startX + size * 13, y: startY + size },
+      { x: startX + size * 13, y: startY },
+      { x: startX + size * 13, y: startY - size },
+      { x: startX + size * 13, y: startY - size * 2 },
+    ]
+  );
+};
+
+module.exports = levelTwo;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+const levelThree = (size, startX, startY) => {
+  return(
+    [
+      { x: startX, y: startY, isStart: true },
+
+      { x: startX + size, y: startY },
+
+      { x: startX + size * 2, y: startY },
+
+      { x: startX + size * 3, y: startY },
+
+      { x: startX + size * 4, y: startY },
+      { x: startX + size * 4, y: startY - size },
+      { x: startX + size * 4, y: startY - size * 2 },
+
+      { x: startX + size * 5, y: startY + size * 3 },
+      { x: startX + size * 5, y: startY + size * 2 },
+      { x: startX + size * 5, y: startY + size },
+      { x: startX + size * 5, y: startY },
+      { x: startX + size * 5, y: startY - size },
+      { x: startX + size * 5, y: startY - size * 2 },
+
+      { x: startX + size * 6, y: startY + size * 3 },
+      { x: startX + size * 6, y: startY - size },
+      { x: startX + size * 6, y: startY - size * 2 },
+      { x: startX + size * 6, y: startY - size * 3 },
+      { x: startX + size * 6, y: startY - size * 4 },
+      { x: startX + size * 6, y: startY - size * 5 },
+
+      { x: startX + size * 7, y: startY + size * 3 },
+      { x: startX + size * 7, y: startY - size * 4 },
+      { x: startX + size * 7, y: startY - size * 5 },
+      { x: startX + size * 7, y: startY - size * 6 },
+
+      { x: startX + size * 8, y: startY + size * 3 },
+      { x: startX + size * 8, y: startY + size * 2 },
+      { x: startX + size * 8, y: startY + size },
+      { x: startX + size * 8, y: startY - size * 4 },
+      { x: startX + size * 8, y: startY - size * 5 },
+      { x: startX + size * 8, y: startY - size * 6 },
+
+      { x: startX + size * 9, y: startY + size * 3 },
+      { x: startX + size * 9, y: startY + size * 2 },
+      { x: startX + size * 9, y: startY + size },
+      { x: startX + size * 9, y: startY - size * 3 },
+      { x: startX + size * 9, y: startY - size * 4 },
+      { x: startX + size * 9, y: startY - size * 5 },
+      { x: startX + size * 9, y: startY - size * 6 },
+
+      { x: startX + size * 10, y: startY + size * 3 },
+      { x: startX + size * 10, y: startY + size * 2 },
+      { x: startX + size * 10, y: startY + size },
+      { x: startX + size * 10, y: startY - size * 3 },
+      { x: startX + size * 10, y: startY - size * 4 },
+      { x: startX + size * 10, y: startY - size * 5 },
+
+      { x: startX + size * 11, y: startY + size },
+      { x: startX + size * 11, y: startY },
+      { x: startX + size * 11, y: startY - size },
+
+      { x: startX + size * 12, y: startY + size },
+      { x: startX + size * 12, y: startY },
+      { x: startX + size * 12, y: startY - size },
+      { x: startX + size * 12, y: startY - size * 2 },
+
+      { x: startX + size * 13, y: startY },
+      { x: startX + size * 13, y: startY - size, isGoal: true },
+      { x: startX + size * 13, y: startY  - size * 2 },
+
+      { x: startX + size * 14, y: startY },
+      { x: startX + size * 14, y: startY - size },
+      { x: startX + size * 14, y: startY - size * 2 },
+    ]
+  );
+};
+
+module.exports = levelThree;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
 class Block {
   constructor(ctx, startPos, tileSize) {
     this.position = startPos;
@@ -282,7 +515,6 @@ class Block {
     const { dx, dy } = this.checkStanding(i, j);
     this.position.x += dx;
     this.position.y += dy;
-    this.draw();
   }
 
   checkStanding(i, j) {
@@ -336,7 +568,7 @@ module.exports = Block;
 
 
 /***/ }),
-/* 7 */
+/* 10 */
 /***/ (function(module, exports) {
 
 class Display {
