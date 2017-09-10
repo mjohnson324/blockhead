@@ -4,10 +4,10 @@ const Block = require('./block');
 
 class Game {
   constructor(ctx, tileSize) {
-    this.tutorial = Levels(tileSize)[0];
+    this.tutorial = Levels(tileSize)[3];
     this.ctx = ctx;
-    const blockStart = Object.assign({}, this.tutorial[0]);
-    this.block = new Block(ctx, blockStart, tileSize);
+    this.blockStart = Object.assign({}, this.tutorial[0]);
+    this.block = new Block(ctx, this.blockStart, tileSize);
     this.floor = new Floor(this.tutorial, ctx, tileSize);
     this.tileSize = tileSize;
   }
@@ -33,18 +33,18 @@ class Game {
   }
 
   resetBlock() {
-    
+    this.ctx.clearRect(0 , 0, 900, 500);
+    this.block = new Block(this.ctx, this.blockStart, this.tileSize);
+    this.draw();
   }
 
   move(x, y) {
-    const step = this.tileSize;
     this.ctx.clearRect(0 , 0, 900, 500);
     this.floor.layTiles();
     this.block.move(x, y);
   }
 
   draw() {
-    const step = this.tileSize;
     this.floor.layTiles();
     this.block.draw();
   }
