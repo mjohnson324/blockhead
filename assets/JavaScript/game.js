@@ -4,15 +4,30 @@ const Block = require('./block');
 
 class Game {
   constructor(ctx, tileSize) {
+    this.backgroundRGB = [25, 25, 25];
+    this.backgroundColor = this.stringifyRGB(this.backgroundRGB);
+
     this.levels = Levels(tileSize);
     this.levelNumber = 0;
     this.currentLevel = this.levels[0];
     this.ctx = ctx;
-    this.blockStart = Object.assign({}, this.currentLevel[0]);
+    const blockStart = Object.assign({}, this.currentLevel[0]);
     this.blockGoal = Object.assign({}, this.currentLevel[1]);
-    this.block = new Block(ctx, this.blockStart, tileSize);
+    this.block = new Block(ctx, blockStart, tileSize);
     this.floor = new Floor(this.currentLevel, ctx, tileSize);
     this.tileSize = tileSize;
+  }
+
+  stringifyRGB(colorArray) {
+    return(
+      'rgb('
+      .concat(colorArray[0])
+      .concat(', ')
+      .concat(colorArray[1])
+      .concat(', ')
+      .concat(colorArray[2])
+      .concat(')')
+    );
   }
 
   handleBoard() {
@@ -36,7 +51,7 @@ class Game {
   }
 
   move(x, y) {
-    this.ctx.fillStyle = 'rgb(25, 25, 25)';
+    this.ctx.fillStyle = this.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
     this.floor.layTiles();
     this.block.move(x, y);
@@ -44,22 +59,46 @@ class Game {
     this.block.draw();
   }
 
-  resetBlock() {
-    this.ctx.clearRect(0 , 0, 900, 500);
-    this.block = new Block(this.ctx, this.blockStart, this.tileSize);
-    this.draw();
-  }
-
   checkBlock() {
     const blockSize = this.block.dimensions;
     if (blockSize.width === blockSize.height) {
       this.checkGoal();
-    } else {
-      this.checkBounds();
     }
+    this.checkBounds();
   }
 
   checkBounds() {
+    const { x, y } = this.block.position;
+    const { width, height } = this.block.dimensions;
+    const { x2, y2 } = { x2: x + width, y2: y + height };
+
+    const pointOne = this.ctx.getImageData(x, y, 1, 1);
+    const colorOneData = pointOne.data.slice(0, 3);
+    const colorOne = this.stringifyRGB(colorOneData);
+
+    const pointTwo = this.ctx.getImageData(x, y2, 1, 1);
+    const colorTwoData = pointTwo.data.slice(0, 3);
+    const colorTwo = this.stringifyRGB(colorTwoData);
+
+    const pointThree = this.ctx.getImageData(x2, y, 1, 1);
+    const colorThreeData = pointThree.data.slice(0, 3);
+    const colorThree = this.stringifyRGB(colorThreeData);
+
+    const pointFour = this.ctx.getImageData(x2, y2, 1, 1);
+    const colorFourData = pointFour.data.slice(0, 3);
+    const colorFour = this.stringifyRGB(colorFourData);
+
+    const backColor = this.backgroundColor;
+
+    if (colorOne === backColor || colorTwo === backColor || colorThree === backColor || colorFour === backColor) {
+      this.resetLevel();
+    }
+  }
+
+  resetLevel() {
+    const blockStart = Object.assign({}, this.currentLevel[0]);
+    this.block = new Block(this.ctx, blockStart, this.tileSize);
+    this.draw();
   }
 
   checkGoal() {
@@ -67,18 +106,22 @@ class Game {
     const yGoal = this.blockGoal.y;
     const { x, y } = this.block.position;
     if (x === xGoal && y === yGoal) {
-      this.levelNumber += 1;
-      this.currentLevel = this.levels[this.levelNumber];
-      this.blockStart = Object.assign({}, this.currentLevel[0]);
-      this.blockGoal = Object.assign({}, this.currentLevel[1]);
-      this.block = new Block(this.ctx, this.blockStart, this.tileSize);
-      this.floor = new Floor(this.currentLevel, this.ctx, this.tileSize);
-      this.draw();
+      this.nextLevel();
     }
   }
 
+  nextLevel() {
+    this.levelNumber += 1;
+    this.currentLevel = this.levels[this.levelNumber];
+    const blockStart = Object.assign({}, this.currentLevel[0]);
+    this.blockGoal = Object.assign({}, this.currentLevel[1]);
+    this.block = new Block(this.ctx, blockStart, this.tileSize);
+    this.floor = new Floor(this.currentLevel, this.ctx, this.tileSize);
+    this.draw();
+  }
+
   draw() {
-    this.ctx.fillStyle = 'rgb(25, 25, 25)';
+    this.ctx.fillStyle = this.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
     this.floor.layTiles();
     this.block.draw();
