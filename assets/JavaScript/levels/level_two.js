@@ -2,6 +2,7 @@ const levelTwo = (size, startX, startY) => {
   return(
     [
       { x: startX, y: startY, isStart: true },
+      { x: startX + size * 12, y: startY, isGoal: true },
 
       { x: startX - size, y: startY + size * 2 },
       { x: startX - size, y: startY + size },
@@ -56,7 +57,6 @@ const levelTwo = (size, startX, startY) => {
       { x: startX + size * 11, y: startY - size * 2 },
 
       { x: startX + size * 12, y: startY + size },
-      { x: startX + size * 12, y: startY, isGoal: true },
       { x: startX + size * 12, y: startY - size },
       { x: startX + size * 12, y: startY - size * 2 },
 

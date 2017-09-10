@@ -2,6 +2,8 @@ const tutorial = (size, startX, startY) => {
   return(
     [
     { x: startX, y: startY, isStart: true },
+    { x: startX + size * 2, y: startY + size * 2, isGoal: true },
+    
     { x: startX, y: startY + size },
     { x: startX, y: startY + size * 2 },
     { x: startX, y: startY + size * 3 },
@@ -15,7 +17,6 @@ const tutorial = (size, startX, startY) => {
 
     { x: startX + size * 2, y: startY },
     { x: startX + size * 2, y: startY + size },
-    { x: startX + size * 2, y: startY + size * 2, isGoal: true },
     { x: startX + size * 2, y: startY + size * 3 },
     { x: startX + size * 2, y: startY + size * 4 },
 
