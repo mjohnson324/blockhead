@@ -1,10 +1,10 @@
 const Floor = require('./floor');
-const Tutorial = require('./levels/tutorial');
+const Levels = require('./levels/levels');
 const Block = require('./block');
 
 class Game {
   constructor(ctx, tileSize) {
-    this.tutorial = Tutorial;
+    this.tutorial = Levels(tileSize)[0];
     this.ctx = ctx;
     const blockStart = Object.assign({}, this.tutorial[0]);
     this.block = new Block(ctx, blockStart, tileSize);
