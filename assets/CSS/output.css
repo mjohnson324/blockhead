@@ -1,0 +1,49 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit; }
+
+body {
+  background-color: black; }
+
+a, h1 {
+  font-family: "Montserrat", sans-serif; }
+
+#blockhead {
+  border: solid white 2px;
+  width: 900px;
+  height: 500px;
+  align-self: center;
+  margin: 0 auto;
+  display: block; }
+
+nav {
+  font-family: "Montserrat", sans-serif;
+  color: white;
+  font-size: 26px;
+  margin: 20px; }
+
+a {
+  display: inline-block;
+  background-color: white;
+  color: black;
+  font-size: 20px;
+  padding: 10px;
+  margin: 20px;
+  border-radius: 5px; }
+
+a:hover {
+  background-color: yellow;
+  cursor: pointer;
+  cursor: hand; }
+
+h1 {
+  font-size: 50px;
+  margin-bottom: 30px;
+  color: white;
+  text-align: center;
+  text-decoration: underline; }
+
+/*# sourceMappingURL=output.css.map */
