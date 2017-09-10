@@ -10,7 +10,6 @@ class Block {
     const { dx, dy } = this.checkStanding(i, j);
     this.position.x += dx;
     this.position.y += dy;
-    this.draw();
   }
 
   checkStanding(i, j) {
