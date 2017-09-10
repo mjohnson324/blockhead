@@ -92,9 +92,11 @@ const Block = __webpack_require__(9);
 class Game {
   constructor(ctx, tileSize) {
     this.levels = Levels(tileSize);
+    this.levelNumber = 0;
     this.currentLevel = this.levels[0];
     this.ctx = ctx;
     this.blockStart = Object.assign({}, this.currentLevel[0]);
+    this.blockGoal = Object.assign({}, this.currentLevel[1]);
     this.block = new Block(ctx, this.blockStart, tileSize);
     this.floor = new Floor(this.currentLevel, ctx, tileSize);
     this.tileSize = tileSize;
@@ -120,18 +122,8 @@ class Game {
     }});
   }
 
-  resetBlock() {
-    this.ctx.clearRect(0 , 0, 900, 500);
-    this.block = new Block(this.ctx, this.blockStart, this.tileSize);
-    this.draw();
-  }
-
-  checkBlock() {
-
-  }
-
   move(x, y) {
-    this.ctx.fillStyle = 'rgb(0, 0, 0)';
+    this.ctx.fillStyle = 'rgb(25, 25, 25)';
     this.ctx.fillRect(0, 0, 900, 500);
     this.floor.layTiles();
     this.block.move(x, y);
@@ -139,7 +131,42 @@ class Game {
     this.block.draw();
   }
 
+  resetBlock() {
+    this.ctx.clearRect(0 , 0, 900, 500);
+    this.block = new Block(this.ctx, this.blockStart, this.tileSize);
+    this.draw();
+  }
+
+  checkBlock() {
+    const blockSize = this.block.dimensions;
+    if (blockSize.width === blockSize.height) {
+      this.checkGoal();
+    } else {
+      this.checkBounds();
+    }
+  }
+
+  checkBounds() {
+  }
+
+  checkGoal() {
+    const xGoal = this.blockGoal.x;
+    const yGoal = this.blockGoal.y;
+    const { x, y } = this.block.position;
+    if (x === xGoal && y === yGoal) {
+      this.levelNumber += 1;
+      this.currentLevel = this.levels[this.levelNumber];
+      this.blockStart = Object.assign({}, this.currentLevel[0]);
+      this.blockGoal = Object.assign({}, this.currentLevel[1]);
+      this.block = new Block(this.ctx, this.blockStart, this.tileSize);
+      this.floor = new Floor(this.currentLevel, this.ctx, this.tileSize);
+      this.draw();
+    }
+  }
+
   draw() {
+    this.ctx.fillStyle = 'rgb(25, 25, 25)';
+    this.ctx.fillRect(0, 0, 900, 500);
     this.floor.layTiles();
     this.block.draw();
   }
@@ -245,6 +272,8 @@ const tutorial = (size, startX, startY) => {
   return(
     [
     { x: startX, y: startY, isStart: true },
+    { x: startX + size * 2, y: startY + size * 2, isGoal: true },
+    
     { x: startX, y: startY + size },
     { x: startX, y: startY + size * 2 },
     { x: startX, y: startY + size * 3 },
@@ -258,7 +287,6 @@ const tutorial = (size, startX, startY) => {
 
     { x: startX + size * 2, y: startY },
     { x: startX + size * 2, y: startY + size },
-    { x: startX + size * 2, y: startY + size * 2, isGoal: true },
     { x: startX + size * 2, y: startY + size * 3 },
     { x: startX + size * 2, y: startY + size * 4 },
 
@@ -288,6 +316,7 @@ const levelOne = (size, startX, startY) => {
   return(
     [
       { x: startX, y: startY, isStart: true },
+      { x: startX + size * 6, y: startY + size * 3, isGoal: true },
 
       { x: startX - size, y: startY - size },
       { x: startX - size, y: startY },
@@ -322,7 +351,6 @@ const levelOne = (size, startX, startY) => {
 
       { x: startX + size * 6, y: startY + size },
       { x: startX + size * 6, y: startY + size * 2 },
-      { x: startX + size * 6, y: startY + size * 3, isGoal: true },
       { x: startX + size * 6, y: startY + size * 4 },
 
       { x: startX + size * 7, y: startY + size },
@@ -347,6 +375,7 @@ const levelTwo = (size, startX, startY) => {
   return(
     [
       { x: startX, y: startY, isStart: true },
+      { x: startX + size * 12, y: startY, isGoal: true },
 
       { x: startX - size, y: startY + size * 2 },
       { x: startX - size, y: startY + size },
@@ -401,7 +430,6 @@ const levelTwo = (size, startX, startY) => {
       { x: startX + size * 11, y: startY - size * 2 },
 
       { x: startX + size * 12, y: startY + size },
-      { x: startX + size * 12, y: startY, isGoal: true },
       { x: startX + size * 12, y: startY - size },
       { x: startX + size * 12, y: startY - size * 2 },
 
@@ -424,6 +452,7 @@ const levelThree = (size, startX, startY) => {
   return(
     [
       { x: startX, y: startY, isStart: true },
+      { x: startX + size * 13, y: startY - size, isGoal: true },
 
       { x: startX + size, y: startY },
 
@@ -486,7 +515,6 @@ const levelThree = (size, startX, startY) => {
       { x: startX + size * 12, y: startY - size * 2 },
 
       { x: startX + size * 13, y: startY },
-      { x: startX + size * 13, y: startY - size, isGoal: true },
       { x: startX + size * 13, y: startY  - size * 2 },
 
       { x: startX + size * 14, y: startY },
