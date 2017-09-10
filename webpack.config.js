@@ -1,7 +1,7 @@
 module.exports = {
-  entry: "./JavaScript/blockhead.js",
+  entry: "./assets/JavaScript/blockhead.js",
   output: {
-    path: __dirname + "/JavaScript",
+    path: __dirname + "/assets/JavaScript/bundle",
     filename: "bundle.js"
 	},
 	devtool: "source-maps",
