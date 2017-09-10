@@ -119,6 +119,10 @@ class Game {
     }});
   }
 
+  resetBlock() {
+    
+  }
+
   move(x, y) {
     const step = this.tileSize;
     this.ctx.clearRect(0 , 0, 900, 500);
@@ -144,7 +148,7 @@ const Tile = __webpack_require__(3);
 
 class Floor {
   constructor(positions, ctx, tileSize) {
-    this.positions = positions(tileSize);
+    this.positions = positions;
     this.ctx = ctx;
     this.tileSize = tileSize;
   }
