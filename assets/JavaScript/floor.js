@@ -2,7 +2,7 @@ const Tile = require("./tile");
 
 class Floor {
   constructor(positions, ctx, tileSize) {
-    this.positions = positions(tileSize);
+    this.positions = positions;
     this.ctx = ctx;
     this.tileSize = tileSize;
   }

@@ -32,6 +32,10 @@ class Game {
     }});
   }
 
+  resetBlock() {
+    
+  }
+
   move(x, y) {
     const step = this.tileSize;
     this.ctx.clearRect(0 , 0, 900, 500);
