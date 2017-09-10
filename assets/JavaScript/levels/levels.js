@@ -7,9 +7,9 @@ const levels = (tileSize) => {
   return(
     [
       Tutorial(tileSize, 360, 180),
-      LevelOne(tileSize, 330, 210),
-      LevelTwo(tileSize, 270, 270),
-      LevelThree(tileSize, 210, 190)
+      LevelOne(tileSize, 330, 240),
+      LevelTwo(tileSize, 270, 210),
+      LevelThree(tileSize, 210, 280)
     ]);
 };
 
