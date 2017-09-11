@@ -29,7 +29,7 @@ The game will require the following files:
 
 ### Wireframes:
 
-![wireframe](./assets/Wireframes/BlockHead.png)
+![wireframe](./assets/Images/BlockHead.png)
 
 The app is contained in one screen with nav links to my Github and LinkedIn in the top left corner. Control of the game is toggled with the mouse, and in the game players can move the block with the arrow keys. Instructions are provided on the bottom of the page for the player's convenience, and a tutorial level will also be provided to give the player room to feel out the game.
 

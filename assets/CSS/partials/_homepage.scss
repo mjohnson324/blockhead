@@ -7,7 +7,7 @@ a, h1 {
 }
 
 #blockhead {
-  border: solid white 2px;
+  border: solid white 5px;
   width: 900px;
   height: 500px;
   align-self: center;
@@ -15,34 +15,22 @@ a, h1 {
   display: block;
 }
 
-nav {
-  font-family: $blockhead-fonts;
-  color: white;
-  font-size: 26px;
-  margin: 20px;
-}
-
-a {
-  display: inline-block;
-  background-color: white;
-  color: black;
-  font-size: 20px;
-  padding: 10px;
-  margin: 20px;
-  border-radius: 5px;
-
-}
-
-a:hover {
-  background-color: yellow;
-  cursor: pointer;
-  cursor: hand;
-}
-
 h1 {
-  font-size: 50px;
-  margin-bottom: 30px;
+  font-size: 40px;
+
   color: white;
   text-align: center;
   text-decoration: underline;
+}
+
+h2 {
+  @extend h1;
+  font-size: 30px;
+  margin-top: 30px;
+}
+
+h3 {
+  @extend h1;
+  font-size: 24px;
+  margin-bottom: 30px;
 }
