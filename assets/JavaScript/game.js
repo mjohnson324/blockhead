@@ -16,6 +16,7 @@ class Game {
     this.block = new Block(ctx, blockStart, tileSize);
     this.floor = new Floor(this.currentLevel, ctx, tileSize);
     this.tileSize = tileSize;
+    this.getMove = this.getMove.bind(this);
   }
 
   stringifyRGB(colorArray) {
@@ -31,23 +32,26 @@ class Game {
   }
 
   handleBoard() {
+    document.addEventListener("keydown", this.getMove, true);
+  }
+
+  getMove(e) {
     const step = this.tileSize;
-    document.addEventListener("keydown", (e) => {
-      e.preventDefault();
-      switch (e.keyCode) {
-        case 40:
-          this.move(0, step);
-          break;
-        case 38:
-          this.move(0, -1 * step);
-          break;
-        case 37:
-          this.move(-1 * step, 0);
-          break;
-        case 39:
-          this.move(step, 0);
-          break;
-    }});
+    e.preventDefault();
+    switch (e.keyCode) {
+      case 40:
+        this.move(0, step);
+        break;
+      case 38:
+        this.move(0, -1 * step);
+        break;
+      case 37:
+        this.move(-1 * step, 0);
+        break;
+      case 39:
+        this.move(step, 0);
+        break;
+    }
   }
 
   move(x, y) {
@@ -115,6 +119,13 @@ class Game {
   nextLevel() {
     this.levelNumber += 1;
     this.currentLevel = this.levels[this.levelNumber];
+    if (this.currentLevel === undefined) {
+      document.removeEventListener("keydown", this.getMove, true);
+      this.ctx.clearRect(0, 0, 900, 500);
+      this.ctx.font = '20px sans-serif';
+      this.ctx.fillText("Thanks for playing! More levels coming soon! (probably)", 50, 300);
+      return null;
+    }
     const blockStart = Object.assign({}, this.currentLevel[0]);
     this.blockGoal = Object.assign({}, this.currentLevel[1]);
     this.block = new Block(this.ctx, blockStart, this.tileSize);

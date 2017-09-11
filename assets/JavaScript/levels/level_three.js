@@ -62,14 +62,8 @@ const levelThree = (size, startX, startY) => {
       { x: startX + size * 12, y: startY + size },
       { x: startX + size * 12, y: startY },
       { x: startX + size * 12, y: startY - size },
-      { x: startX + size * 12, y: startY - size * 2 },
 
       { x: startX + size * 13, y: startY },
-      { x: startX + size * 13, y: startY  - size * 2 },
-
-      { x: startX + size * 14, y: startY },
-      { x: startX + size * 14, y: startY - size },
-      { x: startX + size * 14, y: startY - size * 2 },
     ]
   );
 };
