@@ -1,0 +1,45 @@
+label {
+  color: white;
+  font-size: 16px;
+}
+
+.directions {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin: 30px;
+}
+
+.key {
+  width: 200px;
+  height: 300px;
+  position: absolute;
+  top: 170px;
+
+  z-index: -1;
+}
+
+.controls {
+  width: 250px;
+  height: 250px;
+}
+
+.falling {
+  width: 350px;
+  height: 300px;
+}
+
+.block {
+  width: 400px;
+  height: 300px;
+}
+
+.goal {
+  width: 600px;
+  height: 300px;
+}
