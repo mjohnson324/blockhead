@@ -8,24 +8,28 @@ Blockhead is a game that is based on the 3D puzzle game bloxors, in which the pl
 
 Blockhead
 
-- [ ] Render tiles to the screen
-- [ ] Make block movable with arrow keys
-- [ ] Block falls off board if not set on tiles, resetting level
-- [ ] Level changes when goal is reached
+- [x] Render tiles to the screen
+- [x] Make block movable with arrow keys
+- [x] Block falls off board if not set on tiles, resetting level
+- [x] Level changes when goal is reached
 - [ ] production README
 
 ### Architecture and Technologies:
 
 - 'JavaScript' (game logic)
 - 'Canvas' (rendering of board tiles and block)
+- 'Webpack' (bundling files together)
 
 The game will require the following files:
 
-- 'floor.js' to group tiles and handle the board logic in response to player input
-- 'tile.js' to render individual tiles onto the screen
-- 'block.js' to handle the movement logic for the block
-- 'level.js' to handle transitioning between levels on success
-- 'root.js' to bundle all the files together
+- 'display.js' to handle rendering of the game.
+- 'game.js' to handle the rules of the game.
+- 'levels.js' to store information on level progression and floor layouts. Serves as a bundle for all levels.
+  + Each level will have its own file detailing the exact position and nature of each tile.
+- 'floor.js' to render all the tiles for every level.
+- 'tile.js' to render individual tiles onto the screen based on their properties.
+- 'block.js' to handle the movement logic for the block.
+- 'blockhead.js' to start the game and serve as the entry file.
 
 ### Wireframes:
 
@@ -43,4 +47,6 @@ The app is contained in one screen with nav links to my Github and LinkedIn in t
 
 ### Bonus Features:
 
-- [ ] Make floor destructible: Tiles will disappear after being stepped on x times. The current status of a tile will be marked by color.
+- [ ] 'Make floor destructible:' Tiles will disappear after being stepped on x times. The current steps remaining on a tile will be marked by a number.
+- [ ] 'Other tile types:' The original game has multiple tiles with functionalities such as switches, different weight-bearing capacities, teleportation, etc.
+- [ ] 'Score tracker:' The original game tracks the number of moves a player has taken. It would make for a fun competition if, in addition to tracking a player's current score the game ranked players.
