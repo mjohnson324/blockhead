@@ -11,7 +11,7 @@ Blockhead
 - [ ] Render tiles to the screen
 - [ ] Make block movable with arrow keys
 - [ ] Block falls off board if not set on tiles, resetting level
-- [ ] Make board tiles change color/disappear depending number of steps taken
+- [ ] Level changes when goal is reached
 - [ ] production README
 
 ### Architecture and Technologies:
