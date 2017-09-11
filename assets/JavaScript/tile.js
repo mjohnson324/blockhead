@@ -18,7 +18,7 @@ class Tile {
 
   statusCheck() {
     if (this.isStart) {
-      return 'rgb(255, 0, 0)';
+      return 'rgb(0, 255, 255)';
     } else if (this.isGoal) {
       return 'rgb(0, 255, 0)';
     } else {

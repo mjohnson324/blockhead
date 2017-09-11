@@ -57,6 +57,13 @@ class Block {
     this.ctx.fillRect(x, y, width, height);
     this.ctx.strokeRect(x, y, width, height);
   }
+
+  drawFail(oldPosition, oldDimensions) {
+    const { x, y } = oldPosition;
+    const { width, height } = oldDimensions;
+    this.ctx.fillStyle = 'rgb(255, 0, 0)';
+    this.ctx.fillRect(x, y, width, height);
+  }
 }
 
 module.exports = Block;

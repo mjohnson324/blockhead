@@ -183,9 +183,11 @@ class Game {
   }
 
   resetLevel() {
+    const { position, dimensions } = this.block;
     const blockStart = Object.assign({}, this.currentLevel[0]);
     this.block = new Block(this.ctx, blockStart, this.tileSize);
     this.draw();
+    this.block.drawFail(position, dimensions);
   }
 
   checkGoal() {
@@ -273,7 +275,7 @@ class Tile {
 
   statusCheck() {
     if (this.isStart) {
-      return 'rgb(255, 0, 0)';
+      return 'rgb(0, 255, 255)';
     } else if (this.isGoal) {
       return 'rgb(0, 255, 0)';
     } else {
@@ -632,6 +634,13 @@ class Block {
     this.ctx.fillStyle = 'rgb(200, 0, 255)';
     this.ctx.fillRect(x, y, width, height);
     this.ctx.strokeRect(x, y, width, height);
+  }
+
+  drawFail(oldPosition, oldDimensions) {
+    const { x, y } = oldPosition;
+    const { width, height } = oldDimensions;
+    this.ctx.fillStyle = 'rgb(255, 0, 0)';
+    this.ctx.fillRect(x, y, width, height);
   }
 }
 

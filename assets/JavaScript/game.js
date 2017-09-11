@@ -96,9 +96,11 @@ class Game {
   }
 
   resetLevel() {
+    const { position, dimensions } = this.block;
     const blockStart = Object.assign({}, this.currentLevel[0]);
     this.block = new Block(this.ctx, blockStart, this.tileSize);
     this.draw();
+    this.block.drawFail(position, dimensions);
   }
 
   checkGoal() {
