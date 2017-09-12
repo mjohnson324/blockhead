@@ -14,4 +14,4 @@ const levels = (length) => {
     ]);
 };
 
-module.exports = levels(30);
+module.exports = levels;
