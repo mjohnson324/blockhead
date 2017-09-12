@@ -110,12 +110,16 @@ class Game {
     this.levelNumber += 1;
     this.currentLevel = this.levels[this.levelNumber];
     if (this.currentLevel === undefined) {
+      debugger
       document.removeEventListener("keydown", this.getMove, true);
       this.ctx.clearRect(0, 0, 900, 500);
+      debugger
       this.ctx.font = '20px sans-serif';
       this.ctx.fillText("Thanks for playing! More levels coming soon! (probably)", 50, 300);
+      debugger
       return null;
     }
+    debugger
     const blockStart = Object.assign({}, this.currentLevel[0]);
     this.blockGoal = Object.assign({}, this.currentLevel[1]);
     this.block = new Block(this.ctx, blockStart, this.tileSize);
@@ -126,6 +130,10 @@ class Game {
   draw() {
     this.ctx.fillStyle = this.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
+    this.ctx.font = '30px sans-serif';
+
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillText(`Level ${this.levelNumber}`, 25, 50);
     this.floor.layTiles();
     this.block.draw();
   }
