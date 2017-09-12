@@ -37,18 +37,21 @@ class Game {
 
   getMove(e) {
     const step = this.tileSize;
-    e.preventDefault();
     switch (e.keyCode) {
       case 40:
+        e.preventDefault();
         this.move(0, step);
         break;
       case 38:
+        e.preventDefault();
         this.move(0, -1 * step);
         break;
       case 37:
+        e.preventDefault();
         this.move(-1 * step, 0);
         break;
       case 39:
+        e.preventDefault();
         this.move(step, 0);
         break;
     }
@@ -75,28 +78,15 @@ class Game {
     const { x, y } = this.block.position;
     const { width, height } = this.block.dimensions;
     const { x2, y2 } = { x2: x + width, y2: y + height };
-
-    const pointOne = this.ctx.getImageData(x, y, 1, 1);
-    const colorOneData = pointOne.data.slice(0, 3);
-    const colorOne = this.stringifyRGB(colorOneData);
-
-    const pointTwo = this.ctx.getImageData(x, y2, 1, 1);
-    const colorTwoData = pointTwo.data.slice(0, 3);
-    const colorTwo = this.stringifyRGB(colorTwoData);
-
-    const pointThree = this.ctx.getImageData(x2, y, 1, 1);
-    const colorThreeData = pointThree.data.slice(0, 3);
-    const colorThree = this.stringifyRGB(colorThreeData);
-
-    const pointFour = this.ctx.getImageData(x2, y2, 1, 1);
-    const colorFourData = pointFour.data.slice(0, 3);
-    const colorFour = this.stringifyRGB(colorFourData);
-
-    const backColor = this.backgroundColor;
-
-    if (colorOne === backColor || colorTwo === backColor || colorThree === backColor || colorFour === backColor) {
-      this.resetLevel();
-    }
+    const coords = [[x, y], [x, y2], [x2, y], [x2, y2]];
+    coords.forEach(coord => {
+      const point = this.ctx.getImageData(coord[0], coord[1], 1, 1);
+      const colorData = point.data.slice(0, 3);
+      const color = this.stringifyRGB(colorData);
+      if (color === this.backgroundColor) {
+        this.resetLevel();
+      }
+    });
   }
 
   resetLevel() {
