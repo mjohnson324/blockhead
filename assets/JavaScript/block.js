@@ -1,68 +1,76 @@
 class Block {
-  constructor(ctx, startPos, tileSize) {
-    this.position = startPos;
-    this.ctx = ctx;
-    this.tileSize = tileSize;
-    this.dimensions = { width: tileSize, height: tileSize };
+  constructor(options) {
+    this.xPos = options.xPos;
+    this.yPos = options.yPos;
+    this.width = options.width;
+    this.height = options.height;
   }
 
-  move(i, j) {
-    const { dx, dy } = this.checkStanding(i, j);
-    this.position.x += dx;
-    this.position.y += dy;
+  position(dx, dy) {
+    this.xPos += dx;
+    this.yPos += dy;
   }
 
-  checkStanding(i, j) {
-    if (this.dimensions.width === this.dimensions.height) {
-      if (i > 0) {
-        this.dimensions.width = this.tileSize * 2;
-        return { dx: i, dy: j };
-      } else if ( i < 0) {
-        this.dimensions.width = this.tileSize * 2;
-        return { dx: 2 * i, dy: j };
-      } else if (j > 0) {
-        this.dimensions.height = this.tileSize * 2;
-        return { dx: i, dy: j };
-      } else {
-        this.dimensions.height = this.tileSize * 2;
-        return { dx: i, dy: 2 * j };
-      }
-    } else if (this.dimensions.width > this.dimensions.height) {
-      if (i > 0) {
-        this.dimensions.width = this.tileSize;
-        return { dx: 2 * i, dy: j };
-      } else if ( i < 0) {
-        this.dimensions.width = this.tileSize;
-        return { dx: i, dy: j };
-      } else {
-        return { dx: i, dy: j };
-      }
+  transform(x, y) {
+    if (this.width === this.height) {
+      this.expand(x, y);
     } else {
-      if (j > 0) {
-        this.dimensions.height = this.tileSize;
-        return { dx: i, dy: 2 * j };
-      } else if (j < 0) {
-        this.dimensions.height = this.tileSize;
-        return { dx: i, dy: j };
-      } else {
-        return { dx: i, dy: j };
-      }
+      this.checkDimensionsAndMovement(x, y);
     }
   }
 
-  draw() {
-    const { x, y } = this.position;
-    const { width, height } = this.dimensions;
-    this.ctx.fillStyle = 'rgb(200, 0, 255)';
-    this.ctx.fillRect(x, y, width, height);
-    this.ctx.strokeRect(x, y, width, height);
+  expand(x, y) {
+    if (x !== 0) {
+      this.expandWidth(x, y);
+    } else {
+      this.expandHeight(x, y);
+    }
   }
 
-  drawFail(oldPosition, oldDimensions) {
-    const { x, y } = oldPosition;
-    const { width, height } = oldDimensions;
-    this.ctx.fillStyle = 'rgb(255, 0, 0)';
-    this.ctx.fillRect(x, y, width, height);
+  checkDimensionsAndMovement(x, y) {
+    if (this.width > this.height && x !== 0) {
+      this.contractWidth(x, y);
+    } else if (this.width < this.height && y !== 0) {
+      this.contractHeight(x, y);
+    } else {
+      this.position(x, y);
+    }
+  }
+
+  expandWidth(x, y) {
+    this.width *= 2;
+    if (x > 0) {
+      this.position(x, y);
+    } else {
+      this.position(2 * x, y);
+    }
+  }
+
+  expandHeight(x, y) {
+    this.height *= 2;
+    if (y > 0) {
+      this.position(x, y);
+    } else {
+      this.position(x, 2 * y);
+    }
+  }
+
+  contractWidth(x, y) {
+    this.width /= 2;
+    if (x > 0) {
+      this.position(2 * x, y);
+    } else {
+      this.position(x, y);
+    }
+  }
+
+  contractHeight(x, y) {
+    this.height /= 2;
+    if (y > 0) {
+      this.position(x, y * 2);
+    } else {
+      this.position(x, y);
+    }
   }
 }
 
