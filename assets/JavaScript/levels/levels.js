@@ -6,7 +6,6 @@ const LevelThree = require('./level_three');
 const levels = (length) => {
   return(
     [
-      length,
       Tutorial(length, 360, 180),
       LevelOne(length, 330, 240),
       LevelTwo(length, 270, 210),

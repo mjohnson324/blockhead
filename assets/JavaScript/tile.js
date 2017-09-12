@@ -1,17 +1,16 @@
 class Tile {
   constructor(options) {
     this.position = options.position;
-    this.isGoal = options.isGoal;
-    this.isStart = options.isStart;
-    this.color = this.statusCheck();
+    this.type = options.type;
+    this.color = this.typeCheck();
   }
 
   statusCheck() {
-    if (this.isStart) {
+    if (this.type === "start") {
       return 'rgb(0, 255, 255)';
-    } else if (this.isGoal) {
+    } else if (this.type === "goal") {
       return 'rgb(0, 255, 0)';
-    } else {
+    } else if (this.type === "none") {
       return 'rgb(192, 192, 192)';
     }
   }
