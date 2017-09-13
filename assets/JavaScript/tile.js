@@ -6,7 +6,7 @@ class Tile {
     this.color = this.typeCheck();
   }
 
-  statusCheck() {
+  typeCheck() {
     if (this.type === "start") {
       return 'rgb(0, 255, 255)';
     } else if (this.type === "goal") {
