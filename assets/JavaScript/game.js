@@ -71,7 +71,7 @@ class Game {
   checkGoal() {
     const xGoal = this.goal.x;
     const yGoal = this.goal.y;
-    const { xPos, yPos } = this.block.position;
+    const { xPos, yPos } = this.block;
     if (xPos === xGoal && yPos === yGoal) {
       this.nextLevel();
     }
