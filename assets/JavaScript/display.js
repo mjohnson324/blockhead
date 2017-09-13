@@ -18,12 +18,12 @@ class Display {
     );
   }
 
-  render(floor, block) {
+  render(floor, block, levelNumber) {
     this.ctx.fillStyle = this.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
     this.ctx.font = '30px sans-serif';
     this.ctx.fillStyle = 'white';
-    this.ctx.fillText(`Level ${this.levelNumber}`, 25, 50);
+    this.ctx.fillText(`Level ${levelNumber}`, 25, 50);
     this.drawFloor(floor);
     this.drawBlock(block);
   }
