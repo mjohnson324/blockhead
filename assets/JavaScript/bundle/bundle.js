@@ -97,10 +97,10 @@ class Game {
   start() {
     this.currentLevel = this.levels[this.levelNumber];
     this.goal = this.currentLevel[1];
-    document.addEventListener("keydown", this.moveBlock.bind(this), true);
-    const { x, y } = this.currentLevel[0];
-    this.constructBlock(x, y);
-    this.display.render(this.currentLevel, this.block);
+    document.addEventListener("keydown", this.getMove.bind(this), true);
+    const { xPos, yPos } = this.currentLevel[0];
+    this.constructBlock(xPos, yPos);
+    this.display.render(this.currentLevel, this.block, this.levelNumber);
   }
 
   constructBlock(x, y) {
@@ -115,13 +115,16 @@ class Game {
     switch (e.keyCode) {
       case 40:
         e.preventDefault();
-        return this.moveBlock("down");
+        this.moveBlock("down");
+        break;
       case 38:
         e.preventDefault();
-        return this.moveBlock("up");
+        this.moveBlock("up");
+        break;
       case 37:
         e.preventDefault();
-        return this.moveBlock("left");
+        this.moveBlock("left");
+        break;
       case 39:
         e.preventDefault();
         this.moveBlock("right");
@@ -131,10 +134,10 @@ class Game {
   moveBlock(direction) {
     switch(direction) {
       case "down":
-        this.block.transform(0, this.length * -1);
+        this.block.transform(0, this.length);
         break;
       case "up":
-        this.block.transform(0, this.length);
+        this.block.transform(0, this.length * -1);
         break;
       case "left":
         this.block.transform(this.length * -1, 0);
@@ -153,8 +156,8 @@ class Game {
   }
 
   checkGoal() {
-    const xGoal = this.goal.x;
-    const yGoal = this.goal.y;
+    const xGoal = this.goal.xPos;
+    const yGoal = this.goal.yPos;
     const { xPos, yPos } = this.block;
     if (xPos === xGoal && yPos === yGoal) {
       this.nextLevel();
@@ -165,12 +168,13 @@ class Game {
     this.levelNumber += 1;
     this.currentLevel = this.levels[this.levelNumber];
     if (this.currentLevel === undefined) {
-      return this.endGame();
+      this.endGame();
+    } else {
+      this.goal = this.currentLevel[1];
+      const { xPos, yPos } = this.currentLevel[0];
+      this.constructBlock(xPos, yPos);
+      this.display.render(this.currentLevel, this.block, this.levelNumber);
     }
-    this.goal = this.currentLevel[1];
-    const { x, y } = this.currentLevel[0];
-    this.constructBlock(x, y);
-    this.display.render(this.currentLevel, this.block);
   }
 
   endGame() {
@@ -186,15 +190,17 @@ class Game {
       [xPos + width, yPos],
       [xPos + width, yPos + height]];
     if (this.display.tileMovesOffFloor(coordinates)) {
-      this.resetBlock();
+      this.resetBlock(oldOptions);
+    } else if (this.currentLevel) {
+      this.display.render(this.currentLevel, this.block, this.levelNumber);
     }
-    this.display.render(this.currentLevel, this.block);
-    this.display.drawFail(oldOptions);
   }
 
-  resetBlock() {
-    const { x, y } = this.currentLevel[0];
-    this.constructBlock(x, y);
+  resetBlock(oldOptions) {
+    const { xPos, yPos } = this.currentLevel[0];
+    this.constructBlock(xPos, yPos);
+    this.display.render(this.currentLevel, this.block, this.levelNumber);
+    this.display.drawFail(oldOptions);
   }
 }
 
@@ -243,7 +249,7 @@ class Tile {
     this.color = this.typeCheck();
   }
 
-  statusCheck() {
+  typeCheck() {
     if (this.type === "start") {
       return 'rgb(0, 255, 255)';
     } else if (this.type === "goal") {
@@ -620,12 +626,12 @@ class Display {
     );
   }
 
-  render(floor, block) {
+  render(floor, block, levelNumber) {
     this.ctx.fillStyle = this.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
     this.ctx.font = '30px sans-serif';
     this.ctx.fillStyle = 'white';
-    this.ctx.fillText(`Level ${this.levelNumber}`, 25, 50);
+    this.ctx.fillText(`Level ${levelNumber}`, 25, 50);
     this.drawFloor(floor);
     this.drawBlock(block);
   }
@@ -647,7 +653,7 @@ class Display {
   }
 
   tileMovesOffFloor(coordinates) {
-    for(let i = 0; i < coordinates,length; i++) {
+    for(let i = 0; i < coordinates.length; i++) {
       let corner = coordinates[i];
       let point = this.ctx.getImageData(corner[0], corner[1], 1, 1);
       let colorData = point.data.slice(0, 3);
@@ -668,6 +674,7 @@ class Display {
   drawFinish() {
     this.ctx.clearRect(0, 0, 900, 500);
     this.ctx.font = '20px sans-serif';
+    this.ctx.fillStyle = "white";
     this.ctx.fillText(
       "Thanks for playing! More levels coming soon! (probably)",
       50,
