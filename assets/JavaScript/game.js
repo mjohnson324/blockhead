@@ -16,7 +16,7 @@ class Game {
     document.addEventListener("keydown", this.moveBlock.bind(this), true);
     const { x, y } = this.currentLevel[0];
     this.constructBlock(x, y);
-    this.display;
+    this.display.render(this.currentLevel, this.block);
   }
 
   constructBlock(x, y) {
@@ -86,31 +86,31 @@ class Game {
     this.goal = this.currentLevel[1];
     const { x, y } = this.currentLevel[0];
     this.constructBlock(x, y);
-    this.display;
+    this.display.render(this.currentLevel, this.block);
   }
 
   endGame() {
     document.removeEventListener("keydown", this.getMove, true);
-    this.display;
+    this.display.drawFinish();
   }
 
   checkBounds() {
     const { xPos, yPos, width, height } = this.block;
+    const oldOptions = { xPos: xPos, yPos: yPos, width: width, height:height };
     const coordinates = [[xPos, yPos],
       [xPos, yPos + height],
       [xPos + width, yPos],
       [xPos + width, yPos + height]];
     if (this.display.tileMovesOffFloor(coordinates)) {
-      this.resetLevel();
-    } else {
-      this.display;
+      this.resetBlock();
     }
+    this.display.render(this.currentLevel, this.block);
+    this.display.drawFail(oldOptions);
   }
 
-  resetLevel() {
+  resetBlock() {
     const { x, y } = this.currentLevel[0];
     this.constructBlock(x, y);
-    this.display;
   }
 }
 
