@@ -1,7 +1,7 @@
-const Tutorial = require('./tutorial');
-const LevelOne = require('./level_one');
-const LevelTwo = require('./level_two');
-const LevelThree = require('./level_three');
+const Tutorial = require('./levels/tutorial');
+const LevelOne = require('./levels/level_one');
+const LevelTwo = require('./levels/level_two');
+const LevelThree = require('./levels/level_three');
 
 const levels = (length) => {
   return(
