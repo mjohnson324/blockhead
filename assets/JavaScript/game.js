@@ -14,9 +14,9 @@ class Game {
     this.currentLevel = this.levels[this.levelNumber];
     this.goal = this.currentLevel[1];
     document.addEventListener("keydown", this.moveBlock.bind(this), true);
-    const { x, y } = this.currentLevel[0];
-    this.constructBlock(x, y);
-    this.display.render(this.currentLevel, this.block);
+    const { xPos, yPos } = this.currentLevel[0];
+    this.constructBlock(xPos, yPos);
+    this.display.render(this.currentLevel, this.block, this.levelNumber);
   }
 
   constructBlock(x, y) {
@@ -31,31 +31,35 @@ class Game {
     switch (e.keyCode) {
       case 40:
         e.preventDefault();
-        return this.moveBlock("down");
+        return this.moveBlock("down", e);
       case 38:
         e.preventDefault();
-        return this.moveBlock("up");
+        return this.moveBlock("up", e);
       case 37:
         e.preventDefault();
-        return this.moveBlock("left");
+        return this.moveBlock("left", e);
       case 39:
         e.preventDefault();
-        this.moveBlock("right");
+        this.moveBlock("right", e);
     }
   }
 
-  moveBlock(direction) {
+  moveBlock(direction, e) {
     switch(direction) {
       case "down":
+        e.preventDefault();
         this.block.transform(0, this.length * -1);
         break;
       case "up":
+        e.preventDefault();
         this.block.transform(0, this.length);
         break;
       case "left":
+        e.preventDefault();
         this.block.transform(this.length * -1, 0);
         break;
       case "right":
+        e.preventDefault();
         this.block.transform(this.length, 0);
     }
     this.checkBlock();
@@ -86,7 +90,7 @@ class Game {
     this.goal = this.currentLevel[1];
     const { x, y } = this.currentLevel[0];
     this.constructBlock(x, y);
-    this.display.render(this.currentLevel, this.block);
+    this.display.render(this.currentLevel, this.block, this.levelNumber);
   }
 
   endGame() {
@@ -104,7 +108,7 @@ class Game {
     if (this.display.tileMovesOffFloor(coordinates)) {
       this.resetBlock();
     }
-    this.display.render(this.currentLevel, this.block);
+    this.display.render(this.currentLevel, this.block, this.levelNumber);
     this.display.drawFail(oldOptions);
   }
 
