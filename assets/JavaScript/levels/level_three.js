@@ -1,4 +1,4 @@
-const levelThree = (length, startX, startY) => {
+const levelThree = (length, startX = 270, startY = 210) => {
   return(
     [
       { x: startX, y: startY, type: "start" },

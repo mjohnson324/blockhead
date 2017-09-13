@@ -1,6 +1,7 @@
 class Tile {
   constructor(options) {
-    this.position = options.position;
+    this.xPos = options.x;
+    this.yPos = options.y;
     this.type = options.type;
     this.color = this.typeCheck();
   }

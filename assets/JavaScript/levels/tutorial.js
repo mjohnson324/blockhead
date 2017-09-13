@@ -1,4 +1,4 @@
-const tutorial = (length, startX, startY) => {
+const tutorial = (length, startX = 360, startY = 180) => {
   return(
     [
     { x: startX, y: startY, type: "start" },
