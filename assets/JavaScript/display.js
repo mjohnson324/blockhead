@@ -45,7 +45,7 @@ class Display {
   }
 
   tileMovesOffFloor(coordinates) {
-    for(let i = 0; i < coordinates,length; i++) {
+    for(let i = 0; i < coordinates.length; i++) {
       let corner = coordinates[i];
       let point = this.ctx.getImageData(corner[0], corner[1], 1, 1);
       let colorData = point.data.slice(0, 3);
@@ -66,6 +66,7 @@ class Display {
   drawFinish() {
     this.ctx.clearRect(0, 0, 900, 500);
     this.ctx.font = '20px sans-serif';
+    this.ctx.fillStyle = "white";
     this.ctx.fillText(
       "Thanks for playing! More levels coming soon! (probably)",
       50,
