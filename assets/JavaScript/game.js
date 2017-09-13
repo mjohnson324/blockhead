@@ -13,7 +13,7 @@ class Game {
   start() {
     this.currentLevel = this.levels[this.levelNumber];
     this.goal = this.currentLevel[1];
-    document.addEventListener("keydown", this.moveBlock.bind(this), true);
+    document.addEventListener("keydown", this.getMove.bind(this), true);
     const { xPos, yPos } = this.currentLevel[0];
     this.constructBlock(xPos, yPos);
     this.display.render(this.currentLevel, this.block, this.levelNumber);
@@ -31,41 +31,41 @@ class Game {
     switch (e.keyCode) {
       case 40:
         e.preventDefault();
-        return this.moveBlock("down", e);
+        this.moveBlock("down");
+        break;
       case 38:
         e.preventDefault();
-        return this.moveBlock("up", e);
+        this.moveBlock("up");
+        break;
       case 37:
         e.preventDefault();
-        return this.moveBlock("left", e);
+        this.moveBlock("left");
+        break;
       case 39:
         e.preventDefault();
-        this.moveBlock("right", e);
+        this.moveBlock("right");
     }
   }
 
-  moveBlock(direction, e) {
+  moveBlock(direction) {
     switch(direction) {
       case "down":
-        e.preventDefault();
-        this.block.transform(0, this.length * -1);
-        break;
-      case "up":
-        e.preventDefault();
         this.block.transform(0, this.length);
         break;
+      case "up":
+        this.block.transform(0, this.length * -1);
+        break;
       case "left":
-        e.preventDefault();
         this.block.transform(this.length * -1, 0);
         break;
       case "right":
-        e.preventDefault();
         this.block.transform(this.length, 0);
     }
     this.checkBlock();
   }
 
   checkBlock() {
+    debugger
     if (this.block.width === this.block.height) {
       this.checkGoal();
     }
@@ -99,12 +99,14 @@ class Game {
   }
 
   checkBounds() {
+    debugger
     const { xPos, yPos, width, height } = this.block;
     const oldOptions = { xPos: xPos, yPos: yPos, width: width, height:height };
     const coordinates = [[xPos, yPos],
       [xPos, yPos + height],
       [xPos + width, yPos],
       [xPos + width, yPos + height]];
+    debugger
     if (this.display.tileMovesOffFloor(coordinates)) {
       this.resetBlock();
     }
@@ -113,6 +115,7 @@ class Game {
   }
 
   resetBlock() {
+    debugger
     const { x, y } = this.currentLevel[0];
     this.constructBlock(x, y);
   }
