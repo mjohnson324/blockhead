@@ -68,16 +68,13 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const Game = __webpack_require__(1);
-const Display = __webpack_require__(10);
 
 document.addEventListener("DOMContentLoaded", () => {
   const blockheadBoard = document.getElementById("blockhead");
   const ctx = blockheadBoard.getContext("2d");
   blockheadBoard.width = 900;
   blockheadBoard.height = 500;
-
-  const game = new Game(ctx, 30);
-  new Display(game, ctx).start();
+  new Game(ctx, 30).start();
 });
 
 
@@ -85,120 +82,81 @@ document.addEventListener("DOMContentLoaded", () => {
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Floor = __webpack_require__(2);
-const Levels = __webpack_require__(4);
+const LevelGenerator = __webpack_require__(11);
 const Block = __webpack_require__(9);
+const Display = __webpack_require__(10);
 
 class Game {
-  constructor(ctx, tileSize) {
-    this.backgroundRGB = [25, 25, 25];
-    this.backgroundColor = this.stringifyRGB(this.backgroundRGB);
-
-    this.levels = Levels(tileSize);
+  constructor(ctx, length) {
+    this.display = new Display(ctx, length);
+    this.length = length;
+    this.levels = LevelGenerator(length);
     this.levelNumber = 0;
-    this.currentLevel = this.levels[0];
-    this.ctx = ctx;
-    const blockStart = Object.assign({}, this.currentLevel[0]);
-    this.blockGoal = Object.assign({}, this.currentLevel[1]);
-    this.block = new Block(ctx, blockStart, tileSize);
-    this.floor = new Floor(this.currentLevel, ctx, tileSize);
-    this.tileSize = tileSize;
-    this.getMove = this.getMove.bind(this);
   }
 
-  stringifyRGB(colorArray) {
-    return(
-      'rgb('
-      .concat(colorArray[0])
-      .concat(', ')
-      .concat(colorArray[1])
-      .concat(', ')
-      .concat(colorArray[2])
-      .concat(')')
-    );
+  start() {
+    this.currentLevel = this.levels[this.levelNumber];
+    this.goal = this.currentLevel[1];
+    document.addEventListener("keydown", this.moveBlock.bind(this), true);
+    const { x, y } = this.currentLevel[0];
+    this.constructBlock(x, y);
+    this.display;
   }
 
-  handleBoard() {
-    document.addEventListener("keydown", this.getMove, true);
+  constructBlock(x, y) {
+    const blockOptions = { xPos: x,
+                           yPos: y,
+                           width: this.length,
+                           height: this.length };
+    this.block = new Block(blockOptions);
   }
 
   getMove(e) {
-    const step = this.tileSize;
-    e.preventDefault();
     switch (e.keyCode) {
       case 40:
-        this.move(0, step);
-        break;
+        e.preventDefault();
+        return this.moveBlock("down");
       case 38:
-        this.move(0, -1 * step);
-        break;
+        e.preventDefault();
+        return this.moveBlock("up");
       case 37:
-        this.move(-1 * step, 0);
-        break;
+        e.preventDefault();
+        return this.moveBlock("left");
       case 39:
-        this.move(step, 0);
-        break;
+        e.preventDefault();
+        this.moveBlock("right");
     }
   }
 
-  move(x, y) {
-    this.ctx.fillStyle = this.backgroundColor;
-    this.ctx.fillRect(0, 0, 900, 500);
-    this.floor.layTiles();
-    this.block.move(x, y);
+  moveBlock(direction) {
+    switch(direction) {
+      case "down":
+        this.block.transform(0, this.length * -1);
+        break;
+      case "up":
+        this.block.transform(0, this.length);
+        break;
+      case "left":
+        this.block.transform(this.length * -1, 0);
+        break;
+      case "right":
+        this.block.transform(this.length, 0);
+    }
     this.checkBlock();
-    this.block.draw();
   }
 
   checkBlock() {
-    const blockSize = this.block.dimensions;
-    if (blockSize.width === blockSize.height) {
+    if (this.block.width === this.block.height) {
       this.checkGoal();
     }
     this.checkBounds();
   }
 
-  checkBounds() {
-    const { x, y } = this.block.position;
-    const { width, height } = this.block.dimensions;
-    const { x2, y2 } = { x2: x + width, y2: y + height };
-
-    const pointOne = this.ctx.getImageData(x, y, 1, 1);
-    const colorOneData = pointOne.data.slice(0, 3);
-    const colorOne = this.stringifyRGB(colorOneData);
-
-    const pointTwo = this.ctx.getImageData(x, y2, 1, 1);
-    const colorTwoData = pointTwo.data.slice(0, 3);
-    const colorTwo = this.stringifyRGB(colorTwoData);
-
-    const pointThree = this.ctx.getImageData(x2, y, 1, 1);
-    const colorThreeData = pointThree.data.slice(0, 3);
-    const colorThree = this.stringifyRGB(colorThreeData);
-
-    const pointFour = this.ctx.getImageData(x2, y2, 1, 1);
-    const colorFourData = pointFour.data.slice(0, 3);
-    const colorFour = this.stringifyRGB(colorFourData);
-
-    const backColor = this.backgroundColor;
-
-    if (colorOne === backColor || colorTwo === backColor || colorThree === backColor || colorFour === backColor) {
-      this.resetLevel();
-    }
-  }
-
-  resetLevel() {
-    const { position, dimensions } = this.block;
-    const blockStart = Object.assign({}, this.currentLevel[0]);
-    this.block = new Block(this.ctx, blockStart, this.tileSize);
-    this.draw();
-    this.block.drawFail(position, dimensions);
-  }
-
   checkGoal() {
-    const xGoal = this.blockGoal.x;
-    const yGoal = this.blockGoal.y;
-    const { x, y } = this.block.position;
-    if (x === xGoal && y === yGoal) {
+    const xGoal = this.goal.x;
+    const yGoal = this.goal.y;
+    const { xPos, yPos } = this.block;
+    if (xPos === xGoal && yPos === yGoal) {
       this.nextLevel();
     }
   }
@@ -207,24 +165,36 @@ class Game {
     this.levelNumber += 1;
     this.currentLevel = this.levels[this.levelNumber];
     if (this.currentLevel === undefined) {
-      document.removeEventListener("keydown", this.getMove, true);
-      this.ctx.clearRect(0, 0, 900, 500);
-      this.ctx.font = '20px sans-serif';
-      this.ctx.fillText("Thanks for playing! More levels coming soon! (probably)", 50, 300);
-      return null;
+      return this.endGame();
     }
-    const blockStart = Object.assign({}, this.currentLevel[0]);
-    this.blockGoal = Object.assign({}, this.currentLevel[1]);
-    this.block = new Block(this.ctx, blockStart, this.tileSize);
-    this.floor = new Floor(this.currentLevel, this.ctx, this.tileSize);
-    this.draw();
+    this.goal = this.currentLevel[1];
+    const { x, y } = this.currentLevel[0];
+    this.constructBlock(x, y);
+    this.display;
   }
 
-  draw() {
-    this.ctx.fillStyle = this.backgroundColor;
-    this.ctx.fillRect(0, 0, 900, 500);
-    this.floor.layTiles();
-    this.block.draw();
+  endGame() {
+    document.removeEventListener("keydown", this.getMove, true);
+    this.display;
+  }
+
+  checkBounds() {
+    const { xPos, yPos, width, height } = this.block;
+    const coordinates = [[xPos, yPos],
+      [xPos, yPos + height],
+      [xPos + width, yPos],
+      [xPos + width, yPos + height]];
+    if (this.display.tileMovesOffFloor(coordinates)) {
+      this.resetLevel();
+    } else {
+      this.display;
+    }
+  }
+
+  resetLevel() {
+    const { x, y } = this.currentLevel[0];
+    this.constructBlock(x, y);
+    this.display;
   }
 }
 
@@ -232,64 +202,24 @@ module.exports = Game;
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Tile = __webpack_require__(3);
-
-class Floor {
-  constructor(positions, ctx, tileSize) {
-    this.positions = positions;
-    this.ctx = ctx;
-    this.tileSize = tileSize;
-  }
-
-  layTiles() {
-    const ctx = this.ctx;
-    this.positions.forEach(pos => {
-      const options = {
-        size: this.tileSize,
-        position: { x: pos.x, y: pos.y },
-        isGoal: pos.isGoal,
-        isStart: pos.isStart
-      };
-      const tile = new Tile(ctx, options);
-      tile.draw();
-    });
-  }
-}
-
-module.exports = Floor;
-
-
-/***/ }),
+/* 2 */,
 /* 3 */
 /***/ (function(module, exports) {
 
 class Tile {
-  constructor(ctx, options) {
-    this.ctx = ctx;
-    this.position = options.position;
-    this.isGoal = options.isGoal;
-    this.isStart = options.isStart;
-    this.size = options.size;
-  }
-
-  draw() {
-    const { x, y } = this.position;
-    const ctx = this.ctx;
-    const size = this.size;
-    ctx.fillStyle = this.statusCheck();
-    ctx.fillRect(x, y, size, size);
-    ctx.strokeRect(x, y, size, size);
+  constructor(options) {
+    this.xPos = options.x;
+    this.yPos = options.y;
+    this.type = options.type;
+    this.color = this.typeCheck();
   }
 
   statusCheck() {
-    if (this.isStart) {
+    if (this.type === "start") {
       return 'rgb(0, 255, 255)';
-    } else if (this.isGoal) {
+    } else if (this.type === "goal") {
       return 'rgb(0, 255, 0)';
-    } else {
+    } else if (this.type === "none") {
       return 'rgb(192, 192, 192)';
     }
   }
@@ -299,67 +229,45 @@ module.exports = Tile;
 
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Tutorial = __webpack_require__(5);
-const LevelOne = __webpack_require__(6);
-const LevelTwo = __webpack_require__(7);
-const LevelThree = __webpack_require__(8);
-
-const levels = (tileSize) => {
-  return(
-    [
-      Tutorial(tileSize, 360, 180),
-      LevelOne(tileSize, 330, 240),
-      LevelTwo(tileSize, 270, 210),
-      LevelThree(tileSize, 210, 280)
-    ]);
-};
-
-module.exports = levels;
-
-
-/***/ }),
+/* 4 */,
 /* 5 */
 /***/ (function(module, exports) {
 
-const tutorial = (size, startX, startY) => {
+const tutorial = (length, startX = 360, startY = 180) => {
   return(
     [
-    { x: startX, y: startY, isStart: true },
-    { x: startX + size * 2, y: startY + size * 2, isGoal: true },
-    
-    { x: startX, y: startY + size },
-    { x: startX, y: startY + size * 2 },
-    { x: startX, y: startY + size * 3 },
-    { x: startX, y: startY + size * 4 },
+    { x: startX, y: startY, type: "start" },
+    { x: startX + length * 2, y: startY + length * 2, type: "goal" },
 
-    { x: startX + size, y: startY },
-    { x: startX + size, y: startY + size },
-    { x: startX + size, y: startY + size * 2 },
-    { x: startX + size, y: startY + size * 3 },
-    { x: startX + size, y: startY + size * 4 },
+    { x: startX, y: startY + length, type: "none" },
+    { x: startX, y: startY + length * 2, type: "none" },
+    { x: startX, y: startY + length * 3, type: "none" },
+    { x: startX, y: startY + length * 4, type: "none" },
 
-    { x: startX + size * 2, y: startY },
-    { x: startX + size * 2, y: startY + size },
-    { x: startX + size * 2, y: startY + size * 3 },
-    { x: startX + size * 2, y: startY + size * 4 },
+    { x: startX + length, y: startY, type: "none" },
+    { x: startX + length, y: startY + length, type: "none" },
+    { x: startX + length, y: startY + length * 2, type: "none" },
+    { x: startX + length, y: startY + length * 3, type: "none" },
+    { x: startX + length, y: startY + length * 4, type: "none" },
 
-    { x: startX + size * 3, y: startY },
-    { x: startX + size * 3, y: startY + size },
-    { x: startX + size * 3, y: startY + size * 2 },
-    { x: startX + size * 3, y: startY + size * 3 },
-    { x: startX + size * 3, y: startY + size * 4 },
+    { x: startX + length * 2, y: startY, type: "none" },
+    { x: startX + length * 2, y: startY + length, type: "none" },
+    { x: startX + length * 2, y: startY + length * 3, type: "none" },
+    { x: startX + length * 2, y: startY + length * 4, type: "none" },
 
-    { x: startX + size * 4, y: startY },
-    { x: startX + size * 4, y: startY + size },
-    { x: startX + size * 4, y: startY + size * 2 },
-    { x: startX + size * 4, y: startY + size * 3 },
-    { x: startX + size * 4, y: startY + size * 4 },
+    { x: startX + length * 3, y: startY, type: "none" },
+    { x: startX + length * 3, y: startY + length, type: "none" },
+    { x: startX + length * 3, y: startY + length * 2, type: "none" },
+    { x: startX + length * 3, y: startY + length * 3, type: "none" },
+    { x: startX + length * 3, y: startY + length * 4, type: "none" },
+
+    { x: startX + length * 4, y: startY, type: "none" },
+    { x: startX + length * 4, y: startY + length, type: "none" },
+    { x: startX + length * 4, y: startY + length * 2, type: "none" },
+    { x: startX + length * 4, y: startY + length * 3, type: "none" },
+    { x: startX + length * 4, y: startY + length * 4, type: "none" },
   ]);
 };
-
 
 module.exports = tutorial;
 
@@ -368,54 +276,54 @@ module.exports = tutorial;
 /* 6 */
 /***/ (function(module, exports) {
 
-const levelOne = (size, startX, startY) => {
+const levelOne = (length, startX = 330, startY = 240) => {
   return(
     [
-      { x: startX, y: startY, isStart: true },
-      { x: startX + size * 6, y: startY + size * 3, isGoal: true },
+      { x: startX, y: startY, type: "start" },
+      { x: startX + length * 6, y: startY + length * 3, type: "goal" },
 
-      { x: startX - size, y: startY - size },
-      { x: startX - size, y: startY },
-      { x: startX - size, y: startY + size },
+      { x: startX - length, y: startY - length, type: "none" },
+      { x: startX - length, y: startY, type: "none" },
+      { x: startX - length, y: startY + length, type: "none" },
 
-      { x: startX, y: startY - size },
-      { x: startX, y: startY + size },
-      { x: startX, y: startY + size * 2 },
+      { x: startX, y: startY - length, type: "none" },
+      { x: startX, y: startY + length, type: "none" },
+      { x: startX, y: startY + length * 2, type: "none" },
 
-      { x: startX + size, y: startY - size },
-      { x: startX + size, y: startY },
-      { x: startX + size, y: startY + size },
-      { x: startX + size, y: startY + size * 2 },
+      { x: startX + length, y: startY - length, type: "none" },
+      { x: startX + length, y: startY, type: "none" },
+      { x: startX + length, y: startY + length, type: "none" },
+      { x: startX + length, y: startY + length * 2, type: "none" },
 
-      { x: startX + size * 2, y: startY },
-      { x: startX + size * 2, y: startY + size },
-      { x: startX + size * 2, y: startY + size * 2 },
+      { x: startX + length * 2, y: startY, type: "none" },
+      { x: startX + length * 2, y: startY + length, type: "none" },
+      { x: startX + length * 2, y: startY + length * 2, type: "none" },
 
-      { x: startX + size * 3, y: startY },
-      { x: startX + size * 3, y: startY + size },
-      { x: startX + size * 3, y: startY + size * 2 },
+      { x: startX + length * 3, y: startY, type: "none" },
+      { x: startX + length * 3, y: startY + length, type: "none" },
+      { x: startX + length * 3, y: startY + length * 2, type: "none" },
 
-      { x: startX + size * 4, y: startY },
-      { x: startX + size * 4, y: startY + size },
-      { x: startX + size * 4, y: startY + size * 2 },
-      { x: startX + size * 4, y: startY + size * 3 },
+      { x: startX + length * 4, y: startY, type: "none" },
+      { x: startX + length * 4, y: startY + length, type: "none" },
+      { x: startX + length * 4, y: startY + length * 2, type: "none" },
+      { x: startX + length * 4, y: startY + length * 3, type: "none" },
 
-      { x: startX + size * 5, y: startY + size },
-      { x: startX + size * 5, y: startY + size * 2 },
-      { x: startX + size * 5, y: startY + size * 3 },
-      { x: startX + size * 5, y: startY + size * 4 },
+      { x: startX + length * 5, y: startY + length, type: "none" },
+      { x: startX + length * 5, y: startY + length * 2, type: "none" },
+      { x: startX + length * 5, y: startY + length * 3, type: "none" },
+      { x: startX + length * 5, y: startY + length * 4, type: "none" },
 
-      { x: startX + size * 6, y: startY + size },
-      { x: startX + size * 6, y: startY + size * 2 },
-      { x: startX + size * 6, y: startY + size * 4 },
+      { x: startX + length * 6, y: startY + length, type: "none" },
+      { x: startX + length * 6, y: startY + length * 2, type: "none" },
+      { x: startX + length * 6, y: startY + length * 4, type: "none" },
 
-      { x: startX + size * 7, y: startY + size },
-      { x: startX + size * 7, y: startY + size * 2 },
-      { x: startX + size * 7, y: startY + size * 3 },
-      { x: startX + size * 7, y: startY + size * 4 },
+      { x: startX + length * 7, y: startY + length, type: "none" },
+      { x: startX + length * 7, y: startY + length * 2, type: "none" },
+      { x: startX + length * 7, y: startY + length * 3, type: "none" },
+      { x: startX + length * 7, y: startY + length * 4, type: "none" },
 
-      { x: startX + size * 8, y: startY + size * 2 },
-      { x: startX + size * 8, y: startY + size * 3 },
+      { x: startX + length * 8, y: startY + length * 2, type: "none" },
+      { x: startX + length * 8, y: startY + length * 3, type: "none" },
     ]
   );
 };
@@ -427,72 +335,72 @@ module.exports = levelOne;
 /* 7 */
 /***/ (function(module, exports) {
 
-const levelTwo = (size, startX, startY) => {
+const levelTwo = (length, startX = 210, startY = 280) => {
   return(
     [
-      { x: startX, y: startY, isStart: true },
-      { x: startX + size * 12, y: startY, isGoal: true },
+      { x: startX, y: startY, type: "start" },
+      { x: startX + length * 12, y: startY, type: "goal" },
 
-      { x: startX - size, y: startY + size * 2 },
-      { x: startX - size, y: startY + size },
-      { x: startX - size, y: startY },
-      { x: startX - size, y: startY - size },
+      { x: startX - length, y: startY + length * 2, type: "none" },
+      { x: startX - length, y: startY + length, type: "none" },
+      { x: startX - length, y: startY, type: "none" },
+      { x: startX - length, y: startY - length, type: "none" },
 
-      { x: startX, y: startY + size * 2 },
-      { x: startX, y: startY + size },
-      { x: startX, y: startY - size },
+      { x: startX, y: startY + length * 2, type: "none" },
+      { x: startX, y: startY + length, type: "none" },
+      { x: startX, y: startY - length, type: "none" },
 
-      { x: startX + size, y: startY + size * 2 },
-      { x: startX + size, y: startY + size },
-      { x: startX + size, y: startY },
-      { x: startX + size, y: startY - size },
+      { x: startX + length, y: startY + length * 2, type: "none" },
+      { x: startX + length, y: startY + length, type: "none" },
+      { x: startX + length, y: startY, type: "none" },
+      { x: startX + length, y: startY - length, type: "none" },
 
-      { x: startX + size * 2, y: startY + size * 2 },
-      { x: startX + size * 2, y: startY + size },
-      { x: startX + size * 2, y: startY },
-      { x: startX + size * 2, y: startY - size },
+      { x: startX + length * 2, y: startY + length * 2, type: "none" },
+      { x: startX + length * 2, y: startY + length, type: "none" },
+      { x: startX + length * 2, y: startY, type: "none" },
+      { x: startX + length * 2, y: startY - length, type: "none" },
 
-      { x: startX + size * 3, y: startY + size },
+      { x: startX + length * 3, y: startY + length, type: "none" },
 
-      { x: startX + size * 4, y: startY + size },
+      { x: startX + length * 4, y: startY + length, type: "none" },
 
-      { x: startX + size * 5, y: startY + size * 3 },
-      { x: startX + size * 5, y: startY + size * 2 },
-      { x: startX + size * 5, y: startY + size },
+      { x: startX + length * 5, y: startY + length * 3, type: "none" },
+      { x: startX + length * 5, y: startY + length * 2, type: "none" },
+      { x: startX + length * 5, y: startY + length, type: "none" },
 
-      { x: startX + size * 6, y: startY + size * 3 },
-      { x: startX + size * 6, y: startY + size * 2 },
-      { x: startX + size * 6, y: startY + size },
+      { x: startX + length * 6, y: startY + length * 3, type: "none" },
+      { x: startX + length * 6, y: startY + length * 2, type: "none" },
+      { x: startX + length * 6, y: startY + length, type: "none" },
 
-      { x: startX + size * 7, y: startY + size * 3 },
-      { x: startX + size * 7, y: startY + size * 2 },
-      { x: startX + size * 7, y: startY + size },
+      { x: startX + length * 7, y: startY + length * 3, type: "none" },
+      { x: startX + length * 7, y: startY + length * 2, type: "none" },
+      { x: startX + length * 7, y: startY + length, type: "none" },
 
-      { x: startX + size * 8, y: startY + size * 3 },
+      { x: startX + length * 8, y: startY + length * 3, type: "none" },
 
-      { x: startX + size * 9, y: startY + size * 3 },
+      { x: startX + length * 9, y: startY + length * 3, type: "none" },
 
-      { x: startX + size * 10, y: startY + size * 3 },
-      { x: startX + size * 10, y: startY + size * 2 },
-      { x: startX + size * 10, y: startY + size },
-      { x: startX + size * 10, y: startY },
-      { x: startX + size * 10, y: startY - size },
+      { x: startX + length * 10, y: startY + length * 3, type: "none" },
+      { x: startX + length * 10, y: startY + length * 2, type: "none" },
+      { x: startX + length * 10, y: startY + length, type: "none" },
+      { x: startX + length * 10, y: startY, type: "none" },
+      { x: startX + length * 10, y: startY - length, type: "none" },
 
-      { x: startX + size * 11, y: startY + size * 3 },
-      { x: startX + size * 11, y: startY + size * 2 },
-      { x: startX + size * 11, y: startY + size },
-      { x: startX + size * 11, y: startY },
-      { x: startX + size * 11, y: startY - size },
-      { x: startX + size * 11, y: startY - size * 2 },
+      { x: startX + length * 11, y: startY + length * 3, type: "none" },
+      { x: startX + length * 11, y: startY + length * 2, type: "none" },
+      { x: startX + length * 11, y: startY + length, type: "none" },
+      { x: startX + length * 11, y: startY, type: "none" },
+      { x: startX + length * 11, y: startY - length, type: "none" },
+      { x: startX + length * 11, y: startY - length * 2, type: "none" },
 
-      { x: startX + size * 12, y: startY + size },
-      { x: startX + size * 12, y: startY - size },
-      { x: startX + size * 12, y: startY - size * 2 },
+      { x: startX + length * 12, y: startY + length, type: "none" },
+      { x: startX + length * 12, y: startY - length, type: "none" },
+      { x: startX + length * 12, y: startY - length * 2, type: "none" },
 
-      { x: startX + size * 13, y: startY + size },
-      { x: startX + size * 13, y: startY },
-      { x: startX + size * 13, y: startY - size },
-      { x: startX + size * 13, y: startY - size * 2 },
+      { x: startX + length * 13, y: startY + length, type: "none" },
+      { x: startX + length * 13, y: startY, type: "none" },
+      { x: startX + length * 13, y: startY - length, type: "none" },
+      { x: startX + length * 13, y: startY - length * 2, type: "none" },
     ]
   );
 };
@@ -504,72 +412,72 @@ module.exports = levelTwo;
 /* 8 */
 /***/ (function(module, exports) {
 
-const levelThree = (size, startX, startY) => {
+const levelThree = (length, startX = 270, startY = 210) => {
   return(
     [
-      { x: startX, y: startY, isStart: true },
-      { x: startX + size * 13, y: startY - size, isGoal: true },
+      { x: startX, y: startY, type: "start" },
+      { x: startX + length * 13, y: startY - length, type: "goal" },
 
-      { x: startX + size, y: startY },
+      { x: startX + length, y: startY, type: "none" },
 
-      { x: startX + size * 2, y: startY },
+      { x: startX + length * 2, y: startY, type: "none" },
 
-      { x: startX + size * 3, y: startY },
+      { x: startX + length * 3, y: startY, type: "none" },
 
-      { x: startX + size * 4, y: startY },
-      { x: startX + size * 4, y: startY - size },
-      { x: startX + size * 4, y: startY - size * 2 },
+      { x: startX + length * 4, y: startY, type: "none" },
+      { x: startX + length * 4, y: startY - length, type: "none" },
+      { x: startX + length * 4, y: startY - length * 2, type: "none" },
 
-      { x: startX + size * 5, y: startY + size * 3 },
-      { x: startX + size * 5, y: startY + size * 2 },
-      { x: startX + size * 5, y: startY + size },
-      { x: startX + size * 5, y: startY },
-      { x: startX + size * 5, y: startY - size },
-      { x: startX + size * 5, y: startY - size * 2 },
+      { x: startX + length * 5, y: startY + length * 3, type: "none" },
+      { x: startX + length * 5, y: startY + length * 2, type: "none" },
+      { x: startX + length * 5, y: startY + length, type: "none" },
+      { x: startX + length * 5, y: startY, type: "none" },
+      { x: startX + length * 5, y: startY - length, type: "none" },
+      { x: startX + length * 5, y: startY - length * 2, type: "none" },
 
-      { x: startX + size * 6, y: startY + size * 3 },
-      { x: startX + size * 6, y: startY - size },
-      { x: startX + size * 6, y: startY - size * 2 },
-      { x: startX + size * 6, y: startY - size * 3 },
-      { x: startX + size * 6, y: startY - size * 4 },
-      { x: startX + size * 6, y: startY - size * 5 },
+      { x: startX + length * 6, y: startY + length * 3, type: "none" },
+      { x: startX + length * 6, y: startY - length, type: "none" },
+      { x: startX + length * 6, y: startY - length * 2, type: "none" },
+      { x: startX + length * 6, y: startY - length * 3, type: "none" },
+      { x: startX + length * 6, y: startY - length * 4, type: "none" },
+      { x: startX + length * 6, y: startY - length * 5, type: "none" },
 
-      { x: startX + size * 7, y: startY + size * 3 },
-      { x: startX + size * 7, y: startY - size * 4 },
-      { x: startX + size * 7, y: startY - size * 5 },
-      { x: startX + size * 7, y: startY - size * 6 },
+      { x: startX + length * 7, y: startY + length * 3, type: "none" },
+      { x: startX + length * 7, y: startY - length * 4, type: "none" },
+      { x: startX + length * 7, y: startY - length * 5, type: "none" },
+      { x: startX + length * 7, y: startY - length * 6, type: "none" },
 
-      { x: startX + size * 8, y: startY + size * 3 },
-      { x: startX + size * 8, y: startY + size * 2 },
-      { x: startX + size * 8, y: startY + size },
-      { x: startX + size * 8, y: startY - size * 4 },
-      { x: startX + size * 8, y: startY - size * 5 },
-      { x: startX + size * 8, y: startY - size * 6 },
+      { x: startX + length * 8, y: startY + length * 3, type: "none" },
+      { x: startX + length * 8, y: startY + length * 2, type: "none" },
+      { x: startX + length * 8, y: startY + length, type: "none" },
+      { x: startX + length * 8, y: startY - length * 4, type: "none" },
+      { x: startX + length * 8, y: startY - length * 5, type: "none" },
+      { x: startX + length * 8, y: startY - length * 6, type: "none" },
 
-      { x: startX + size * 9, y: startY + size * 3 },
-      { x: startX + size * 9, y: startY + size * 2 },
-      { x: startX + size * 9, y: startY + size },
-      { x: startX + size * 9, y: startY - size * 3 },
-      { x: startX + size * 9, y: startY - size * 4 },
-      { x: startX + size * 9, y: startY - size * 5 },
-      { x: startX + size * 9, y: startY - size * 6 },
+      { x: startX + length * 9, y: startY + length * 3, type: "none" },
+      { x: startX + length * 9, y: startY + length * 2, type: "none" },
+      { x: startX + length * 9, y: startY + length, type: "none" },
+      { x: startX + length * 9, y: startY - length * 3, type: "none" },
+      { x: startX + length * 9, y: startY - length * 4, type: "none" },
+      { x: startX + length * 9, y: startY - length * 5, type: "none" },
+      { x: startX + length * 9, y: startY - length * 6, type: "none" },
 
-      { x: startX + size * 10, y: startY + size * 3 },
-      { x: startX + size * 10, y: startY + size * 2 },
-      { x: startX + size * 10, y: startY + size },
-      { x: startX + size * 10, y: startY - size * 3 },
-      { x: startX + size * 10, y: startY - size * 4 },
-      { x: startX + size * 10, y: startY - size * 5 },
+      { x: startX + length * 10, y: startY + length * 3, type: "none" },
+      { x: startX + length * 10, y: startY + length * 2, type: "none" },
+      { x: startX + length * 10, y: startY + length, type: "none" },
+      { x: startX + length * 10, y: startY - length * 3, type: "none" },
+      { x: startX + length * 10, y: startY - length * 4, type: "none" },
+      { x: startX + length * 10, y: startY - length * 5, type: "none" },
 
-      { x: startX + size * 11, y: startY + size },
-      { x: startX + size * 11, y: startY },
-      { x: startX + size * 11, y: startY - size },
+      { x: startX + length * 11, y: startY + length, type: "none" },
+      { x: startX + length * 11, y: startY, type: "none" },
+      { x: startX + length * 11, y: startY - length, type: "none" },
 
-      { x: startX + size * 12, y: startY + size },
-      { x: startX + size * 12, y: startY },
-      { x: startX + size * 12, y: startY - size },
+      { x: startX + length * 12, y: startY + length, type: "none" },
+      { x: startX + length * 12, y: startY, type: "none" },
+      { x: startX + length * 12, y: startY - length, type: "none" },
 
-      { x: startX + size * 13, y: startY },
+      { x: startX + length * 13, y: startY, type: "none" },
     ]
   );
 };
@@ -582,70 +490,78 @@ module.exports = levelThree;
 /***/ (function(module, exports) {
 
 class Block {
-  constructor(ctx, startPos, tileSize) {
-    this.position = startPos;
-    this.ctx = ctx;
-    this.tileSize = tileSize;
-    this.dimensions = { width: tileSize, height: tileSize };
+  constructor(options) {
+    this.xPos = options.xPos;
+    this.yPos = options.yPos;
+    this.width = options.width;
+    this.height = options.height;
   }
 
-  move(i, j) {
-    const { dx, dy } = this.checkStanding(i, j);
-    this.position.x += dx;
-    this.position.y += dy;
+  position(dx, dy) {
+    this.xPos += dx;
+    this.yPos += dy;
   }
 
-  checkStanding(i, j) {
-    if (this.dimensions.width === this.dimensions.height) {
-      if (i > 0) {
-        this.dimensions.width = this.tileSize * 2;
-        return { dx: i, dy: j };
-      } else if ( i < 0) {
-        this.dimensions.width = this.tileSize * 2;
-        return { dx: 2 * i, dy: j };
-      } else if (j > 0) {
-        this.dimensions.height = this.tileSize * 2;
-        return { dx: i, dy: j };
-      } else {
-        this.dimensions.height = this.tileSize * 2;
-        return { dx: i, dy: 2 * j };
-      }
-    } else if (this.dimensions.width > this.dimensions.height) {
-      if (i > 0) {
-        this.dimensions.width = this.tileSize;
-        return { dx: 2 * i, dy: j };
-      } else if ( i < 0) {
-        this.dimensions.width = this.tileSize;
-        return { dx: i, dy: j };
-      } else {
-        return { dx: i, dy: j };
-      }
+  transform(x, y) {
+    if (this.width === this.height) {
+      this.expand(x, y);
     } else {
-      if (j > 0) {
-        this.dimensions.height = this.tileSize;
-        return { dx: i, dy: 2 * j };
-      } else if (j < 0) {
-        this.dimensions.height = this.tileSize;
-        return { dx: i, dy: j };
-      } else {
-        return { dx: i, dy: j };
-      }
+      this.checkDimensionsAndMovement(x, y);
     }
   }
 
-  draw() {
-    const { x, y } = this.position;
-    const { width, height } = this.dimensions;
-    this.ctx.fillStyle = 'rgb(200, 0, 255)';
-    this.ctx.fillRect(x, y, width, height);
-    this.ctx.strokeRect(x, y, width, height);
+  expand(x, y) {
+    if (x !== 0) {
+      this.expandWidth(x, y);
+    } else {
+      this.expandHeight(x, y);
+    }
   }
 
-  drawFail(oldPosition, oldDimensions) {
-    const { x, y } = oldPosition;
-    const { width, height } = oldDimensions;
-    this.ctx.fillStyle = 'rgb(255, 0, 0)';
-    this.ctx.fillRect(x, y, width, height);
+  checkDimensionsAndMovement(x, y) {
+    if (this.width > this.height && x !== 0) {
+      this.contractWidth(x, y);
+    } else if (this.width < this.height && y !== 0) {
+      this.contractHeight(x, y);
+    } else {
+      this.position(x, y);
+    }
+  }
+
+  expandWidth(x, y) {
+    this.width *= 2;
+    if (x > 0) {
+      this.position(x, y);
+    } else {
+      this.position(2 * x, y);
+    }
+  }
+
+  expandHeight(x, y) {
+    this.height *= 2;
+    if (y > 0) {
+      this.position(x, y);
+    } else {
+      this.position(x, 2 * y);
+    }
+  }
+
+  contractWidth(x, y) {
+    this.width /= 2;
+    if (x > 0) {
+      this.position(2 * x, y);
+    } else {
+      this.position(x, y);
+    }
+  }
+
+  contractHeight(x, y) {
+    this.height /= 2;
+    if (y > 0) {
+      this.position(x, y * 2);
+    } else {
+      this.position(x, y);
+    }
   }
 }
 
@@ -656,19 +572,36 @@ module.exports = Block;
 /* 10 */
 /***/ (function(module, exports) {
 
-class Display {
-  constructor(game, ctx) {
-    this.ctx = ctx;
-    this.game = game;
-  }
+throw new Error("Module parse failed: /Users/michaeljohnson/Desktop/JS-Project/assets/JavaScript/display.js Unexpected token (23:11)\nYou may need an appropriate loader to handle this file type.\n|   render() {\n|     this.game.draw();\n|     draw() {\n|       this.ctx.fillStyle = this.backgroundColor;\n|       this.ctx.fillRect(0, 0, 900, 500);");
 
-  start() {
-    this.game.draw();
-    this.game.handleBoard();
-  }
-}
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = Display;
+const Tile = __webpack_require__(3);
+
+const Tutorial = __webpack_require__(5);
+const LevelOne = __webpack_require__(6);
+const LevelTwo = __webpack_require__(7);
+const LevelThree = __webpack_require__(8);
+
+
+const levelGenerator = (length) => {
+  const levels = [Tutorial(length),
+                     LevelOne(length),
+                     LevelTwo(length),
+                     LevelThree(length)];
+  levels.forEach(level => {
+    level.forEach((positionData, idx) => {
+      level[idx] = new Tile(positionData);
+    });
+  });
+  return levels;
+};
+
+
+
+module.exports = levelGenerator;
 
 
 /***/ })
