@@ -82,9 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const LevelGenerator = __webpack_require__(11);
-const Block = __webpack_require__(9);
-const Display = __webpack_require__(10);
+const LevelGenerator = __webpack_require__(2);
+const Block = __webpack_require__(8);
+const Display = __webpack_require__(9);
 
 class Game {
   constructor(ctx, length) {
@@ -100,7 +100,7 @@ class Game {
     document.addEventListener("keydown", this.moveBlock.bind(this), true);
     const { x, y } = this.currentLevel[0];
     this.constructBlock(x, y);
-    this.display;
+    this.display.render(this.currentLevel, this.block);
   }
 
   constructBlock(x, y) {
@@ -170,31 +170,31 @@ class Game {
     this.goal = this.currentLevel[1];
     const { x, y } = this.currentLevel[0];
     this.constructBlock(x, y);
-    this.display;
+    this.display.render(this.currentLevel, this.block);
   }
 
   endGame() {
     document.removeEventListener("keydown", this.getMove, true);
-    this.display;
+    this.display.drawFinish();
   }
 
   checkBounds() {
     const { xPos, yPos, width, height } = this.block;
+    const oldOptions = { xPos: xPos, yPos: yPos, width: width, height:height };
     const coordinates = [[xPos, yPos],
       [xPos, yPos + height],
       [xPos + width, yPos],
       [xPos + width, yPos + height]];
     if (this.display.tileMovesOffFloor(coordinates)) {
-      this.resetLevel();
-    } else {
-      this.display;
+      this.resetBlock();
     }
+    this.display.render(this.currentLevel, this.block);
+    this.display.drawFail(oldOptions);
   }
 
-  resetLevel() {
+  resetBlock() {
     const { x, y } = this.currentLevel[0];
     this.constructBlock(x, y);
-    this.display;
   }
 }
 
@@ -202,7 +202,36 @@ module.exports = Game;
 
 
 /***/ }),
-/* 2 */,
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Tile = __webpack_require__(3);
+
+const Tutorial = __webpack_require__(4);
+const LevelOne = __webpack_require__(5);
+const LevelTwo = __webpack_require__(6);
+const LevelThree = __webpack_require__(7);
+
+
+const levelGenerator = (length) => {
+  const levels = [Tutorial(length),
+                     LevelOne(length),
+                     LevelTwo(length),
+                     LevelThree(length)];
+  levels.forEach(level => {
+    level.forEach((positionData, idx) => {
+      level[idx] = new Tile(positionData);
+    });
+  });
+  return levels;
+};
+
+
+
+module.exports = levelGenerator;
+
+
+/***/ }),
 /* 3 */
 /***/ (function(module, exports) {
 
@@ -229,8 +258,7 @@ module.exports = Tile;
 
 
 /***/ }),
-/* 4 */,
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 const tutorial = (length, startX = 360, startY = 180) => {
@@ -273,7 +301,7 @@ module.exports = tutorial;
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports) {
 
 const levelOne = (length, startX = 330, startY = 240) => {
@@ -332,7 +360,7 @@ module.exports = levelOne;
 
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports) {
 
 const levelTwo = (length, startX = 210, startY = 280) => {
@@ -409,7 +437,7 @@ module.exports = levelTwo;
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports) {
 
 const levelThree = (length, startX = 270, startY = 210) => {
@@ -486,7 +514,7 @@ module.exports = levelThree;
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports) {
 
 class Block {
@@ -569,39 +597,85 @@ module.exports = Block;
 
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports) {
 
-throw new Error("Module parse failed: /Users/michaeljohnson/Desktop/JS-Project/assets/JavaScript/display.js Unexpected token (23:11)\nYou may need an appropriate loader to handle this file type.\n|   render() {\n|     this.game.draw();\n|     draw() {\n|       this.ctx.fillStyle = this.backgroundColor;\n|       this.ctx.fillRect(0, 0, 900, 500);");
+class Display {
+  constructor(ctx, length) {
+    this.ctx = ctx;
+    this.length = length;
+    const backgroundRGB = [25, 25, 25];
+    this.backgroundColor = this.stringifyRGB(backgroundRGB);
+  }
 
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
+  stringifyRGB(colorArray) {
+    return(
+      'rgb('
+      .concat(colorArray[0])
+      .concat(', ')
+      .concat(colorArray[1])
+      .concat(', ')
+      .concat(colorArray[2])
+      .concat(')')
+    );
+  }
 
-const Tile = __webpack_require__(3);
+  render(floor, block) {
+    this.ctx.fillStyle = this.backgroundColor;
+    this.ctx.fillRect(0, 0, 900, 500);
+    this.ctx.font = '30px sans-serif';
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillText(`Level ${this.levelNumber}`, 25, 50);
+    this.drawFloor(floor);
+    this.drawBlock(block);
+  }
 
-const Tutorial = __webpack_require__(5);
-const LevelOne = __webpack_require__(6);
-const LevelTwo = __webpack_require__(7);
-const LevelThree = __webpack_require__(8);
-
-
-const levelGenerator = (length) => {
-  const levels = [Tutorial(length),
-                     LevelOne(length),
-                     LevelTwo(length),
-                     LevelThree(length)];
-  levels.forEach(level => {
-    level.forEach((positionData, idx) => {
-      level[idx] = new Tile(positionData);
+  drawFloor(floor) {
+    floor.forEach(tile => {
+      this.ctx.fillStyle = tile.color;
+      const { xPos, yPos } = tile;
+      this.ctx.fillRect(xPos, yPos, this.length, this.length);
+      this.ctx.strokeRect(xPos, yPos, this.length, this.length);
     });
-  });
-  return levels;
-};
+  }
 
+  drawBlock(block) {
+    const { xPos, yPos, width, height } = block;
+    this.ctx.fillStyle = 'rgb(200, 0, 255)';
+    this.ctx.fillRect(xPos, yPos, width, height);
+    this.ctx.strokeRect(xPos, yPos, width, height);
+  }
 
+  tileMovesOffFloor(coordinates) {
+    for(let i = 0; i < coordinates,length; i++) {
+      let corner = coordinates[i];
+      let point = this.ctx.getImageData(corner[0], corner[1], 1, 1);
+      let colorData = point.data.slice(0, 3);
+      let color = this.stringifyRGB(colorData);
+      if (color === this.backgroundColor) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-module.exports = levelGenerator;
+  drawFail(oldOptions) {
+    const { xPos, yPos, width, height } = oldOptions;
+    this.ctx.fillStyle = 'rgb(255, 0, 0)';
+    this.ctx.fillRect(xPos, yPos, width, height);
+  }
+
+  drawFinish() {
+    this.ctx.clearRect(0, 0, 900, 500);
+    this.ctx.font = '20px sans-serif';
+    this.ctx.fillText(
+      "Thanks for playing! More levels coming soon! (probably)",
+      50,
+      300);
+  }
+}
+
+module.exports = Display;
 
 
 /***/ })
