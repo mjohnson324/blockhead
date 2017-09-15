@@ -18,14 +18,16 @@ class Display {
     );
   }
 
-  render(floor, block, levelNumber) {
+  render(options) {
     this.ctx.fillStyle = this.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
     this.ctx.font = '30px sans-serif';
     this.ctx.fillStyle = 'white';
-    this.ctx.fillText(`Level ${levelNumber}`, 25, 50);
-    this.drawFloor(floor);
-    this.drawBlock(block);
+    this.ctx.fillText(`Level ${options.levelNumber}`, 25, 50);
+    this.ctx.fillText(`Moves: ${options.moves}`, 700, 50);
+    this.ctx.fillText(`Falls: ${options.falls}`, 25, 400);
+    this.drawFloor(options.level);
+    this.drawBlock(options.block);
   }
 
   drawFloor(floor) {
