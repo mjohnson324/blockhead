@@ -68,11 +68,18 @@ div {
   margin: 30px; }
 
 .key {
-  width: 200px;
-  height: 300px;
+  width: 250px;
+  height: 180px;
+  align-items: center;
+  flex-direction: row;
   position: absolute;
-  top: 170px;
+  top: 0;
+  left: 950px;
   z-index: -1; }
+  .key label {
+    margin-right: 20px; }
+  .key img {
+    height: 100%; }
 
 .controls {
   width: 250px;
