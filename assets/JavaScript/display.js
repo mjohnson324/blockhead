@@ -27,7 +27,6 @@ class Display {
     this.ctx.fillText(`Moves: ${options.moves}`, 700, 50);
     this.ctx.fillText(`Falls: ${options.falls}`, 25, 400);
     this.drawFloor(options.level);
-    this.drawBlock(options.block);
   }
 
   drawFloor(floor) {
