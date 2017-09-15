@@ -5,26 +5,39 @@ const Display = require('./display');
 class Game {
   constructor(ctx, length) {
     this.display = new Display(ctx, length);
-    this.length = length;
     this.levels = LevelGenerator(length);
-    this.levelNumber = 0;
+    this.state = {
+                   length: length,
+                   levelNumber: 0
+                 };
   }
 
   start() {
-    this.currentLevel = this.levels[this.levelNumber];
-    this.goal = this.currentLevel[1];
+    this.state.currentLevel = this.levels[this.state.levelNumber];
+    this.state.moves = 0;
+    this.state.falls = 0;
+    this.state.goal = this.state.currentLevel[1];
     document.addEventListener("keydown", this.getMove.bind(this), true);
-    const { xPos, yPos } = this.currentLevel[0];
+    const { xPos, yPos } = this.state.currentLevel[0];
     this.constructBlock(xPos, yPos);
-    this.display.render(this.currentLevel, this.block, this.levelNumber);
+    this.display.render(this.displayOptions());
   }
 
   constructBlock(x, y) {
     const blockOptions = { xPos: x,
                            yPos: y,
-                           width: this.length,
-                           height: this.length };
+                           width: this.state.length,
+                           height: this.state.length,
+                          };
     this.block = new Block(blockOptions);
+  }
+
+  displayOptions() {
+    return { level: this.state.currentLevel,
+             block: this.block,
+             levelNumber: this.state.levelNumber,
+             moves: this.state.moves,
+             falls: this.state.falls };
   }
 
   getMove(e) {
@@ -50,17 +63,18 @@ class Game {
   moveBlock(direction) {
     switch(direction) {
       case "down":
-        this.block.transform(0, this.length);
+        this.block.transform(0, this.state.length);
         break;
       case "up":
-        this.block.transform(0, this.length * -1);
+        this.block.transform(0, this.state.length * -1);
         break;
       case "left":
-        this.block.transform(this.length * -1, 0);
+        this.block.transform(this.state.length * -1, 0);
         break;
       case "right":
-        this.block.transform(this.length, 0);
+        this.block.transform(this.state.length, 0);
     }
+    this.state.moves += 1;
     this.checkBlock();
   }
 
@@ -72,24 +86,24 @@ class Game {
   }
 
   checkGoal() {
-    const xGoal = this.goal.xPos;
-    const yGoal = this.goal.yPos;
-    const { xPos, yPos } = this.block;
-    if (xPos === xGoal && yPos === yGoal) {
+    const { xPos, yPos } = this.state.goal;
+    const currentX = this.block.xPos;
+    const currentY = this.block.yPos;
+    if (xPos === currentX && yPos === currentY) {
       this.nextLevel();
     }
   }
 
   nextLevel() {
-    this.levelNumber += 1;
-    this.currentLevel = this.levels[this.levelNumber];
-    if (this.currentLevel === undefined) {
+    this.state.levelNumber += 1;
+    this.state.currentLevel = this.levels[this.state.levelNumber];
+    if (this.state.currentLevel === undefined) {
       this.endGame();
     } else {
-      this.goal = this.currentLevel[1];
-      const { xPos, yPos } = this.currentLevel[0];
+      this.state.goal = this.state.currentLevel[1];
+      const { xPos, yPos } = this.state.currentLevel[0];
       this.constructBlock(xPos, yPos);
-      this.display.render(this.currentLevel, this.block, this.levelNumber);
+      this.display.render(this.displayOptions());
     }
   }
 
@@ -107,15 +121,16 @@ class Game {
       [xPos + width, yPos + height]];
     if (this.display.tileMovesOffFloor(coordinates)) {
       this.resetBlock(oldOptions);
-    } else if (this.currentLevel) {
-      this.display.render(this.currentLevel, this.block, this.levelNumber);
+    } else if (this.state.currentLevel) {
+      this.display.render(this.displayOptions());
     }
   }
 
   resetBlock(oldOptions) {
-    const { xPos, yPos } = this.currentLevel[0];
+    const { xPos, yPos } = this.state.currentLevel[0];
     this.constructBlock(xPos, yPos);
-    this.display.render(this.currentLevel, this.block, this.levelNumber);
+    this.state.falls += 1;
+    this.display.render(this.displayOptions());
     this.display.drawFail(oldOptions);
   }
 }
