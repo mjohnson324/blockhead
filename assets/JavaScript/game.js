@@ -6,35 +6,41 @@ class Game {
   constructor(ctx, length) {
     this.display = new Display(ctx, length);
     this.levels = LevelGenerator(length);
+    this.getMove = this.getMove.bind(this);
     this.state = {
                    length: length,
-                   levelNumber: 0
+                   levelNumber: 0,
+                   moves: 0,
+                   falls: 0
                  };
   }
 
   start() {
     this.state.currentLevel = this.levels[this.state.levelNumber];
-    this.state.moves = 0;
-    this.state.falls = 0;
     this.state.goal = this.state.currentLevel[1];
-    document.addEventListener("keydown", this.getMove.bind(this), true);
-    const { xPos, yPos } = this.state.currentLevel[0];
-    this.constructBlock(xPos, yPos);
+    document.addEventListener("keydown", this.getMove);
+    this.constructBlock();
     this.display.render(this.displayOptions());
+    this.display.drawBlock(this.block);
   }
 
-  constructBlock(x, y) {
-    const blockOptions = { xPos: x,
-                           yPos: y,
+  constructBlock() {
+    const { xPos, yPos } = this.state.currentLevel[0];
+    const blockOptions = { xPos: xPos,
+                           yPos: yPos,
                            width: this.state.length,
                            height: this.state.length,
                           };
     this.block = new Block(blockOptions);
   }
 
+  getBlockOptions() {
+    const { xPos, yPos, width, height } = this.block;
+    return { xPos: xPos, yPos: yPos, width: width, height:height };
+  }
+
   displayOptions() {
     return { level: this.state.currentLevel,
-             block: this.block,
              levelNumber: this.state.levelNumber,
              moves: this.state.moves,
              falls: this.state.falls };
@@ -101,37 +107,51 @@ class Game {
       this.endGame();
     } else {
       this.state.goal = this.state.currentLevel[1];
-      const { xPos, yPos } = this.state.currentLevel[0];
-      this.constructBlock(xPos, yPos);
+      this.constructBlock();
       this.display.render(this.displayOptions());
+      this.display.drawBlock(this.block);
     }
   }
 
   endGame() {
-    document.removeEventListener("keydown", this.getMove, true);
+    document.removeEventListener("keydown", this.getMove);
     this.display.drawFinish();
   }
 
   checkBounds() {
-    const { xPos, yPos, width, height } = this.block;
-    const oldOptions = { xPos: xPos, yPos: yPos, width: width, height:height };
+    const { xPos, yPos, width, height } = this.getBlockOptions();
     const coordinates = [[xPos, yPos],
       [xPos, yPos + height],
       [xPos + width, yPos],
       [xPos + width, yPos + height]];
     if (this.display.tileMovesOffFloor(coordinates)) {
-      this.resetBlock(oldOptions);
+      this.resetBlock();
     } else if (this.state.currentLevel) {
       this.display.render(this.displayOptions());
+      this.display.drawBlock(this.block);
     }
   }
 
-  resetBlock(oldOptions) {
-    const { xPos, yPos } = this.state.currentLevel[0];
-    this.constructBlock(xPos, yPos);
+  resetBlock() {
+    document.removeEventListener("keydown", this.getMove);
+    const oldOptions = this.getBlockOptions();
+    this.constructBlock();
     this.state.falls += 1;
+    this.flashFailure(oldOptions);
+  }
+
+  flashFailure(oldOptions) {
     this.display.render(this.displayOptions());
     this.display.drawFail(oldOptions);
+    setTimeout(() => {
+      this.display.render(this.displayOptions());
+    }, 800);
+    setTimeout(() => {
+      this.display.drawBlock(this.block);
+    }, 800);
+    setTimeout(() => {
+      document.addEventListener("keydown", this.getMove);
+    }, 800);
   }
 }
 
