@@ -9,14 +9,14 @@ class Game {
     this.getMove = this.getMove.bind(this);
     this.state = {
                    length: length,
-                   levelNumber: 0,
+                   levelNumber: 1,
                    moves: 0,
                    falls: 0
                  };
   }
 
   start() {
-    this.state.currentLevel = this.levels[this.state.levelNumber];
+    this.state.currentLevel = this.levels[this.state.levelNumber - 1];
     this.state.goal = this.state.currentLevel[1];
     document.addEventListener("keydown", this.getMove);
     this.constructBlock();
@@ -102,7 +102,7 @@ class Game {
 
   nextLevel() {
     this.state.levelNumber += 1;
-    this.state.currentLevel = this.levels[this.state.levelNumber];
+    this.state.currentLevel = this.levels[this.state.levelNumber - 1];
     if (this.state.currentLevel === undefined) {
       this.endGame();
     } else {
