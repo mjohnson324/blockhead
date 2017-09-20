@@ -12,7 +12,6 @@ Blockhead
 - [x] Make block movable with arrow keys
 - [x] Block falls off board if not set on tiles, resetting level
 - [x] Level changes when goal is reached
-- [ ] production README
 
 ### Architecture and Technologies:
 
@@ -26,8 +25,7 @@ The game will require the following files:
 - 'game.js' to handle the rules of the game.
 - 'levels.js' to store information on level progression and floor layouts. Serves as a bundle for all levels.
   + Each level will have its own file detailing the exact position and nature of each tile.
-- 'floor.js' to render all the tiles for every level.
-- 'tile.js' to render individual tiles onto the screen based on their properties.
+- 'tile.js' to store information on each tile and update them independently.
 - 'block.js' to handle the movement logic for the block.
 - 'blockhead.js' to start the game and serve as the entry file.
 
