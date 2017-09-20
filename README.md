@@ -26,7 +26,7 @@ The game will require the following files:
 - 'levels.js' to store information on level progression and floor layouts. Serves as a bundle for all levels.
   + Each level will have its own file detailing the exact position and nature of each tile.
 - 'tile.js' to store information on each tile and update them independently.
-- 'block.js' to handle the movement logic for the block.
+- 'block.js' *player* to handle the movement logic for the block.
 - 'blockhead.js' to start the game and serve as the entry file.
 
 ### Wireframes:

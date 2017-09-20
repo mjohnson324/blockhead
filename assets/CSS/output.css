@@ -67,6 +67,10 @@ div {
   justify-content: space-around;
   margin: 30px; }
 
+img {
+  height: 320px;
+  width: 320px; }
+
 .key {
   width: 250px;
   height: 180px;
@@ -80,21 +84,5 @@ div {
     margin-right: 20px; }
   .key img {
     height: 100%; }
-
-.controls {
-  width: 250px;
-  height: 250px; }
-
-.falling {
-  width: 350px;
-  height: 300px; }
-
-.block {
-  width: 400px;
-  height: 300px; }
-
-.goal {
-  width: 600px;
-  height: 300px; }
 
 /*# sourceMappingURL=output.css.map */
