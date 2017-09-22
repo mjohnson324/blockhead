@@ -19,10 +19,12 @@ class Sound {
 
   toggleMusic() {
     if (this.playMusic === true) {
+      this.musicButton.className = "off";
       this.playMusic = false;
       this.music.pause();
     } else {
       this.playMusic = true;
+      this.musicButton.className = "on";
       this.music.play();
     }
   }
