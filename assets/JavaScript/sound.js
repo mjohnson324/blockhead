@@ -33,6 +33,10 @@ class Sound {
       this.rectangleSound.play();
     }
   }
+
+  fallSound() {
+    this.fall.play();
+  }
 }
 
 module.exports = Sound;
