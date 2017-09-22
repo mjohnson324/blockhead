@@ -8,7 +8,7 @@ class Game {
     this.display = new Display(ctx, length);
     this.levels = LevelGenerator(length);
     this.getMove = this.getMove.bind(this);
-
+    this.tick = this.tick.bind(this);
     this.sound = new Sound();
     this.state = {
                    length: length,
@@ -20,12 +20,36 @@ class Game {
 
   start() {
     this.sound.start();
+    this.state.minutes = 0;
+    this.state.seconds = 0;
+    this.timerId = setInterval(this.tick, 1000);
     this.state.currentLevel = this.levels[this.state.levelNumber - 1];
     this.state.goal = this.state.currentLevel[1];
     document.addEventListener("keydown", this.getMove);
     this.constructBlock();
     this.display.render(this.displayOptions());
     this.display.drawBlock(this.block);
+  }
+
+  tick() {
+    let minutes = this.state.minutes;
+    let seconds = this.state.seconds;
+    minutes = (minutes < 10) ? `0${minutes}` : minutes;
+    seconds = (seconds < 10) ? `0${seconds}` : seconds;
+    this.state.timeString = `${minutes}:${seconds}`;
+    this.display.drawClock(this.state.timeString);
+    this.uptick();
+  }
+
+  uptick() {
+    this.state.seconds += 1;
+    if (this.state.seconds >= 60) {
+      this.state.seconds = 0;
+      this.state.minutes += 1;
+      if (this.state.minutes >= 60) {
+        this.state.minutes = 0;
+      }
+    }
   }
 
   constructBlock() {
@@ -47,7 +71,8 @@ class Game {
     return { level: this.state.currentLevel,
              levelNumber: this.state.levelNumber,
              moves: this.state.moves,
-             falls: this.state.falls };
+             falls: this.state.falls,
+             time: this.state.timeString };
   }
 
   getMove(e) {
@@ -120,7 +145,8 @@ class Game {
 
   endGame() {
     document.removeEventListener("keydown", this.getMove);
-    this.display.drawFinish();
+    clearInterval(this.timerId);
+    this.display.drawFinish(this.displayOptions());
   }
 
   checkBounds() {
