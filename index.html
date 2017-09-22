@@ -6,6 +6,10 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
     <link rel="stylesheet" href="assets/CSS/output.css"/>
   </head>
+  <audio id="fall" src="assets/Sounds/Effects/lrsf-explode-3-fall.wav"></audio>
+  <audio id="block-rectangle" src="assets/Sounds/Effects/lrsf-menu-nav-3-rec.wav"></audio>
+  <audio id="block-square" src="assets/Sounds/Effects/lrsf-menu-nav-0-square.wav"></audio>
+  <audio id="song" src="assets/Sounds/Music/undertale-09.mp3"></audio>
   <body>
     <nav>
       <a href="https://github.com/mjohnson324/Blockhead">Github</a>
@@ -20,8 +24,9 @@
     </div>
     <button type="button" id="music">music</button>
     <canvas id="blockhead"></canvas>
-    <h2>Directions</h2>
-    <section class="directions">
+    <button type="button" name="button">Directions</button>
+    <section class="hidden" id="directions">
+      <h2>Directions</h2>
       <div>
         <label>How to move:</label>
         <img src='assets/Images/arrow-keys.png'></img>
