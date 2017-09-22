@@ -1,17 +1,18 @@
 class Sound {
-  constructor(musicButton) {
-    this.rectangleSound = new Audio('../Sounds/Effects/lrsf-menu-nav-3-rec.wav');
-    this.squareSound = new Audio('../Sounds/Effects/lrsf-menu-nav-0-square.wav');
-    this.fall = new Audio('../Sounds/Effects/lrsf-explode-3-fall.wav');
-    this.music = new Audio('../Sounds/Music/undertale-09.mp3');
-    this.musicButton = musicButton;
-    this.playMusic = true;
-    this.music.loop = true;
+  constructor() {
+    this.rectangleSound = document.getElementById("block-rectangle");
+    this.squareSound = document.getElementById("block-square");
+    this.fall = document.getElementById("fall");
+    this.completeLevel = document.getElementById("complete-level");
+    this.music = document.getElementById("song");
 
     this.toggleMusic = this.toggleMusic.bind(this);
   }
 
   start() {
+    this.musicButton = document.getElementById("music");
+    this.playMusic = true;
+    this.music.loop = true;
     this.musicButton.addEventListener("click", this.toggleMusic);
     this.music.play();
   }
@@ -21,13 +22,13 @@ class Sound {
       this.playMusic = false;
       this.music.pause();
     } else {
-      this.playMusic === false;
+      this.playMusic = true;
       this.music.play();
     }
   }
 
   blockSound(block) {
-    if (block.length === block.width) {
+    if (block.height === block.width) {
       this.squareSound.play();
     } else {
       this.rectangleSound.play();
@@ -36,6 +37,10 @@ class Sound {
 
   fallSound() {
     this.fall.play();
+  }
+
+  goalSound() {
+    this.completeLevel.play();
   }
 }
 
