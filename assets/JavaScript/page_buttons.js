@@ -6,46 +6,46 @@ class PageButtons {
   activateButtons() {
     this.directionButtons();
     this.fallButton();
+    this.transformButton();
     this.goalButton();
     this.moveButton();
-    this.transformButton();
   }
 
   directionButtons () {
-    const directions = document.getElementById('directions');
+    const directionsButton = document.getElementById('direct-button');
     const directionsDisplay = document.getElementById('direct');
-    directionsDisplay.addEventListener("click", () => {
-      this.toggleDirections(directions);
+    directionsButton.addEventListener("click", () => {
+      this.toggleDirections(directionsDisplay);
     });
   }
 
   fallButton() {
-    const fallButton = document.getElementByClassName('falling');
-    const fallImage = document.getElementByClassName('falling-hide');
+    const fallButton = document.getElementById('falling-button');
+    const fallImage = document.getElementById('falling');
     fallButton.addEventListener('click', () => {
       this.fallToggle(fallImage);
     });
   }
 
   goalButton() {
-    const goalButton = document.getElementByClassName('goal');
-    const goalImage = document.getElementByClassName('goal-hide');
+    const goalButton = document.getElementById('goal-button');
+    const goalImage = document.getElementById('goal');
     goalButton.addEventListener('click', () => {
       this.goalToggle(goalImage);
     });
   }
 
   moveButton() {
-    const moveButton = document.getElementByClassName('move');
-    const moveImage = document.getElementByClassName('move-hide');
+    const moveButton = document.getElementById('move-button');
+    const moveImage = document.getElementById('move');
     moveButton.addEventListener('click', () => {
       this.moveToggle(moveImage);
     });
   }
 
   transformButton() {
-    const transformButton = document.getElementByClassName('transform');
-    const transformImage = document.getElementByClassName('transform-hide');
+    const transformButton = document.getElementById('transform-button');
+    const transformImage = document.getElementById('transform');
     transformButton.addEventListener('click', () => {
       this.transformToggle(transformImage);
     });
@@ -60,34 +60,34 @@ class PageButtons {
   }
 
   moveToggle(image) {
-    if (image.className === "move-hide") {
+    if (image.className === "hidden") {
       image.className = "show";
     } else {
-      image.className = "move-hide";
+      image.className = "hidden";
     }
   }
 
   transformToggle(image) {
-    if (image.className === "transform-hide") {
+    if (image.className === "hidden") {
       image.className = "show";
     } else {
-      image.className = "transform-hide";
+      image.className = "hidden";
     }
   }
 
   fallToggle(image) {
-    if (image.className === "fall-hide") {
+    if (image.className === "hidden") {
       image.className = "show";
     } else {
-      image.className = "fall-hide";
+      image.className = "hidden";
     }
   }
 
   goalToggle(image) {
-    if (image.className === "goal-hide") {
+    if (image.className === "hidden") {
       image.className = "show";
     } else {
-      image.className = "goal-hide";
+      image.className = "hidden";
     }
   }
 }
