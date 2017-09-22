@@ -25,3 +25,11 @@ a:hover {
 button {
   @extend a
 }
+
+.on:before {
+  content: "music off";
+}
+
+.off:before {
+  content: "music on";
+}
