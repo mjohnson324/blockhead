@@ -4,6 +4,8 @@ class Display {
     this.length = length;
     const backgroundRGB = [25, 25, 25];
     this.backgroundColor = this.stringifyRGB(backgroundRGB);
+    this.ctx.fillStyle = this.backgroundColor;
+    this.ctx.fillRect(0, 0, 900, 500);
   }
 
   stringifyRGB(colorArray) {
@@ -20,13 +22,22 @@ class Display {
 
   render(options) {
     this.ctx.fillStyle = this.backgroundColor;
-    this.ctx.fillRect(0, 0, 900, 500);
+    this.ctx.fillRect(0, 0, 900, 450);
+    this.ctx.fillRect(0, 450, 200, 50);
     this.ctx.font = '30px sans-serif';
     this.ctx.fillStyle = 'white';
     this.ctx.fillText(`Level ${options.levelNumber}`, 25, 50);
     this.ctx.fillText(`Moves: ${options.moves}`, 700, 50);
-    this.ctx.fillText(`Falls: ${options.falls}`, 25, 400);
+    this.ctx.fillText(`Falls: ${options.falls}`, 25, 475);
     this.drawFloor(options.level);
+  }
+
+  drawClock(time) {
+    this.ctx.fillStyle = this.backgroundColor;
+    this.ctx.fillRect(200, 450, 900, 50);
+    this.ctx.font = '30px sans-serif';
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillText(time, 700, 475);
   }
 
   drawFloor(floor) {
@@ -64,14 +75,19 @@ class Display {
     this.ctx.fillRect(xPos, yPos, width, height);
   }
 
-  drawFinish() {
+  drawFinish(options) {
     this.ctx.clearRect(0, 0, 900, 500);
-    this.ctx.font = '20px sans-serif';
+    this.ctx.font = '50px sans-serif';
     this.ctx.fillStyle = "white";
+    this.ctx.fillText(`Final Tally:`, 50, 100);
+    this.ctx.font = '30px sans-serif';
+    this.ctx.fillText(`Moves: ${options.moves}`, 70, 155);
+    this.ctx.fillText(`Falls: ${options.falls}`, 70, 190);
+    this.ctx.fillText(`Time: ${options.time}`, 70, 225);
     this.ctx.fillText(
-      "Thanks for playing! More levels coming soon! (probably)",
+      "Thanks for playing! More levels coming soon!",
       50,
-      300);
+      350);
   }
 }
 
