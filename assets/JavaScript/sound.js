@@ -4,8 +4,16 @@ class Sound {
     this.squareSound = new Audio('../Sounds/Effects/270324__littlerobotsoundfactory__menu-navigate-00.wav');
     this.fall = new Audio('../Sounds/Effects/270311__littlerobotsoundfactory__explosion-03.wav');
     this.music = new Audio('../Sounds/Music/toby fox - UNDERTALE Soundtrack - 09 Enemy Approaching.mp3');
+    this.musicButton = musicButton;
     this.playMusic = true;
     this.music.loop = true;
+
+    this.toggleMusic = this.toggleMusic.bind(this);
+  }
+
+  start() {
+    this.musicButton.addEventListener("click", this.toggleMusic);
+    this.music.play();
   }
 
   toggleMusic() {
