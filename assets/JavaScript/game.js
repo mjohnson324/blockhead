@@ -1,12 +1,15 @@
 const LevelGenerator = require('./level_generator');
 const Block = require('./block');
 const Display = require('./display');
+const Sound = require('./sound');
 
 class Game {
   constructor(ctx, length) {
     this.display = new Display(ctx, length);
     this.levels = LevelGenerator(length);
     this.getMove = this.getMove.bind(this);
+    const musicButton = document.getElementById("music");
+    this.sound = new Sound(musicButton);
     this.state = {
                    length: length,
                    levelNumber: 1,
@@ -129,6 +132,7 @@ class Game {
     } else if (this.state.currentLevel) {
       this.display.render(this.displayOptions());
       this.display.drawBlock(this.block);
+      this.sound.blockSound(this.block);
     }
   }
 
@@ -143,6 +147,7 @@ class Game {
   flashFailure(oldOptions) {
     this.display.render(this.displayOptions());
     this.display.drawFail(oldOptions);
+    this.sound.fallSound();
     setTimeout(() => {
       this.display.render(this.displayOptions());
     }, 800);
