@@ -24,26 +24,27 @@
       <img src='assets/Images/key.png'></img>
     </div>
     <button type="button" class="on" id="music"></button>
-    <canvas id="blockhead"></canvas>
     <button type="button" id="direct">Directions</button>
+    <canvas id="blockhead"></canvas>
     <section class="hidden" id="directions">
-      <h2>Directions</h2>
-      <div>
-        <label>How to move:</label>
-        <img src='assets/Images/arrow-keys.png'></img>
-      </div>
-      <div>
-        <label>Don't fall off the edge!</label>
-        <img src='assets/Images/death.gif'></img>
-      </div>
-      <div>
-        <label>The block transforms as you move</label>
-        <img src='assets/Images/movement.gif'></img>
-      </div>
-      <div>
-        <label>Reach the goal!</label>
-        <img src='assets/Images/goal.gif'></img>
-      </div>
+      <ol>
+      <li>
+        <button class="move">How to move:</button>
+        <img class="move-hide" src='assets/Images/arrow-keys.png'></img>
+      </li>
+      <li>
+        <button class="transform">The block transforms as you move:</button>
+        <img class="transform-hide" src='assets/Images/movement.gif'></img>
+      </li>
+      <li>
+        <button class="falling">Don't fall off the edge!</button>
+        <img class="falling-hide" src='assets/Images/death.gif'></img>
+      </li>
+      <li>
+        <button class="goal">Reach the goal!</button>
+        <img class="goal-hide" src='assets/Images/goal.gif'></img>
+      </li>
+    </ol>
     </section>
     <script src="assets/JavaScript/bundle/bundle.js"></script>
   </body>
