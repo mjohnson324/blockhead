@@ -8,7 +8,7 @@
 body {
   background-color: black; }
 
-a, h1, h2, h3, label {
+a, button, h1, h2, h3, label, button {
   font-family: "Montserrat", sans-serif; }
 
 #blockhead {
@@ -39,7 +39,7 @@ nav {
   font-size: 26px;
   margin: 20px; }
 
-a {
+a, button {
   display: inline-block;
   background-color: white;
   color: black;
@@ -48,24 +48,41 @@ a {
   margin: 20px;
   border-radius: 5px; }
 
-a:hover {
+a:hover, button:hover {
   background-color: yellow;
   cursor: pointer;
   cursor: hand; }
+
+.on:before {
+  content: "music off"; }
+
+.off:before {
+  content: "music on"; }
 
 label {
   color: white;
   font-size: 16px; }
 
-.directions {
-  display: flex;
-  flex-wrap: wrap; }
+.hidden, .move-hide, .transform-hide, .falling-hide, .goal-hide {
+  display: none; }
 
-div {
+.display {
+  position: absolute;
+  width: 100%;
+  z-index: 100;
+  top: 310px;
+  background-color: gray; }
+
+div, li {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   margin: 30px; }
+  div a, li a, div button, li button {
+    width: 360px;
+    text-align: center;
+    margin: 0;
+    margin-bottom: 20px; }
 
 img {
   height: 320px;

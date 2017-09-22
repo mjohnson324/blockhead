@@ -68,8 +68,10 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const Game = __webpack_require__(1);
+const PageButtons = __webpack_require__(11);
 
 document.addEventListener("DOMContentLoaded", () => {
+  const buttonActivation = new PageButtons();
   const blockheadBoard = document.getElementById("blockhead");
   const ctx = blockheadBoard.getContext("2d");
   blockheadBoard.width = 900;
@@ -85,12 +87,15 @@ document.addEventListener("DOMContentLoaded", () => {
 const LevelGenerator = __webpack_require__(2);
 const Block = __webpack_require__(8);
 const Display = __webpack_require__(9);
+const Sound = __webpack_require__(10);
 
 class Game {
   constructor(ctx, length) {
     this.display = new Display(ctx, length);
     this.levels = LevelGenerator(length);
     this.getMove = this.getMove.bind(this);
+
+    this.sound = new Sound();
     this.state = {
                    length: length,
                    levelNumber: 1,
@@ -100,6 +105,7 @@ class Game {
   }
 
   start() {
+    this.sound.start();
     this.state.currentLevel = this.levels[this.state.levelNumber - 1];
     this.state.goal = this.state.currentLevel[1];
     document.addEventListener("keydown", this.getMove);
@@ -185,6 +191,7 @@ class Game {
   }
 
   nextLevel() {
+    this.sound.goalSound();
     this.state.levelNumber += 1;
     this.state.currentLevel = this.levels[this.state.levelNumber - 1];
     if (this.state.currentLevel === undefined) {
@@ -213,6 +220,7 @@ class Game {
     } else if (this.state.currentLevel) {
       this.display.render(this.displayOptions());
       this.display.drawBlock(this.block);
+      this.sound.blockSound(this.block);
     }
   }
 
@@ -227,6 +235,7 @@ class Game {
   flashFailure(oldOptions) {
     this.display.render(this.displayOptions());
     this.display.drawFail(oldOptions);
+    this.sound.fallSound();
     setTimeout(() => {
       this.display.render(this.displayOptions());
     }, 800);
@@ -719,6 +728,162 @@ class Display {
 }
 
 module.exports = Display;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+class Sound {
+  constructor() {
+    this.rectangleSound = document.getElementById("block-rectangle");
+    this.squareSound = document.getElementById("block-square");
+    this.fall = document.getElementById("fall");
+    this.completeLevel = document.getElementById("complete-level");
+    this.music = document.getElementById("song");
+
+    this.toggleMusic = this.toggleMusic.bind(this);
+  }
+
+  start() {
+    this.musicButton = document.getElementById("music");
+    this.playMusic = true;
+    this.music.loop = true;
+    this.musicButton.addEventListener("click", this.toggleMusic);
+    this.music.play();
+  }
+
+  toggleMusic() {
+    if (this.playMusic === true) {
+      this.musicButton.className = "off";
+      this.playMusic = false;
+      this.music.pause();
+    } else {
+      this.playMusic = true;
+      this.musicButton.className = "on";
+      this.music.play();
+    }
+  }
+
+  blockSound(block) {
+    if (block.height === block.width) {
+      this.squareSound.play();
+    } else {
+      this.rectangleSound.play();
+    }
+  }
+
+  fallSound() {
+    this.fall.play();
+  }
+
+  goalSound() {
+    this.completeLevel.play();
+  }
+}
+
+module.exports = Sound;
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+class PageButtons {
+  constructor() {
+    this.activateButtons();
+  }
+
+  activateButtons() {
+    this.directionButtons();
+    this.fallButton();
+    this.goalButton();
+    this.moveButton();
+    this.transformButton();
+  }
+
+  directionButtons () {
+    const directions = document.getElementById('directions');
+    const directionsDisplay = document.getElementById('direct');
+    directionsDisplay.addEventListener("click", () => {
+      this.toggleDirections(directions);
+    });
+  }
+
+  fallButton() {
+    const fallButton = document.getElementByClassName('falling');
+    const fallImage = document.getElementByClassName('falling-hide');
+    fallButton.addEventListener('click', () => {
+      this.fallToggle(fallImage);
+    });
+  }
+
+  goalButton() {
+    const goalButton = document.getElementByClassName('goal');
+    const goalImage = document.getElementByClassName('goal-hide');
+    goalButton.addEventListener('click', () => {
+      this.goalToggle(goalImage);
+    });
+  }
+
+  moveButton() {
+    const moveButton = document.getElementByClassName('move');
+    const moveImage = document.getElementByClassName('move-hide');
+    moveButton.addEventListener('click', () => {
+      this.moveToggle(moveImage);
+    });
+  }
+
+  transformButton() {
+    const transformButton = document.getElementByClassName('transform');
+    const transformImage = document.getElementByClassName('transform-hide');
+    transformButton.addEventListener('click', () => {
+      this.transformToggle(transformImage);
+    });
+  }
+
+  toggleDirections(directions) {
+    if (directions.className === "hidden") {
+      directions.className = "display";
+    } else {
+      directions.className = "hidden";
+    }
+  }
+
+  moveToggle(image) {
+    if (image.className === "move-hide") {
+      image.className = "show";
+    } else {
+      image.className = "move-hide";
+    }
+  }
+
+  transformToggle(image) {
+    if (image.className === "transform-hide") {
+      image.className = "show";
+    } else {
+      image.className = "transform-hide";
+    }
+  }
+
+  fallToggle(image) {
+    if (image.className === "fall-hide") {
+      image.className = "show";
+    } else {
+      image.className = "fall-hide";
+    }
+  }
+
+  goalToggle(image) {
+    if (image.className === "goal-hide") {
+      image.className = "show";
+    } else {
+      image.className = "goal-hide";
+    }
+  }
+}
+
+module.exports = PageButtons;
 
 
 /***/ })
