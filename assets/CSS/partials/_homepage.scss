@@ -12,6 +12,7 @@ a, h1, label, button {
   height: 500px;
   align-self: center;
   margin: 0 auto;
+  margin-bottom: 30px;
   display: block;
 }
 
@@ -20,11 +21,11 @@ h1 {
 
   color: white;
   text-align: center;
-  text-decoration: underline;
 }
 
 h2 {
   @extend h1;
+  color: black;
   font-size: 30px;
   margin-top: 30px;
 }
