@@ -3,13 +3,23 @@ label {
   font-size: 16px;
 }
 
-.hidden {
+#directions {
+
+}
+
+.hidden, .move-hide, .transform-hide, .falling-hide, .goal-hide {
   display: none;
+}
+
+.show {
 }
 
 .display {
   position: absolute;
+  width: 100%;
   z-index: 100;
+  top: 310px;
+  background-color: gray;
 }
 
 div {
@@ -17,6 +27,17 @@ div {
   flex-direction: column;
   justify-content: space-around;
   margin: 30px;
+
+  a {
+    width: 360px;
+    text-align: center;
+    margin: 0;
+    margin-bottom: 20px;
+  }
+}
+
+li {
+  @extend div
 }
 
 img {
@@ -41,5 +62,4 @@ img {
   img {
     height: 100%;
   }
-
 }
