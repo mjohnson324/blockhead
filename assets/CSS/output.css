@@ -17,15 +17,16 @@ a, button, h1, h2, h3, label, button {
   height: 500px;
   align-self: center;
   margin: 0 auto;
+  margin-bottom: 30px;
   display: block; }
 
 h1, h2, h3 {
   font-size: 40px;
   color: white;
-  text-align: center;
-  text-decoration: underline; }
+  text-align: center; }
 
 h2 {
+  color: black;
   font-size: 30px;
   margin-top: 30px; }
 
@@ -61,17 +62,21 @@ a:hover, button:hover {
 
 label {
   color: white;
-  font-size: 16px; }
+  font-size: 30px; }
 
-.hidden, .move-hide, .transform-hide, .falling-hide, .goal-hide {
+.hidden {
   display: none; }
 
 .display {
   position: absolute;
   width: 100%;
+  min-height: 520px;
   z-index: 100;
   top: 310px;
-  background-color: gray; }
+  background-color: gray;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
 
 div, li {
   display: flex;
@@ -84,9 +89,15 @@ div, li {
     margin: 0;
     margin-bottom: 20px; }
 
+li {
+  margin: 0 auto;
+  margin-top: 30px;
+  width: 370px; }
+
 img {
   height: 320px;
-  width: 320px; }
+  width: 320px;
+  margin-bottom: 30px; }
 
 .key {
   width: 250px;
@@ -94,7 +105,7 @@ img {
   align-items: center;
   flex-direction: row;
   position: absolute;
-  top: 0;
+  top: 50px;
   right: 50px;
   z-index: -1; }
   .key label {

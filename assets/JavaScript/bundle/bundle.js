@@ -94,7 +94,7 @@ class Game {
     this.display = new Display(ctx, length);
     this.levels = LevelGenerator(length);
     this.getMove = this.getMove.bind(this);
-
+    this.tick = this.tick.bind(this);
     this.sound = new Sound();
     this.state = {
                    length: length,
@@ -106,12 +106,36 @@ class Game {
 
   start() {
     this.sound.start();
+    this.state.minutes = 0;
+    this.state.seconds = 0;
+    this.timerId = setInterval(this.tick, 1000);
     this.state.currentLevel = this.levels[this.state.levelNumber - 1];
     this.state.goal = this.state.currentLevel[1];
     document.addEventListener("keydown", this.getMove);
     this.constructBlock();
     this.display.render(this.displayOptions());
     this.display.drawBlock(this.block);
+  }
+
+  tick() {
+    let minutes = this.state.minutes;
+    let seconds = this.state.seconds;
+    minutes = (minutes < 10) ? `0${minutes}` : minutes;
+    seconds = (seconds < 10) ? `0${seconds}` : seconds;
+    this.state.timeString = `${minutes}:${seconds}`;
+    this.display.drawClock(this.state.timeString);
+    this.uptick();
+  }
+
+  uptick() {
+    this.state.seconds += 1;
+    if (this.state.seconds >= 60) {
+      this.state.seconds = 0;
+      this.state.minutes += 1;
+      if (this.state.minutes >= 60) {
+        this.state.minutes = 0;
+      }
+    }
   }
 
   constructBlock() {
@@ -133,7 +157,8 @@ class Game {
     return { level: this.state.currentLevel,
              levelNumber: this.state.levelNumber,
              moves: this.state.moves,
-             falls: this.state.falls };
+             falls: this.state.falls,
+             time: this.state.timeString };
   }
 
   getMove(e) {
@@ -206,7 +231,8 @@ class Game {
 
   endGame() {
     document.removeEventListener("keydown", this.getMove);
-    this.display.drawFinish();
+    clearInterval(this.timerId);
+    this.display.drawFinish(this.displayOptions());
   }
 
   checkBounds() {
@@ -656,6 +682,8 @@ class Display {
     this.length = length;
     const backgroundRGB = [25, 25, 25];
     this.backgroundColor = this.stringifyRGB(backgroundRGB);
+    this.ctx.fillStyle = this.backgroundColor;
+    this.ctx.fillRect(0, 0, 900, 500);
   }
 
   stringifyRGB(colorArray) {
@@ -672,13 +700,22 @@ class Display {
 
   render(options) {
     this.ctx.fillStyle = this.backgroundColor;
-    this.ctx.fillRect(0, 0, 900, 500);
+    this.ctx.fillRect(0, 0, 900, 450);
+    this.ctx.fillRect(0, 450, 200, 50);
     this.ctx.font = '30px sans-serif';
     this.ctx.fillStyle = 'white';
     this.ctx.fillText(`Level ${options.levelNumber}`, 25, 50);
     this.ctx.fillText(`Moves: ${options.moves}`, 700, 50);
-    this.ctx.fillText(`Falls: ${options.falls}`, 25, 400);
+    this.ctx.fillText(`Falls: ${options.falls}`, 25, 475);
     this.drawFloor(options.level);
+  }
+
+  drawClock(time) {
+    this.ctx.fillStyle = this.backgroundColor;
+    this.ctx.fillRect(200, 450, 900, 50);
+    this.ctx.font = '30px sans-serif';
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillText(time, 700, 475);
   }
 
   drawFloor(floor) {
@@ -716,14 +753,19 @@ class Display {
     this.ctx.fillRect(xPos, yPos, width, height);
   }
 
-  drawFinish() {
+  drawFinish(options) {
     this.ctx.clearRect(0, 0, 900, 500);
-    this.ctx.font = '20px sans-serif';
+    this.ctx.font = '50px sans-serif';
     this.ctx.fillStyle = "white";
+    this.ctx.fillText(`Final Tally:`, 50, 100);
+    this.ctx.font = '30px sans-serif';
+    this.ctx.fillText(`Moves: ${options.moves}`, 70, 155);
+    this.ctx.fillText(`Falls: ${options.falls}`, 70, 190);
+    this.ctx.fillText(`Time: ${options.time}`, 70, 225);
     this.ctx.fillText(
-      "Thanks for playing! More levels coming soon! (probably)",
+      "Thanks for playing! More levels coming soon!",
       50,
-      300);
+      350);
   }
 }
 
@@ -797,46 +839,46 @@ class PageButtons {
   activateButtons() {
     this.directionButtons();
     this.fallButton();
+    this.transformButton();
     this.goalButton();
     this.moveButton();
-    this.transformButton();
   }
 
   directionButtons () {
-    const directions = document.getElementById('directions');
+    const directionsButton = document.getElementById('direct-button');
     const directionsDisplay = document.getElementById('direct');
-    directionsDisplay.addEventListener("click", () => {
-      this.toggleDirections(directions);
+    directionsButton.addEventListener("click", () => {
+      this.toggleDirections(directionsDisplay);
     });
   }
 
   fallButton() {
-    const fallButton = document.getElementByClassName('falling');
-    const fallImage = document.getElementByClassName('falling-hide');
+    const fallButton = document.getElementById('falling-button');
+    const fallImage = document.getElementById('falling');
     fallButton.addEventListener('click', () => {
       this.fallToggle(fallImage);
     });
   }
 
   goalButton() {
-    const goalButton = document.getElementByClassName('goal');
-    const goalImage = document.getElementByClassName('goal-hide');
+    const goalButton = document.getElementById('goal-button');
+    const goalImage = document.getElementById('goal');
     goalButton.addEventListener('click', () => {
       this.goalToggle(goalImage);
     });
   }
 
   moveButton() {
-    const moveButton = document.getElementByClassName('move');
-    const moveImage = document.getElementByClassName('move-hide');
+    const moveButton = document.getElementById('move-button');
+    const moveImage = document.getElementById('move');
     moveButton.addEventListener('click', () => {
       this.moveToggle(moveImage);
     });
   }
 
   transformButton() {
-    const transformButton = document.getElementByClassName('transform');
-    const transformImage = document.getElementByClassName('transform-hide');
+    const transformButton = document.getElementById('transform-button');
+    const transformImage = document.getElementById('transform');
     transformButton.addEventListener('click', () => {
       this.transformToggle(transformImage);
     });
@@ -851,34 +893,34 @@ class PageButtons {
   }
 
   moveToggle(image) {
-    if (image.className === "move-hide") {
+    if (image.className === "hidden") {
       image.className = "show";
     } else {
-      image.className = "move-hide";
+      image.className = "hidden";
     }
   }
 
   transformToggle(image) {
-    if (image.className === "transform-hide") {
+    if (image.className === "hidden") {
       image.className = "show";
     } else {
-      image.className = "transform-hide";
+      image.className = "hidden";
     }
   }
 
   fallToggle(image) {
-    if (image.className === "fall-hide") {
+    if (image.className === "hidden") {
       image.className = "show";
     } else {
-      image.className = "fall-hide";
+      image.className = "hidden";
     }
   }
 
   goalToggle(image) {
-    if (image.className === "goal-hide") {
+    if (image.className === "hidden") {
       image.className = "show";
     } else {
-      image.className = "goal-hide";
+      image.className = "hidden";
     }
   }
 }
