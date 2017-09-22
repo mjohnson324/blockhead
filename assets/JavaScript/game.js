@@ -8,8 +8,8 @@ class Game {
     this.display = new Display(ctx, length);
     this.levels = LevelGenerator(length);
     this.getMove = this.getMove.bind(this);
-    const musicButton = document.getElementById("music");
-    this.sound = new Sound(musicButton);
+
+    this.sound = new Sound();
     this.state = {
                    length: length,
                    levelNumber: 1,
@@ -19,6 +19,7 @@ class Game {
   }
 
   start() {
+    this.sound.start();
     this.state.currentLevel = this.levels[this.state.levelNumber - 1];
     this.state.goal = this.state.currentLevel[1];
     document.addEventListener("keydown", this.getMove);
@@ -104,6 +105,7 @@ class Game {
   }
 
   nextLevel() {
+    this.sound.goalSound();
     this.state.levelNumber += 1;
     this.state.currentLevel = this.levels[this.state.levelNumber - 1];
     if (this.state.currentLevel === undefined) {
