@@ -23,7 +23,7 @@ class Game {
     this.state.minutes = 0;
     this.state.seconds = 0;
     this.timerId = setInterval(this.tick, 1000);
-    this.state.currentLevel = this.levels[this.state.levelNumber - 1];
+    this.state.currentLevel = this.levels[this.state.levelNumber];
     this.state.goal = this.state.currentLevel[1];
     document.addEventListener("keydown", this.getMove);
     this.constructBlock();

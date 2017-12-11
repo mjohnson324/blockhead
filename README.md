@@ -44,7 +44,7 @@ const levelOne = (length, startX = 330, startY = 240) => {
       { x: startX - length, y: startY + length, type: "none" },
 ```
 
-Level Data is fed to the level generator, which takes each level array and constructs arrays of tile objects to track floor information during play.
+Level Data is fed to the level generator (code below), which takes each level array and constructs arrays of tile objects to track floor information during play.
 
 ``` JavaScript
 const levelGenerator = (length) => {
