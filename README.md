@@ -1,4 +1,4 @@
-# JS Project Proposal: Blockhead
+# Blockhead: an HTML5 Canvas Game
 
 ### Background:
 
