@@ -68,7 +68,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const Game = __webpack_require__(1);
-const PageButtons = __webpack_require__(11);
+const PageButtons = __webpack_require__(12);
 
 document.addEventListener("DOMContentLoaded", () => {
   const buttonActivation = new PageButtons();
@@ -85,9 +85,9 @@ document.addEventListener("DOMContentLoaded", () => {
 /***/ (function(module, exports, __webpack_require__) {
 
 const LevelGenerator = __webpack_require__(2);
-const Block = __webpack_require__(8);
-const Display = __webpack_require__(9);
-const Sound = __webpack_require__(10);
+const Block = __webpack_require__(9);
+const Display = __webpack_require__(10);
+const Sound = __webpack_require__(11);
 
 class Game {
   constructor(ctx, length) {
@@ -109,7 +109,7 @@ class Game {
     this.state.minutes = 0;
     this.state.seconds = 0;
     this.timerId = setInterval(this.tick, 1000);
-    this.state.currentLevel = this.levels[this.state.levelNumber - 1];
+    this.state.currentLevel = this.levels[this.state.levelNumber];
     this.state.goal = this.state.currentLevel[1];
     document.addEventListener("keydown", this.getMove);
     this.constructBlock();
@@ -218,7 +218,7 @@ class Game {
   nextLevel() {
     this.sound.goalSound();
     this.state.levelNumber += 1;
-    this.state.currentLevel = this.levels[this.state.levelNumber - 1];
+    this.state.currentLevel = this.levels[this.state.levelNumber];
     if (this.state.currentLevel === undefined) {
       this.endGame();
     } else {
@@ -283,17 +283,19 @@ module.exports = Game;
 
 const Tile = __webpack_require__(3);
 
-const Tutorial = __webpack_require__(4);
-const LevelOne = __webpack_require__(5);
-const LevelTwo = __webpack_require__(6);
-const LevelThree = __webpack_require__(7);
+const tutorial = __webpack_require__(4);
+const levelOne = __webpack_require__(5);
+const levelTwo = __webpack_require__(6);
+const levelThree = __webpack_require__(7);
+const levelFour = __webpack_require__(8);
 
 
 const levelGenerator = (length) => {
-  const levels = [Tutorial(length),
-                     LevelOne(length),
-                     LevelTwo(length),
-                     LevelThree(length)];
+  const levels = [tutorial(length),
+                     levelOne(length),
+                     levelTwo(length),
+                     levelThree(length),
+                     levelFour(length)];
   levels.forEach(level => {
     level.forEach((positionData, idx) => {
       level[idx] = new Tile(positionData);
@@ -380,7 +382,32 @@ module.exports = tutorial;
 /* 5 */
 /***/ (function(module, exports) {
 
-const levelOne = (length, startX = 330, startY = 240) => {
+const levelOne = (length, startX = 300, startY = 180) => {
+  return(
+    [
+      { x: startX, y: startY, type: "start" },
+      { x: startX + length * 9, y: startY, type: "goal" },
+
+      { x: startX + length, y: startY, type: "none" },
+      { x: startX + length * 2, y: startY, type: "none" },
+      { x: startX + length * 3, y: startY, type: "none" },
+      { x: startX + length * 4, y: startY, type: "none" },
+      { x: startX + length * 5, y: startY, type: "none" },
+      { x: startX + length * 6, y: startY, type: "none" },
+      { x: startX + length * 7, y: startY, type: "none" },
+      { x: startX + length * 8, y: startY, type: "none" },
+    ]
+  );
+}
+
+module.exports = levelOne;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+const levelTwo = (length, startX = 330, startY = 240) => {
   return(
     [
       { x: startX, y: startY, type: "start" },
@@ -432,14 +459,14 @@ const levelOne = (length, startX = 330, startY = 240) => {
   );
 };
 
-module.exports = levelOne;
+module.exports = levelTwo;
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
-const levelTwo = (length, startX = 210, startY = 280) => {
+const levelThree = (length, startX = 210, startY = 280) => {
   return(
     [
       { x: startX, y: startY, type: "start" },
@@ -509,14 +536,14 @@ const levelTwo = (length, startX = 210, startY = 280) => {
   );
 };
 
-module.exports = levelTwo;
+module.exports = levelThree;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
-const levelThree = (length, startX = 270, startY = 210) => {
+const levelFour = (length, startX = 270, startY = 210) => {
   return(
     [
       { x: startX, y: startY, type: "start" },
@@ -586,11 +613,11 @@ const levelThree = (length, startX = 270, startY = 210) => {
   );
 };
 
-module.exports = levelThree;
+module.exports = levelFour;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 class Block {
@@ -673,7 +700,7 @@ module.exports = Block;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 class Display {
@@ -763,7 +790,7 @@ class Display {
     this.ctx.fillText(`Falls: ${options.falls}`, 70, 190);
     this.ctx.fillText(`Time: ${options.time}`, 70, 225);
     this.ctx.fillText(
-      "Thanks for playing! More levels coming soon!",
+      "Thanks for playing! More levels will be added in the future",
       50,
       350);
   }
@@ -773,7 +800,7 @@ module.exports = Display;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 class Sound {
@@ -828,7 +855,7 @@ module.exports = Sound;
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 class PageButtons {
