@@ -9,13 +9,14 @@ class Game {
     this.levels = LevelGenerator(length);
     this.getMove = this.getMove.bind(this);
     this.tick = this.tick.bind(this);
+    this.pauseButton = this.pauseButton.bind(this);
     this.sound = new Sound();
     this.state = {
                    length: length,
                    levelNumber: 1,
                    moves: 0,
                    falls: 0,
-                   pauseState: false
+                   pauseStatus: false
                  };
   }
 
@@ -100,9 +101,28 @@ class Game {
   pauseButton(e) {
     switch(e.keyCode) {
       case 13:
-
-        e.preventDefault();
+      e.preventDefault();
+      if (this.state.pauseStatus === false) {
+        this.state.pauseStatus = true;
+        this.pauseGame();
+      } else {
+        this.state.pauseStatus = false
+        this.resumeGame();
+      }
     }
+  }
+
+  pauseGame() {
+    clearInterval(this.timerId);
+    document.removeEventListener("keydown", this.getMove);
+    this.display.drawPause();
+  }
+
+  resumeGame() {
+    this.display.render(this.displayOptions());
+    this.display.drawBlock(this.block);
+    document.addEventListener("keydown", this.getMove);
+    this.timerId = setInterval(this.tick, 1000);
   }
 
   moveBlock(direction) {
