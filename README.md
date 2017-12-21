@@ -5,7 +5,9 @@
 Blockhead is a game that is based on the 3D puzzle game bloxors, in which the players must move a rectangular prism across a board into a hole. The main difference with this game is the 2D overhead perspective.
 
 - Controls: Move the block with arrow keys
-- Counters are set for the current level as well as the time and total number of moves and falls for a current game session.
+- Counters are set for the current level as well as the time, number of moves taken thus far, and total number of falls for a current game session.
+
+**Notice**: This game is (currently) not accessible from mobile devices. A keyboard is required to play the game. I may change this in the future with, say, page buttons that can be used to control the block. I do not consider this approach ideal as they would lack responsiveness.
 
 ### Architecture and Technologies:
 
@@ -68,3 +70,5 @@ const levelGenerator = (length) => {
 [ ] 'Other tile types:' The original game has multiple tiles with functionalities such as switches, different weight-bearing capacities, teleportation, etc.
 
 [ ] 'Score tracker:' The original game tracks the number of moves a player has taken. It would make for a fun competition if, in addition to tracking a player's current score the game ranked players. I've considered Firebase as a possible server option.
+
+[ ] 'Mobile access': In the spirit of introducing my game to more people I may also adapt the game to mobile devices. I do not yet know of an ideal way to implement mobile controls.
