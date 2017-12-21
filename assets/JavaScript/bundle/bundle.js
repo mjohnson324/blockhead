@@ -758,7 +758,7 @@ class Display {
   render(options) {
     this.ctx.fillStyle = this.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 450);
-    this.ctx.fillRect(0, 450, 200, 50);
+    this.ctx.fillRect(0, 450, 700, 50);
     this.ctx.font = '30px sans-serif';
     this.ctx.fillStyle = 'white';
     this.ctx.fillText(`Level ${options.levelNumber}`, 25, 50);
@@ -805,7 +805,8 @@ class Display {
   }
 
   drawPause() {
-    this.ctx.clearRect(0, 0, 900, 500);
+    this.ctx.fillStyle = this.backgroundColor;
+    this.ctx.fillRect(0, 0, 900, 500);
     this.ctx.font = '50px sans-serif';
     this.ctx.fillStyle = 'white';
     this.ctx.fillText(`Pause`, 400, 200);
