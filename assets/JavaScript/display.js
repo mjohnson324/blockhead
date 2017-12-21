@@ -69,6 +69,15 @@ class Display {
     return false;
   }
 
+  drawPause() {
+    this.ctx.clearRect(0, 0, 900, 500);
+    this.ctx.font = '50px sans-serif';
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillText(`Pause`, 400, 200);
+    this.ctx.font = '30px sans-serif';
+    this.ctx.fillText(`(Press enter to resume)`, 300, 300);
+  }
+
   drawFail(oldOptions) {
     const { xPos, yPos, width, height } = oldOptions;
     this.ctx.fillStyle = 'rgb(255, 0, 0)';
