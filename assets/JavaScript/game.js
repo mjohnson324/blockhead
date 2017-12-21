@@ -14,7 +14,8 @@ class Game {
                    length: length,
                    levelNumber: 1,
                    moves: 0,
-                   falls: 0
+                   falls: 0,
+                   pauseState: false
                  };
   }
 
@@ -26,6 +27,7 @@ class Game {
     this.state.currentLevel = this.levels[this.state.levelNumber];
     this.state.goal = this.state.currentLevel[1];
     document.addEventListener("keydown", this.getMove);
+    document.addEventListener("keydown", this.pauseButton);
     this.constructBlock();
     this.display.render(this.displayOptions());
     this.display.drawBlock(this.block);
@@ -92,6 +94,14 @@ class Game {
       case 39:
         e.preventDefault();
         this.moveBlock("right");
+    }
+  }
+
+  pauseButton(e) {
+    switch(e.keyCode) {
+      case 13:
+
+        e.preventDefault();
     }
   }
 
