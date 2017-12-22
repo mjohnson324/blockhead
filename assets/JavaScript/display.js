@@ -98,6 +98,7 @@ class Display {
       "Thanks for playing! More levels will be added in the future",
       50,
       350);
+    this.ctx.fillText("Press spacebar to start over", 50, 400);
   }
 }
 
