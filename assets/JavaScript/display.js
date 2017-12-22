@@ -86,7 +86,8 @@ class Display {
   }
 
   drawFinish(options) {
-    this.ctx.clearRect(0, 0, 900, 500);
+    this.ctx.fillStyle = this.backgroundColor;
+    this.ctx.fillRect(0, 0, 900, 500);
     this.ctx.font = '50px sans-serif';
     this.ctx.fillStyle = "white";
     this.ctx.fillText(`Final Tally:`, 50, 100);

@@ -14,6 +14,7 @@ class Game {
     this.getMove = this.getMove.bind(this);
     this.tick = this.tick.bind(this);
     this.pauseButton = this.pauseButton.bind(this);
+    this.restartGame = this.restartGame.bind(this);
   }
 
   setState() {
@@ -38,6 +39,15 @@ class Game {
     this.constructBlock();
     this.display.render(this.displayOptions());
     this.display.drawBlock(this.block);
+  }
+
+  restartGame(e) {
+    switch(e.keyCode) {
+      case 32:
+        e.preventDefault();
+        this.start();
+        document.removeEventListener("keydown", this.restartGame);
+    }
   }
 
   tick() {
@@ -183,6 +193,7 @@ class Game {
     document.removeEventListener("keydown", this.getMove);
     clearInterval(this.timerId);
     this.display.drawFinish(this.displayOptions());
+    document.addEventListener("keydown", this.restartGame);
   }
 
   checkBounds() {

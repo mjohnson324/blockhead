@@ -93,31 +93,47 @@ class Game {
   constructor(ctx, length) {
     this.display = new Display(ctx, length);
     this.levels = LevelGenerator(length);
+    this.tileLength = length;
+    this.sound = new Sound();
+
+    this.sound.start();
     this.getMove = this.getMove.bind(this);
     this.tick = this.tick.bind(this);
     this.pauseButton = this.pauseButton.bind(this);
-    this.sound = new Sound();
+    this.restartGame = this.restartGame.bind(this);
+  }
+
+  setState() {
     this.state = {
-                   length: length,
-                   levelNumber: 1,
-                   moves: 0,
-                   falls: 0,
-                   pauseStatus: false
-                 };
+      length: this.tileLength,
+      levelNumber: 1,
+      moves: 0,
+      falls: 0,
+      minutes: 0,
+      seconds: 0,
+      pauseStatus: false,
+      currentLevel: this.levels[1],
+    };
   }
 
   start() {
-    this.sound.start();
-    this.state.minutes = 0;
-    this.state.seconds = 0;
-    this.timerId = setInterval(this.tick, 1000);
-    this.state.currentLevel = this.levels[this.state.levelNumber];
+    this.setState();
     this.state.goal = this.state.currentLevel[1];
+    this.timerId = setInterval(this.tick, 1000);
     document.addEventListener("keydown", this.getMove);
     document.addEventListener("keydown", this.pauseButton);
     this.constructBlock();
     this.display.render(this.displayOptions());
     this.display.drawBlock(this.block);
+  }
+
+  restartGame(e) {
+    switch(e.keyCode) {
+      case 32:
+        e.preventDefault();
+        this.start();
+        document.removeEventListener("keydown", this.restartGame);
+    }
   }
 
   tick() {
@@ -261,9 +277,9 @@ class Game {
 
   endGame() {
     document.removeEventListener("keydown", this.getMove);
-    document.removeEventListener("keydown", this.pauseButton);
     clearInterval(this.timerId);
     this.display.drawFinish(this.displayOptions());
+    document.addEventListener("keydown", this.restartGame);
   }
 
   checkBounds() {
@@ -822,7 +838,8 @@ class Display {
   }
 
   drawFinish(options) {
-    this.ctx.clearRect(0, 0, 900, 500);
+    this.ctx.fillStyle = this.backgroundColor;
+    this.ctx.fillRect(0, 0, 900, 500);
     this.ctx.font = '50px sans-serif';
     this.ctx.fillStyle = "white";
     this.ctx.fillText(`Final Tally:`, 50, 100);
@@ -834,6 +851,7 @@ class Display {
       "Thanks for playing! More levels will be added in the future",
       50,
       350);
+    this.ctx.fillText("Press spacebar to start over", 50, 400);
   }
 }
 
