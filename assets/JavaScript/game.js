@@ -175,6 +175,7 @@ class Game {
 
   endGame() {
     document.removeEventListener("keydown", this.getMove);
+    document.removeEventListener("keydown", this.pauseButton);
     clearInterval(this.timerId);
     this.display.drawFinish(this.displayOptions());
   }
