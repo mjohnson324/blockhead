@@ -7,26 +7,32 @@ class Game {
   constructor(ctx, length) {
     this.display = new Display(ctx, length);
     this.levels = LevelGenerator(length);
+    this.tileLength = length;
+    this.sound = new Sound();
+
+    this.sound.start();
     this.getMove = this.getMove.bind(this);
     this.tick = this.tick.bind(this);
     this.pauseButton = this.pauseButton.bind(this);
-    this.sound = new Sound();
+  }
+
+  setState() {
     this.state = {
-                   length: length,
-                   levelNumber: 1,
-                   moves: 0,
-                   falls: 0,
-                   pauseStatus: false
-                 };
+      length: this.tileLength,
+      levelNumber: 1,
+      moves: 0,
+      falls: 0,
+      minutes: 0,
+      seconds: 0,
+      pauseStatus: false,
+      currentLevel: this.levels[1],
+    };
   }
 
   start() {
-    this.sound.start();
-    this.state.minutes = 0;
-    this.state.seconds = 0;
-    this.timerId = setInterval(this.tick, 1000);
-    this.state.currentLevel = this.levels[this.state.levelNumber];
+    this.setState();
     this.state.goal = this.state.currentLevel[1];
+    this.timerId = setInterval(this.tick, 1000);
     document.addEventListener("keydown", this.getMove);
     document.addEventListener("keydown", this.pauseButton);
     this.constructBlock();
@@ -175,7 +181,6 @@ class Game {
 
   endGame() {
     document.removeEventListener("keydown", this.getMove);
-    document.removeEventListener("keydown", this.pauseButton);
     clearInterval(this.timerId);
     this.display.drawFinish(this.displayOptions());
   }
