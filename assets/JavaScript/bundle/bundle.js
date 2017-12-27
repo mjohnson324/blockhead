@@ -868,7 +868,8 @@ class Sound {
     this.squareSound = document.getElementById("block-square");
     this.fall = document.getElementById("fall");
     this.completeLevel = document.getElementById("complete-level");
-    this.music = document.getElementById("song");
+    this.gameMusic = document.getElementById("game-song");
+    this.menuMusic = document.getElementById("menu-song");
 
     this.toggleMusic = this.toggleMusic.bind(this);
   }
@@ -876,20 +877,20 @@ class Sound {
   start() {
     this.musicButton = document.getElementById("music");
     this.playMusic = true;
-    this.music.loop = true;
+    this.gameMusic.loop = true;
     this.musicButton.addEventListener("click", this.toggleMusic);
-    this.music.play();
+    this.gameMusic.play();
   }
 
   toggleMusic() {
     if (this.playMusic === true) {
       this.musicButton.className = "off";
       this.playMusic = false;
-      this.music.pause();
+      this.gameMusic.pause();
     } else {
       this.playMusic = true;
       this.musicButton.className = "on";
-      this.music.play();
+      this.gameMusic.play();
     }
   }
 
