@@ -32,6 +32,17 @@ class Display {
     this.drawFloor(options.level);
   }
 
+  drawMenu() {
+    this.ctx.font = '50px sans-serif';
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillText('Blockhead', 400, 200);
+    this.ctx.font = '30px sans-serif';
+    this.ctx.fillStyle = 'red';
+    this.ctx.fillText('options (coming soon!)', 350, 250);
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillText('(press enter to begin and to pause)', 300, 300);
+  }
+
   drawClock(time) {
     this.ctx.fillStyle = this.backgroundColor;
     this.ctx.fillRect(200, 450, 900, 50);
