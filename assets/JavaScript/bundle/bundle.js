@@ -754,22 +754,10 @@ class Display {
   constructor(ctx, length) {
     this.ctx = ctx;
     this.length = length;
-    const backgroundRGB = [25, 25, 25];
-    this.backgroundColor = this.stringifyRGB(backgroundRGB);
+
+    this.backgroundColor = 'rgb(25, 25, 25)';
     this.ctx.fillStyle = this.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
-  }
-
-  stringifyRGB(colorArray) {
-    return(
-      'rgb('
-      .concat(colorArray[0])
-      .concat(', ')
-      .concat(colorArray[1])
-      .concat(', ')
-      .concat(colorArray[2])
-      .concat(')')
-    );
   }
 
   render(options) {
