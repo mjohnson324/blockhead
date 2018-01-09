@@ -5,6 +5,26 @@ class Menu {
     this.lives = false;
     this.challenge = false;
   }
+
+  accessOptions() {
+
+  }
+
+  alterTextSize() {
+
+  }
+
+  alterBlockSize() {
+
+  }
+
+  enableLives() {
+
+  }
+
+  enableChallengeMode() {
+    
+  }
 }
 
 module.exports = Menu;
