@@ -1,50 +1,52 @@
 class Menu {
-  constructor(canvas) {
+  constructor(context) {
     this.textSize = "medium";
     this.blockSize = "medium";
     this.lives = false;
     this.challenge = false;
+    this.canvas = document.getElementById("blockhead");
 
-    this.activateMenu(canvas);
+    this.activateMenu(context);
   }
 
-  activateMenu(canvas) {
-    // elem.addEventListener('click', function(e) {
-    //     console.log('click: ' + e.offsetX + '/' + e.offsetY);
-    //     var rect = collides(rects, e.offsetX, e.offsetY);
-    //     if (rect) {
-    //         console.log('collision: ' + rect.x + '/' + rect.y);
-    //     } else {
-    //         console.log('no collision');
-    //     }
-    // }, false);
+  activateMenu(context) {
+
+    this.canvas.addEventListenenr('click', this.startGame);
+    this.canvas.addEventListener('click', this.beginTutorial);
+    this.canvas.addEventListener('click', this.accessOptions);
   }
 
-  startGame() {
-
+  startGame(e) {
+    e.preventDefault();
   }
 
-  beginTutorial() {
+  beginTutorial(e) {
+    e.preventDefault(e);
 
   }
 
   accessOptions() {
+    e.preventDefault(e);
 
   }
 
   alterTextSize() {
+    e.preventDefault(e);
 
   }
 
   alterBlockSize() {
+    e.preventDefault(e);
 
   }
 
   enableLives() {
+    e.preventDefault(e);
 
   }
 
-  enableChallengeMode() {
+  enableChallengeMode(e) {
+    e.preventDefault();
 
   }
 }
