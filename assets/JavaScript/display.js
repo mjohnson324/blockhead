@@ -26,9 +26,10 @@ class Display {
     this.ctx.fillText('Blockhead', 400, 200);
     this.ctx.font = '30px sans-serif';
     this.ctx.fillStyle = 'red';
-    this.ctx.fillText('options (coming soon!)', 350, 250);
+    this.ctx.fillText('Options (coming soon!)', 350, 300);
+    this.ctx.fillText('Tutorial (coming soon!)', 350, 350);
     this.ctx.fillStyle = 'white';
-    this.ctx.fillText('(press enter to begin and to pause)', 300, 300);
+    this.ctx.fillText('Start', 300, 250);
   }
 
   drawClock(time) {
