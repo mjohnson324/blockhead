@@ -5,11 +5,12 @@ class Menu {
     this.lives = false;
     this.challenge = false;
     this.canvas = document.getElementById("blockhead");
+    this.context = context;
 
-    this.activateMenu(context);
+    this.activateMenu();
   }
 
-  activateMenu(context) {
+  activateMenu() {
 
     this.canvas.addEventListenenr('click', this.startGame);
     this.canvas.addEventListener('click', this.beginTutorial);
