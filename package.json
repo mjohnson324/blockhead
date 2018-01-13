@@ -1,0 +1,23 @@
+{
+  "name": "blockhead",
+  "version": "1.0.0",
+  "description": "A navigation puzzle game built with HTML5 Canvas",
+  "main": "webpack.config.js",
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^22.0.6"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mjohnson324/blockhead.git"
+  },
+  "author": "Michael W Johnson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mjohnson324/blockhead/issues"
+  },
+  "homepage": "https://github.com/mjohnson324/blockhead#readme"
+}
