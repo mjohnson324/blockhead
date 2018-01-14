@@ -1,0 +1,1 @@
+const Sound = require('../sound');
