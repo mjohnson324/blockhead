@@ -10,6 +10,8 @@ class Display {
     return {
       backgroundColor: 'rgb(25, 25, 25)',
       textColor: 'rgb(255, 255, 255)',
+      blockColor: 'rgb(200, 0, 255)',
+      blockFallingColor: 'rgb(255, 0, 0)',
     };
   }
 
@@ -56,7 +58,7 @@ class Display {
 
   drawBlock(block) {
     const { xPos, yPos, width, height } = block;
-    this.ctx.fillStyle = 'rgb(200, 0, 255)';
+    this.ctx.fillStyle = colors().blockColor;
     this.ctx.fillRect(xPos, yPos, width, height);
     this.ctx.strokeRect(xPos, yPos, width, height);
   }
@@ -86,7 +88,7 @@ class Display {
 
   drawFail(oldOptions) {
     const { xPos, yPos, width, height } = oldOptions;
-    this.ctx.fillStyle = 'rgb(255, 0, 0)';
+    this.ctx.fillStyle = colors().blockFallingColor;
     this.ctx.fillRect(xPos, yPos, width, height);
   }
 
@@ -94,7 +96,7 @@ class Display {
     this.ctx.fillStyle = colors().backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
     this.ctx.font = '50px sans-serif';
-    this.ctx.fillStyle = "white";
+    this.ctx.fillStyle = colors().textColor;
     this.ctx.fillText(`Final Tally:`, 50, 100);
     this.ctx.font = '30px sans-serif';
     this.ctx.fillText(`Moves: ${options.moves}`, 70, 155);
