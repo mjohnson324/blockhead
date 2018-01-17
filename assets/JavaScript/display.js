@@ -2,18 +2,23 @@ class Display {
   constructor(ctx, length) {
     this.ctx = ctx;
     this.length = length;
-
-    this.backgroundColor = 'rgb(25, 25, 25)';
-    this.ctx.fillStyle = this.backgroundColor;
+    this.ctx.fillStyle = colors().backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
   }
 
+  colors() {
+    return {
+      backgroundColor: 'rgb(25, 25, 25)',
+      textColor: 'rgb(255, 255, 255)',
+    };
+  }
+
   render(options) {
-    this.ctx.fillStyle = this.backgroundColor;
+    this.ctx.fillStyle = colors().backgroundColor;
     this.ctx.fillRect(0, 0, 900, 450);
     this.ctx.fillRect(0, 450, 700, 50);
     this.ctx.font = '30px sans-serif';
-    this.ctx.fillStyle = 'white';
+    this.ctx.fillStyle = colors().textColor;
     this.ctx.fillText(`Level ${options.levelNumber}`, 25, 50);
     this.ctx.fillText(`Moves: ${options.moves}`, 700, 50);
     this.ctx.fillText(`Falls: ${options.falls}`, 25, 475);
@@ -22,21 +27,21 @@ class Display {
 
   drawMenu() {
     this.ctx.font = '50px sans-serif';
-    this.ctx.fillStyle = 'white';
+    this.ctx.fillStyle = colors().textColor;
     this.ctx.fillText('Blockhead', 400, 200);
     this.ctx.font = '30px sans-serif';
     this.ctx.fillStyle = 'red';
     this.ctx.fillText('Options (coming soon!)', 350, 300);
     this.ctx.fillText('Tutorial (coming soon!)', 350, 350);
-    this.ctx.fillStyle = 'white';
+    this.ctx.fillStyle = colors().textColor;
     this.ctx.fillText('Start', 300, 250);
   }
 
   drawClock(time) {
-    this.ctx.fillStyle = this.backgroundColor;
+    this.ctx.fillStyle = colors().backgroundColor;
     this.ctx.fillRect(200, 450, 900, 50);
     this.ctx.font = '30px sans-serif';
-    this.ctx.fillStyle = 'white';
+    this.ctx.fillStyle = colors().textColor;
     this.ctx.fillText(time, 700, 475);
   }
 
@@ -62,7 +67,7 @@ class Display {
       let point = this.ctx.getImageData(corner[0], corner[1], 1, 1);
       let colorData = point.data.slice(0, 3);
       let color = this.stringifyRGB(colorData);
-      if (color === this.backgroundColor) {
+      if (color === colors().backgroundColor) {
         return true;
       }
     }
@@ -70,10 +75,10 @@ class Display {
   }
 
   drawPause() {
-    this.ctx.fillStyle = this.backgroundColor;
+    this.ctx.fillStyle = colors().backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
     this.ctx.font = '50px sans-serif';
-    this.ctx.fillStyle = 'white';
+    this.ctx.fillStyle = colors().textColor;
     this.ctx.fillText(`Pause`, 400, 200);
     this.ctx.font = '30px sans-serif';
     this.ctx.fillText(`(Press enter to resume)`, 300, 300);
@@ -86,7 +91,7 @@ class Display {
   }
 
   drawFinish(options) {
-    this.ctx.fillStyle = this.backgroundColor;
+    this.ctx.fillStyle = colors().backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
     this.ctx.font = '50px sans-serif';
     this.ctx.fillStyle = "white";
