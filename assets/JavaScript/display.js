@@ -63,6 +63,15 @@ class Display {
     this.ctx.strokeRect(xPos, yPos, width, height);
   }
 
+  stringifyRGB(colorData) {
+    return 'rgb('.concat(colorData[0])
+      .concat(', ')
+      .concat(colorData[1])
+      .concat(', ')
+      .concat(colorData[2])
+      .concat(')');
+  }
+
   tileMovesOffFloor(coordinates) {
     for(let i = 0; i < coordinates.length; i++) {
       let corner = coordinates[i];
