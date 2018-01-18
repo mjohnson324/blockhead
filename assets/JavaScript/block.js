@@ -6,7 +6,7 @@ class Block {
     this.height = options.height;
   }
 
-  position(dx, dy) {
+  changePosition(dx, dy) {
     this.xPos += dx;
     this.yPos += dy;
   }
@@ -33,43 +33,43 @@ class Block {
     } else if (this.width < this.height && y !== 0) {
       this.contractHeight(x, y);
     } else {
-      this.position(x, y);
+      this.changePosition(x, y);
     }
   }
 
   expandWidth(x, y) {
     this.width *= 2;
     if (x > 0) {
-      this.position(x, y);
+      this.changePosition(x, y);
     } else {
-      this.position(2 * x, y);
+      this.changePosition(2 * x, y);
     }
   }
 
   expandHeight(x, y) {
     this.height *= 2;
     if (y > 0) {
-      this.position(x, y);
+      this.changePosition(x, y);
     } else {
-      this.position(x, 2 * y);
+      this.changePosition(x, 2 * y);
     }
   }
 
   contractWidth(x, y) {
     this.width /= 2;
     if (x > 0) {
-      this.position(2 * x, y);
+      this.changePosition(2 * x, y);
     } else {
-      this.position(x, y);
+      this.changePosition(x, y);
     }
   }
 
   contractHeight(x, y) {
     this.height /= 2;
     if (y > 0) {
-      this.position(x, y * 2);
+      this.changePosition(x, y * 2);
     } else {
-      this.position(x, y);
+      this.changePosition(x, y);
     }
   }
 }
