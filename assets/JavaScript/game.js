@@ -74,10 +74,10 @@ class Game {
   constructBlock() {
     const { xPos, yPos } = this.state.currentLevel[0];
     const blockOptions = { xPos: xPos,
-                           yPos: yPos,
-                           width: this.state.length,
-                           height: this.state.length,
-                          };
+      yPos: yPos,
+      width: this.state.length,
+      height: this.state.length,
+    };
     this.block = new Block(blockOptions);
   }
 
@@ -147,7 +147,9 @@ class Game {
     if (this.block.width === this.block.height) {
       this.checkGoal();
     }
-    this.checkBounds();
+    if (this.state.currentLevel) {
+      this.checkBounds();
+    }
   }
 
   checkGoal() {
@@ -175,6 +177,7 @@ class Game {
 
   endGame() {
     document.removeEventListener("keydown", this.getMove);
+    document.removeEventListener("keydown", this.pauseButton);
     clearInterval(this.timerId);
     this.display.drawFinish(this.displayOptions());
     document.addEventListener("keydown", this.restartGame);
