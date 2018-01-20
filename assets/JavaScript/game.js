@@ -96,22 +96,24 @@ class Game {
 
   getMove(e) {
     switch (e.keyCode) {
-      case 40:
+      case 40:// down arrow key
         e.preventDefault();
-        this.moveBlock("down");
+        this.block.transform(0, this.state.length);
         break;
-      case 38:
+      case 38: // up arrow key
         e.preventDefault();
-        this.moveBlock("up");
+        this.block.transform(0, this.state.length * -1);
         break;
-      case 37:
+      case 37: // left arrow key
         e.preventDefault();
-        this.moveBlock("left");
+        this.block.transform(this.state.length * -1, 0);
         break;
-      case 39:
+      case 39: // right arrow key
         e.preventDefault();
-        this.moveBlock("right");
+        this.block.transform(this.state.length, 0);
     }
+    this.state.moves += 1;
+    this.checkBlock();
   }
 
   pauseButton(e) {
@@ -139,24 +141,6 @@ class Game {
     this.display.drawBlock(this.block);
     document.addEventListener("keydown", this.getMove);
     this.timerId = setInterval(this.tick, 1000);
-  }
-
-  moveBlock(direction) {
-    switch(direction) {
-      case "down":
-        this.block.transform(0, this.state.length);
-        break;
-      case "up":
-        this.block.transform(0, this.state.length * -1);
-        break;
-      case "left":
-        this.block.transform(this.state.length * -1, 0);
-        break;
-      case "right":
-        this.block.transform(this.state.length, 0);
-    }
-    this.state.moves += 1;
-    this.checkBlock();
   }
 
   checkBlock() {
