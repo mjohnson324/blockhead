@@ -68,7 +68,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const Game = __webpack_require__(1);
-const PageButtons = __webpack_require__(12);
+const PageButtons = __webpack_require__(2);
 
 document.addEventListener("DOMContentLoaded", () => {
   const buttonActivation = new PageButtons();
@@ -84,10 +84,10 @@ document.addEventListener("DOMContentLoaded", () => {
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const LevelGenerator = __webpack_require__(2);
-const Block = __webpack_require__(9);
-const Display = __webpack_require__(10);
-const Sound = __webpack_require__(11);
+const LevelGenerator = __webpack_require__(3);
+const Block = __webpack_require__(10);
+const Display = __webpack_require__(11);
+const Sound = __webpack_require__(12);
 
 class Game {
   constructor(ctx, length) {
@@ -160,10 +160,10 @@ class Game {
   constructBlock() {
     const { xPos, yPos } = this.state.currentLevel[0];
     const blockOptions = { xPos: xPos,
-                           yPos: yPos,
-                           width: this.state.length,
-                           height: this.state.length,
-                          };
+      yPos: yPos,
+      width: this.state.length,
+      height: this.state.length,
+    };
     this.block = new Block(blockOptions);
   }
 
@@ -181,22 +181,24 @@ class Game {
   }
 
   getMove(e) {
-    switch (e.keyCode) {
-      case 40:
-        e.preventDefault();
-        this.moveBlock("down");
-        break;
-      case 38:
-        e.preventDefault();
-        this.moveBlock("up");
-        break;
-      case 37:
-        e.preventDefault();
-        this.moveBlock("left");
-        break;
-      case 39:
-        e.preventDefault();
-        this.moveBlock("right");
+    const arrowKeycodes = [37, 38, 39, 40];
+    if (arrowKeycodes.includes(e.keyCode)) {
+      e.preventDefault();
+      switch (e.keyCode) {
+        case 40: // down arrow key
+          this.block.transform(0, this.state.length);
+          break;
+        case 38: // up arrow key
+          this.block.transform(0, this.state.length * -1);
+          break;
+        case 37: // left arrow key
+          this.block.transform(this.state.length * -1, 0);
+          break;
+        case 39: // right arrow key
+          this.block.transform(this.state.length, 0);
+      }
+      this.state.moves += 1;
+      this.checkBlock();
     }
   }
 
@@ -227,29 +229,13 @@ class Game {
     this.timerId = setInterval(this.tick, 1000);
   }
 
-  moveBlock(direction) {
-    switch(direction) {
-      case "down":
-        this.block.transform(0, this.state.length);
-        break;
-      case "up":
-        this.block.transform(0, this.state.length * -1);
-        break;
-      case "left":
-        this.block.transform(this.state.length * -1, 0);
-        break;
-      case "right":
-        this.block.transform(this.state.length, 0);
-    }
-    this.state.moves += 1;
-    this.checkBlock();
-  }
-
   checkBlock() {
     if (this.block.width === this.block.height) {
       this.checkGoal();
     }
-    this.checkBounds();
+    if (this.state.currentLevel) {
+      this.checkBounds();
+    }
   }
 
   checkGoal() {
@@ -277,6 +263,7 @@ class Game {
 
   endGame() {
     document.removeEventListener("keydown", this.getMove);
+    document.removeEventListener("keydown", this.pauseButton);
     clearInterval(this.timerId);
     this.display.drawFinish(this.displayOptions());
     document.addEventListener("keydown", this.restartGame);
@@ -326,596 +313,6 @@ module.exports = Game;
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Tile = __webpack_require__(3);
-
-const tutorial = __webpack_require__(4);
-const levelOne = __webpack_require__(5);
-const levelTwo = __webpack_require__(6);
-const levelThree = __webpack_require__(7);
-const levelFour = __webpack_require__(8);
-
-
-const levelGenerator = (length) => {
-  const levels = [tutorial(length),
-                     levelOne(length),
-                     levelTwo(length),
-                     levelThree(length),
-                     levelFour(length)];
-  levels.forEach(level => {
-    level.forEach((positionData, idx) => {
-      level[idx] = new Tile(positionData);
-    });
-  });
-  return levels;
-};
-
-
-
-module.exports = levelGenerator;
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-class Tile {
-  constructor(options) {
-    this.xPos = options.x;
-    this.yPos = options.y;
-    this.type = options.type;
-    this.color = this.typeCheck();
-  }
-
-  typeCheck() {
-    if (this.type === "start") {
-      return 'rgb(0, 255, 255)';
-    } else if (this.type === "goal") {
-      return 'rgb(0, 255, 0)';
-    } else if (this.type === "none") {
-      return 'rgb(192, 192, 192)';
-    }
-  }
-}
-
-module.exports = Tile;
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-const tutorial = (length, startX = 360, startY = 180) => {
-  return(
-    [
-    { x: startX, y: startY, type: "start" },
-    { x: startX + length * 2, y: startY + length * 2, type: "goal" },
-
-    { x: startX, y: startY + length, type: "none" },
-    { x: startX, y: startY + length * 2, type: "none" },
-    { x: startX, y: startY + length * 3, type: "none" },
-    { x: startX, y: startY + length * 4, type: "none" },
-
-    { x: startX + length, y: startY, type: "none" },
-    { x: startX + length, y: startY + length, type: "none" },
-    { x: startX + length, y: startY + length * 2, type: "none" },
-    { x: startX + length, y: startY + length * 3, type: "none" },
-    { x: startX + length, y: startY + length * 4, type: "none" },
-
-    { x: startX + length * 2, y: startY, type: "none" },
-    { x: startX + length * 2, y: startY + length, type: "none" },
-    { x: startX + length * 2, y: startY + length * 3, type: "none" },
-    { x: startX + length * 2, y: startY + length * 4, type: "none" },
-
-    { x: startX + length * 3, y: startY, type: "none" },
-    { x: startX + length * 3, y: startY + length, type: "none" },
-    { x: startX + length * 3, y: startY + length * 2, type: "none" },
-    { x: startX + length * 3, y: startY + length * 3, type: "none" },
-    { x: startX + length * 3, y: startY + length * 4, type: "none" },
-
-    { x: startX + length * 4, y: startY, type: "none" },
-    { x: startX + length * 4, y: startY + length, type: "none" },
-    { x: startX + length * 4, y: startY + length * 2, type: "none" },
-    { x: startX + length * 4, y: startY + length * 3, type: "none" },
-    { x: startX + length * 4, y: startY + length * 4, type: "none" },
-  ]);
-};
-
-module.exports = tutorial;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-const levelOne = (length, startX = 300, startY = 180) => {
-  return(
-    [
-      { x: startX, y: startY, type: "start" },
-      { x: startX + length * 9, y: startY, type: "goal" },
-
-      { x: startX + length, y: startY, type: "none" },
-      { x: startX + length * 2, y: startY, type: "none" },
-      { x: startX + length * 3, y: startY, type: "none" },
-      { x: startX + length * 4, y: startY, type: "none" },
-      { x: startX + length * 5, y: startY, type: "none" },
-      { x: startX + length * 6, y: startY, type: "none" },
-      { x: startX + length * 7, y: startY, type: "none" },
-      { x: startX + length * 8, y: startY, type: "none" },
-    ]
-  );
-}
-
-module.exports = levelOne;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-const levelTwo = (length, startX = 330, startY = 240) => {
-  return(
-    [
-      { x: startX, y: startY, type: "start" },
-      { x: startX + length * 6, y: startY + length * 3, type: "goal" },
-
-      { x: startX - length, y: startY - length, type: "none" },
-      { x: startX - length, y: startY, type: "none" },
-      { x: startX - length, y: startY + length, type: "none" },
-
-      { x: startX, y: startY - length, type: "none" },
-      { x: startX, y: startY + length, type: "none" },
-      { x: startX, y: startY + length * 2, type: "none" },
-
-      { x: startX + length, y: startY - length, type: "none" },
-      { x: startX + length, y: startY, type: "none" },
-      { x: startX + length, y: startY + length, type: "none" },
-      { x: startX + length, y: startY + length * 2, type: "none" },
-
-      { x: startX + length * 2, y: startY, type: "none" },
-      { x: startX + length * 2, y: startY + length, type: "none" },
-      { x: startX + length * 2, y: startY + length * 2, type: "none" },
-
-      { x: startX + length * 3, y: startY, type: "none" },
-      { x: startX + length * 3, y: startY + length, type: "none" },
-      { x: startX + length * 3, y: startY + length * 2, type: "none" },
-
-      { x: startX + length * 4, y: startY, type: "none" },
-      { x: startX + length * 4, y: startY + length, type: "none" },
-      { x: startX + length * 4, y: startY + length * 2, type: "none" },
-      { x: startX + length * 4, y: startY + length * 3, type: "none" },
-
-      { x: startX + length * 5, y: startY + length, type: "none" },
-      { x: startX + length * 5, y: startY + length * 2, type: "none" },
-      { x: startX + length * 5, y: startY + length * 3, type: "none" },
-      { x: startX + length * 5, y: startY + length * 4, type: "none" },
-
-      { x: startX + length * 6, y: startY + length, type: "none" },
-      { x: startX + length * 6, y: startY + length * 2, type: "none" },
-      { x: startX + length * 6, y: startY + length * 4, type: "none" },
-
-      { x: startX + length * 7, y: startY + length, type: "none" },
-      { x: startX + length * 7, y: startY + length * 2, type: "none" },
-      { x: startX + length * 7, y: startY + length * 3, type: "none" },
-      { x: startX + length * 7, y: startY + length * 4, type: "none" },
-
-      { x: startX + length * 8, y: startY + length * 2, type: "none" },
-      { x: startX + length * 8, y: startY + length * 3, type: "none" },
-    ]
-  );
-};
-
-module.exports = levelTwo;
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-const levelThree = (length, startX = 210, startY = 280) => {
-  return(
-    [
-      { x: startX, y: startY, type: "start" },
-      { x: startX + length * 12, y: startY, type: "goal" },
-
-      { x: startX - length, y: startY + length * 2, type: "none" },
-      { x: startX - length, y: startY + length, type: "none" },
-      { x: startX - length, y: startY, type: "none" },
-      { x: startX - length, y: startY - length, type: "none" },
-
-      { x: startX, y: startY + length * 2, type: "none" },
-      { x: startX, y: startY + length, type: "none" },
-      { x: startX, y: startY - length, type: "none" },
-
-      { x: startX + length, y: startY + length * 2, type: "none" },
-      { x: startX + length, y: startY + length, type: "none" },
-      { x: startX + length, y: startY, type: "none" },
-      { x: startX + length, y: startY - length, type: "none" },
-
-      { x: startX + length * 2, y: startY + length * 2, type: "none" },
-      { x: startX + length * 2, y: startY + length, type: "none" },
-      { x: startX + length * 2, y: startY, type: "none" },
-      { x: startX + length * 2, y: startY - length, type: "none" },
-
-      { x: startX + length * 3, y: startY + length, type: "none" },
-
-      { x: startX + length * 4, y: startY + length, type: "none" },
-
-      { x: startX + length * 5, y: startY + length * 3, type: "none" },
-      { x: startX + length * 5, y: startY + length * 2, type: "none" },
-      { x: startX + length * 5, y: startY + length, type: "none" },
-
-      { x: startX + length * 6, y: startY + length * 3, type: "none" },
-      { x: startX + length * 6, y: startY + length * 2, type: "none" },
-      { x: startX + length * 6, y: startY + length, type: "none" },
-
-      { x: startX + length * 7, y: startY + length * 3, type: "none" },
-      { x: startX + length * 7, y: startY + length * 2, type: "none" },
-      { x: startX + length * 7, y: startY + length, type: "none" },
-
-      { x: startX + length * 8, y: startY + length * 3, type: "none" },
-
-      { x: startX + length * 9, y: startY + length * 3, type: "none" },
-
-      { x: startX + length * 10, y: startY + length * 3, type: "none" },
-      { x: startX + length * 10, y: startY + length * 2, type: "none" },
-      { x: startX + length * 10, y: startY + length, type: "none" },
-      { x: startX + length * 10, y: startY, type: "none" },
-      { x: startX + length * 10, y: startY - length, type: "none" },
-
-      { x: startX + length * 11, y: startY + length * 3, type: "none" },
-      { x: startX + length * 11, y: startY + length * 2, type: "none" },
-      { x: startX + length * 11, y: startY + length, type: "none" },
-      { x: startX + length * 11, y: startY, type: "none" },
-      { x: startX + length * 11, y: startY - length, type: "none" },
-      { x: startX + length * 11, y: startY - length * 2, type: "none" },
-
-      { x: startX + length * 12, y: startY + length, type: "none" },
-      { x: startX + length * 12, y: startY - length, type: "none" },
-      { x: startX + length * 12, y: startY - length * 2, type: "none" },
-
-      { x: startX + length * 13, y: startY + length, type: "none" },
-      { x: startX + length * 13, y: startY, type: "none" },
-      { x: startX + length * 13, y: startY - length, type: "none" },
-      { x: startX + length * 13, y: startY - length * 2, type: "none" },
-    ]
-  );
-};
-
-module.exports = levelThree;
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-const levelFour = (length, startX = 270, startY = 210) => {
-  return(
-    [
-      { x: startX, y: startY, type: "start" },
-      { x: startX + length * 13, y: startY - length, type: "goal" },
-
-      { x: startX + length, y: startY, type: "none" },
-
-      { x: startX + length * 2, y: startY, type: "none" },
-
-      { x: startX + length * 3, y: startY, type: "none" },
-
-      { x: startX + length * 4, y: startY, type: "none" },
-      { x: startX + length * 4, y: startY - length, type: "none" },
-      { x: startX + length * 4, y: startY - length * 2, type: "none" },
-
-      { x: startX + length * 5, y: startY + length * 3, type: "none" },
-      { x: startX + length * 5, y: startY + length * 2, type: "none" },
-      { x: startX + length * 5, y: startY + length, type: "none" },
-      { x: startX + length * 5, y: startY, type: "none" },
-      { x: startX + length * 5, y: startY - length, type: "none" },
-      { x: startX + length * 5, y: startY - length * 2, type: "none" },
-
-      { x: startX + length * 6, y: startY + length * 3, type: "none" },
-      { x: startX + length * 6, y: startY - length, type: "none" },
-      { x: startX + length * 6, y: startY - length * 2, type: "none" },
-      { x: startX + length * 6, y: startY - length * 3, type: "none" },
-      { x: startX + length * 6, y: startY - length * 4, type: "none" },
-      { x: startX + length * 6, y: startY - length * 5, type: "none" },
-
-      { x: startX + length * 7, y: startY + length * 3, type: "none" },
-      { x: startX + length * 7, y: startY - length * 4, type: "none" },
-      { x: startX + length * 7, y: startY - length * 5, type: "none" },
-      { x: startX + length * 7, y: startY - length * 6, type: "none" },
-
-      { x: startX + length * 8, y: startY + length * 3, type: "none" },
-      { x: startX + length * 8, y: startY + length * 2, type: "none" },
-      { x: startX + length * 8, y: startY + length, type: "none" },
-      { x: startX + length * 8, y: startY - length * 4, type: "none" },
-      { x: startX + length * 8, y: startY - length * 5, type: "none" },
-      { x: startX + length * 8, y: startY - length * 6, type: "none" },
-
-      { x: startX + length * 9, y: startY + length * 3, type: "none" },
-      { x: startX + length * 9, y: startY + length * 2, type: "none" },
-      { x: startX + length * 9, y: startY + length, type: "none" },
-      { x: startX + length * 9, y: startY - length * 3, type: "none" },
-      { x: startX + length * 9, y: startY - length * 4, type: "none" },
-      { x: startX + length * 9, y: startY - length * 5, type: "none" },
-      { x: startX + length * 9, y: startY - length * 6, type: "none" },
-
-      { x: startX + length * 10, y: startY + length * 3, type: "none" },
-      { x: startX + length * 10, y: startY + length * 2, type: "none" },
-      { x: startX + length * 10, y: startY + length, type: "none" },
-      { x: startX + length * 10, y: startY - length * 3, type: "none" },
-      { x: startX + length * 10, y: startY - length * 4, type: "none" },
-      { x: startX + length * 10, y: startY - length * 5, type: "none" },
-
-      { x: startX + length * 11, y: startY + length, type: "none" },
-      { x: startX + length * 11, y: startY, type: "none" },
-      { x: startX + length * 11, y: startY - length, type: "none" },
-
-      { x: startX + length * 12, y: startY + length, type: "none" },
-      { x: startX + length * 12, y: startY, type: "none" },
-      { x: startX + length * 12, y: startY - length, type: "none" },
-
-      { x: startX + length * 13, y: startY, type: "none" },
-    ]
-  );
-};
-
-module.exports = levelFour;
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-class Block {
-  constructor(options) {
-    this.xPos = options.xPos;
-    this.yPos = options.yPos;
-    this.width = options.width;
-    this.height = options.height;
-  }
-
-  position(dx, dy) {
-    this.xPos += dx;
-    this.yPos += dy;
-  }
-
-  transform(x, y) {
-    if (this.width === this.height) {
-      this.expand(x, y);
-    } else {
-      this.checkDimensionsAndMovement(x, y);
-    }
-  }
-
-  expand(x, y) {
-    if (x !== 0) {
-      this.expandWidth(x, y);
-    } else {
-      this.expandHeight(x, y);
-    }
-  }
-
-  checkDimensionsAndMovement(x, y) {
-    if (this.width > this.height && x !== 0) {
-      this.contractWidth(x, y);
-    } else if (this.width < this.height && y !== 0) {
-      this.contractHeight(x, y);
-    } else {
-      this.position(x, y);
-    }
-  }
-
-  expandWidth(x, y) {
-    this.width *= 2;
-    if (x > 0) {
-      this.position(x, y);
-    } else {
-      this.position(2 * x, y);
-    }
-  }
-
-  expandHeight(x, y) {
-    this.height *= 2;
-    if (y > 0) {
-      this.position(x, y);
-    } else {
-      this.position(x, 2 * y);
-    }
-  }
-
-  contractWidth(x, y) {
-    this.width /= 2;
-    if (x > 0) {
-      this.position(2 * x, y);
-    } else {
-      this.position(x, y);
-    }
-  }
-
-  contractHeight(x, y) {
-    this.height /= 2;
-    if (y > 0) {
-      this.position(x, y * 2);
-    } else {
-      this.position(x, y);
-    }
-  }
-}
-
-module.exports = Block;
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports) {
-
-class Display {
-  constructor(ctx, length) {
-    this.ctx = ctx;
-    this.length = length;
-
-    this.backgroundColor = 'rgb(25, 25, 25)';
-    this.ctx.fillStyle = this.backgroundColor;
-    this.ctx.fillRect(0, 0, 900, 500);
-  }
-
-  render(options) {
-    this.ctx.fillStyle = this.backgroundColor;
-    this.ctx.fillRect(0, 0, 900, 450);
-    this.ctx.fillRect(0, 450, 700, 50);
-    this.ctx.font = '30px sans-serif';
-    this.ctx.fillStyle = 'white';
-    this.ctx.fillText(`Level ${options.levelNumber}`, 25, 50);
-    this.ctx.fillText(`Moves: ${options.moves}`, 700, 50);
-    this.ctx.fillText(`Falls: ${options.falls}`, 25, 475);
-    this.drawFloor(options.level);
-  }
-
-  drawMenu() {
-    this.ctx.font = '50px sans-serif';
-    this.ctx.fillStyle = 'white';
-    this.ctx.fillText('Blockhead', 400, 200);
-    this.ctx.font = '30px sans-serif';
-    this.ctx.fillStyle = 'red';
-    this.ctx.fillText('Options (coming soon!)', 350, 300);
-    this.ctx.fillText('Tutorial (coming soon!)', 350, 350);
-    this.ctx.fillStyle = 'white';
-    this.ctx.fillText('Start', 300, 250);
-  }
-
-  drawClock(time) {
-    this.ctx.fillStyle = this.backgroundColor;
-    this.ctx.fillRect(200, 450, 900, 50);
-    this.ctx.font = '30px sans-serif';
-    this.ctx.fillStyle = 'white';
-    this.ctx.fillText(time, 700, 475);
-  }
-
-  drawFloor(floor) {
-    floor.forEach(tile => {
-      this.ctx.fillStyle = tile.color;
-      const { xPos, yPos } = tile;
-      this.ctx.fillRect(xPos, yPos, this.length, this.length);
-      this.ctx.strokeRect(xPos, yPos, this.length, this.length);
-    });
-  }
-
-  drawBlock(block) {
-    const { xPos, yPos, width, height } = block;
-    this.ctx.fillStyle = 'rgb(200, 0, 255)';
-    this.ctx.fillRect(xPos, yPos, width, height);
-    this.ctx.strokeRect(xPos, yPos, width, height);
-  }
-
-  tileMovesOffFloor(coordinates) {
-    for(let i = 0; i < coordinates.length; i++) {
-      let corner = coordinates[i];
-      let point = this.ctx.getImageData(corner[0], corner[1], 1, 1);
-      let colorData = point.data.slice(0, 3);
-      let color = this.stringifyRGB(colorData);
-      if (color === this.backgroundColor) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  drawPause() {
-    this.ctx.fillStyle = this.backgroundColor;
-    this.ctx.fillRect(0, 0, 900, 500);
-    this.ctx.font = '50px sans-serif';
-    this.ctx.fillStyle = 'white';
-    this.ctx.fillText(`Pause`, 400, 200);
-    this.ctx.font = '30px sans-serif';
-    this.ctx.fillText(`(Press enter to resume)`, 300, 300);
-  }
-
-  drawFail(oldOptions) {
-    const { xPos, yPos, width, height } = oldOptions;
-    this.ctx.fillStyle = 'rgb(255, 0, 0)';
-    this.ctx.fillRect(xPos, yPos, width, height);
-  }
-
-  drawFinish(options) {
-    this.ctx.fillStyle = this.backgroundColor;
-    this.ctx.fillRect(0, 0, 900, 500);
-    this.ctx.font = '50px sans-serif';
-    this.ctx.fillStyle = "white";
-    this.ctx.fillText(`Final Tally:`, 50, 100);
-    this.ctx.font = '30px sans-serif';
-    this.ctx.fillText(`Moves: ${options.moves}`, 70, 155);
-    this.ctx.fillText(`Falls: ${options.falls}`, 70, 190);
-    this.ctx.fillText(`Time: ${options.time}`, 70, 225);
-    this.ctx.fillText(
-      "Thanks for playing! More levels will be added in the future",
-      50,
-      350);
-    this.ctx.fillText("Press spacebar to start over", 50, 400);
-  }
-}
-
-module.exports = Display;
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports) {
-
-class Sound {
-  constructor() {
-    this.rectangleSound = document.getElementById("block-rectangle");
-    this.squareSound = document.getElementById("block-square");
-    this.fall = document.getElementById("fall");
-    this.completeLevel = document.getElementById("complete-level");
-    this.gameMusic = document.getElementById("game-song");
-    this.menuMusic = document.getElementById("menu-song");
-
-    this.toggleMusic = this.toggleMusic.bind(this);
-  }
-
-  start() {
-    this.musicButton = document.getElementById("music");
-    this.playMusic = true;
-    this.gameMusic.loop = true;
-    this.musicButton.addEventListener("click", this.toggleMusic);
-    this.gameMusic.play();
-  }
-
-  toggleMusic() {
-    if (this.playMusic === true) {
-      this.musicButton.className = "off";
-      this.playMusic = false;
-      this.gameMusic.pause();
-    } else {
-      this.playMusic = true;
-      this.musicButton.className = "on";
-      this.gameMusic.play();
-    }
-  }
-
-  blockSound(block) {
-    if (block.height === block.width) {
-      this.squareSound.play();
-    } else {
-      this.rectangleSound.play();
-    }
-  }
-
-  fallSound() {
-    this.fall.play();
-  }
-
-  goalSound() {
-    this.completeLevel.play();
-  }
-}
-
-module.exports = Sound;
-
-
-/***/ }),
-/* 12 */
 /***/ (function(module, exports) {
 
 class PageButtons {
@@ -1013,6 +410,613 @@ class PageButtons {
 }
 
 module.exports = PageButtons;
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Tile = __webpack_require__(4);
+
+const tutorial = __webpack_require__(5);
+const levelOne = __webpack_require__(6);
+const levelTwo = __webpack_require__(7);
+const levelThree = __webpack_require__(8);
+const levelFour = __webpack_require__(9);
+
+
+const levelGenerator = (length) => {
+  const levels = [tutorial(length),
+                     levelOne(length),
+                     levelTwo(length),
+                     levelThree(length),
+                     levelFour(length)];
+  levels.forEach(level => {
+    level.forEach((positionData, idx) => {
+      level[idx] = new Tile(positionData);
+    });
+  });
+  return levels;
+};
+
+
+
+module.exports = levelGenerator;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+class Tile {
+  constructor(options) {
+    this.xPos = options.x;
+    this.yPos = options.y;
+    this.type = options.type;
+  }
+}
+
+module.exports = Tile;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+const tutorial = (length, startX = 360, startY = 180) => {
+  return(
+    [
+    { x: startX, y: startY, type: "start" },
+    { x: startX + length * 2, y: startY + length * 2, type: "goal" },
+
+    { x: startX, y: startY + length, type: "none" },
+    { x: startX, y: startY + length * 2, type: "none" },
+    { x: startX, y: startY + length * 3, type: "none" },
+    { x: startX, y: startY + length * 4, type: "none" },
+
+    { x: startX + length, y: startY, type: "none" },
+    { x: startX + length, y: startY + length, type: "none" },
+    { x: startX + length, y: startY + length * 2, type: "none" },
+    { x: startX + length, y: startY + length * 3, type: "none" },
+    { x: startX + length, y: startY + length * 4, type: "none" },
+
+    { x: startX + length * 2, y: startY, type: "none" },
+    { x: startX + length * 2, y: startY + length, type: "none" },
+    { x: startX + length * 2, y: startY + length * 3, type: "none" },
+    { x: startX + length * 2, y: startY + length * 4, type: "none" },
+
+    { x: startX + length * 3, y: startY, type: "none" },
+    { x: startX + length * 3, y: startY + length, type: "none" },
+    { x: startX + length * 3, y: startY + length * 2, type: "none" },
+    { x: startX + length * 3, y: startY + length * 3, type: "none" },
+    { x: startX + length * 3, y: startY + length * 4, type: "none" },
+
+    { x: startX + length * 4, y: startY, type: "none" },
+    { x: startX + length * 4, y: startY + length, type: "none" },
+    { x: startX + length * 4, y: startY + length * 2, type: "none" },
+    { x: startX + length * 4, y: startY + length * 3, type: "none" },
+    { x: startX + length * 4, y: startY + length * 4, type: "none" },
+  ]);
+};
+
+module.exports = tutorial;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+const levelOne = (length, startX = 300, startY = 180) => {
+  return(
+    [
+      { x: startX, y: startY, type: "start" },
+      { x: startX + length * 9, y: startY, type: "goal" },
+
+      { x: startX + length, y: startY, type: "none" },
+      { x: startX + length * 2, y: startY, type: "none" },
+      { x: startX + length * 3, y: startY, type: "none" },
+      { x: startX + length * 4, y: startY, type: "none" },
+      { x: startX + length * 5, y: startY, type: "none" },
+      { x: startX + length * 6, y: startY, type: "none" },
+      { x: startX + length * 7, y: startY, type: "none" },
+      { x: startX + length * 8, y: startY, type: "none" },
+    ]
+  );
+}
+
+module.exports = levelOne;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+const levelTwo = (length, startX = 330, startY = 240) => {
+  return(
+    [
+      { x: startX, y: startY, type: "start" },
+      { x: startX + length * 6, y: startY + length * 3, type: "goal" },
+
+      { x: startX - length, y: startY - length, type: "none" },
+      { x: startX - length, y: startY, type: "none" },
+      { x: startX - length, y: startY + length, type: "none" },
+
+      { x: startX, y: startY - length, type: "none" },
+      { x: startX, y: startY + length, type: "none" },
+      { x: startX, y: startY + length * 2, type: "none" },
+
+      { x: startX + length, y: startY - length, type: "none" },
+      { x: startX + length, y: startY, type: "none" },
+      { x: startX + length, y: startY + length, type: "none" },
+      { x: startX + length, y: startY + length * 2, type: "none" },
+
+      { x: startX + length * 2, y: startY, type: "none" },
+      { x: startX + length * 2, y: startY + length, type: "none" },
+      { x: startX + length * 2, y: startY + length * 2, type: "none" },
+
+      { x: startX + length * 3, y: startY, type: "none" },
+      { x: startX + length * 3, y: startY + length, type: "none" },
+      { x: startX + length * 3, y: startY + length * 2, type: "none" },
+
+      { x: startX + length * 4, y: startY, type: "none" },
+      { x: startX + length * 4, y: startY + length, type: "none" },
+      { x: startX + length * 4, y: startY + length * 2, type: "none" },
+      { x: startX + length * 4, y: startY + length * 3, type: "none" },
+
+      { x: startX + length * 5, y: startY + length, type: "none" },
+      { x: startX + length * 5, y: startY + length * 2, type: "none" },
+      { x: startX + length * 5, y: startY + length * 3, type: "none" },
+      { x: startX + length * 5, y: startY + length * 4, type: "none" },
+
+      { x: startX + length * 6, y: startY + length, type: "none" },
+      { x: startX + length * 6, y: startY + length * 2, type: "none" },
+      { x: startX + length * 6, y: startY + length * 4, type: "none" },
+
+      { x: startX + length * 7, y: startY + length, type: "none" },
+      { x: startX + length * 7, y: startY + length * 2, type: "none" },
+      { x: startX + length * 7, y: startY + length * 3, type: "none" },
+      { x: startX + length * 7, y: startY + length * 4, type: "none" },
+
+      { x: startX + length * 8, y: startY + length * 2, type: "none" },
+      { x: startX + length * 8, y: startY + length * 3, type: "none" },
+    ]
+  );
+};
+
+module.exports = levelTwo;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+const levelThree = (length, startX = 210, startY = 280) => {
+  return(
+    [
+      { x: startX, y: startY, type: "start" },
+      { x: startX + length * 12, y: startY, type: "goal" },
+
+      { x: startX - length, y: startY + length * 2, type: "none" },
+      { x: startX - length, y: startY + length, type: "none" },
+      { x: startX - length, y: startY, type: "none" },
+      { x: startX - length, y: startY - length, type: "none" },
+
+      { x: startX, y: startY + length * 2, type: "none" },
+      { x: startX, y: startY + length, type: "none" },
+      { x: startX, y: startY - length, type: "none" },
+
+      { x: startX + length, y: startY + length * 2, type: "none" },
+      { x: startX + length, y: startY + length, type: "none" },
+      { x: startX + length, y: startY, type: "none" },
+      { x: startX + length, y: startY - length, type: "none" },
+
+      { x: startX + length * 2, y: startY + length * 2, type: "none" },
+      { x: startX + length * 2, y: startY + length, type: "none" },
+      { x: startX + length * 2, y: startY, type: "none" },
+      { x: startX + length * 2, y: startY - length, type: "none" },
+
+      { x: startX + length * 3, y: startY + length, type: "none" },
+
+      { x: startX + length * 4, y: startY + length, type: "none" },
+
+      { x: startX + length * 5, y: startY + length * 3, type: "none" },
+      { x: startX + length * 5, y: startY + length * 2, type: "none" },
+      { x: startX + length * 5, y: startY + length, type: "none" },
+
+      { x: startX + length * 6, y: startY + length * 3, type: "none" },
+      { x: startX + length * 6, y: startY + length * 2, type: "none" },
+      { x: startX + length * 6, y: startY + length, type: "none" },
+
+      { x: startX + length * 7, y: startY + length * 3, type: "none" },
+      { x: startX + length * 7, y: startY + length * 2, type: "none" },
+      { x: startX + length * 7, y: startY + length, type: "none" },
+
+      { x: startX + length * 8, y: startY + length * 3, type: "none" },
+
+      { x: startX + length * 9, y: startY + length * 3, type: "none" },
+
+      { x: startX + length * 10, y: startY + length * 3, type: "none" },
+      { x: startX + length * 10, y: startY + length * 2, type: "none" },
+      { x: startX + length * 10, y: startY + length, type: "none" },
+      { x: startX + length * 10, y: startY, type: "none" },
+      { x: startX + length * 10, y: startY - length, type: "none" },
+
+      { x: startX + length * 11, y: startY + length * 3, type: "none" },
+      { x: startX + length * 11, y: startY + length * 2, type: "none" },
+      { x: startX + length * 11, y: startY + length, type: "none" },
+      { x: startX + length * 11, y: startY, type: "none" },
+      { x: startX + length * 11, y: startY - length, type: "none" },
+      { x: startX + length * 11, y: startY - length * 2, type: "none" },
+
+      { x: startX + length * 12, y: startY + length, type: "none" },
+      { x: startX + length * 12, y: startY - length, type: "none" },
+      { x: startX + length * 12, y: startY - length * 2, type: "none" },
+
+      { x: startX + length * 13, y: startY + length, type: "none" },
+      { x: startX + length * 13, y: startY, type: "none" },
+      { x: startX + length * 13, y: startY - length, type: "none" },
+      { x: startX + length * 13, y: startY - length * 2, type: "none" },
+    ]
+  );
+};
+
+module.exports = levelThree;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+const levelFour = (length, startX = 270, startY = 210) => {
+  return(
+    [
+      { x: startX, y: startY, type: "start" },
+      { x: startX + length * 13, y: startY - length, type: "goal" },
+
+      { x: startX + length, y: startY, type: "none" },
+
+      { x: startX + length * 2, y: startY, type: "none" },
+
+      { x: startX + length * 3, y: startY, type: "none" },
+
+      { x: startX + length * 4, y: startY, type: "none" },
+      { x: startX + length * 4, y: startY - length, type: "none" },
+      { x: startX + length * 4, y: startY - length * 2, type: "none" },
+
+      { x: startX + length * 5, y: startY + length * 3, type: "none" },
+      { x: startX + length * 5, y: startY + length * 2, type: "none" },
+      { x: startX + length * 5, y: startY + length, type: "none" },
+      { x: startX + length * 5, y: startY, type: "none" },
+      { x: startX + length * 5, y: startY - length, type: "none" },
+      { x: startX + length * 5, y: startY - length * 2, type: "none" },
+
+      { x: startX + length * 6, y: startY + length * 3, type: "none" },
+      { x: startX + length * 6, y: startY - length, type: "none" },
+      { x: startX + length * 6, y: startY - length * 2, type: "none" },
+      { x: startX + length * 6, y: startY - length * 3, type: "none" },
+      { x: startX + length * 6, y: startY - length * 4, type: "none" },
+      { x: startX + length * 6, y: startY - length * 5, type: "none" },
+
+      { x: startX + length * 7, y: startY + length * 3, type: "none" },
+      { x: startX + length * 7, y: startY - length * 4, type: "none" },
+      { x: startX + length * 7, y: startY - length * 5, type: "none" },
+      { x: startX + length * 7, y: startY - length * 6, type: "none" },
+
+      { x: startX + length * 8, y: startY + length * 3, type: "none" },
+      { x: startX + length * 8, y: startY + length * 2, type: "none" },
+      { x: startX + length * 8, y: startY + length, type: "none" },
+      { x: startX + length * 8, y: startY - length * 4, type: "none" },
+      { x: startX + length * 8, y: startY - length * 5, type: "none" },
+      { x: startX + length * 8, y: startY - length * 6, type: "none" },
+
+      { x: startX + length * 9, y: startY + length * 3, type: "none" },
+      { x: startX + length * 9, y: startY + length * 2, type: "none" },
+      { x: startX + length * 9, y: startY + length, type: "none" },
+      { x: startX + length * 9, y: startY - length * 3, type: "none" },
+      { x: startX + length * 9, y: startY - length * 4, type: "none" },
+      { x: startX + length * 9, y: startY - length * 5, type: "none" },
+      { x: startX + length * 9, y: startY - length * 6, type: "none" },
+
+      { x: startX + length * 10, y: startY + length * 3, type: "none" },
+      { x: startX + length * 10, y: startY + length * 2, type: "none" },
+      { x: startX + length * 10, y: startY + length, type: "none" },
+      { x: startX + length * 10, y: startY - length * 3, type: "none" },
+      { x: startX + length * 10, y: startY - length * 4, type: "none" },
+      { x: startX + length * 10, y: startY - length * 5, type: "none" },
+
+      { x: startX + length * 11, y: startY + length, type: "none" },
+      { x: startX + length * 11, y: startY, type: "none" },
+      { x: startX + length * 11, y: startY - length, type: "none" },
+
+      { x: startX + length * 12, y: startY + length, type: "none" },
+      { x: startX + length * 12, y: startY, type: "none" },
+      { x: startX + length * 12, y: startY - length, type: "none" },
+
+      { x: startX + length * 13, y: startY, type: "none" },
+    ]
+  );
+};
+
+module.exports = levelFour;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+class Block {
+  constructor(options) {
+    this.xPos = options.xPos;
+    this.yPos = options.yPos;
+    this.width = options.width;
+    this.height = options.height;
+  }
+
+  changePosition(dx, dy) {
+    this.xPos += dx;
+    this.yPos += dy;
+  }
+
+  transform(x, y) {
+    if (this.width === this.height) {
+      this.expand(x, y);
+    } else {
+      this.checkDimensionsAndMovement(x, y);
+    }
+  }
+
+  expand(x, y) {
+    if (x !== 0) {
+      this.expandWidth(x, y);
+    } else {
+      this.expandHeight(x, y);
+    }
+  }
+
+  checkDimensionsAndMovement(x, y) {
+    if (this.width > this.height && x !== 0) {
+      this.contractWidth(x, y);
+    } else if (this.width < this.height && y !== 0) {
+      this.contractHeight(x, y);
+    } else {
+      this.changePosition(x, y);
+    }
+  }
+
+  expandWidth(x, y) {
+    this.width *= 2;
+    if (x > 0) {
+      this.changePosition(x, y);
+    } else {
+      this.changePosition(2 * x, y);
+    }
+  }
+
+  expandHeight(x, y) {
+    this.height *= 2;
+    if (y > 0) {
+      this.changePosition(x, y);
+    } else {
+      this.changePosition(x, 2 * y);
+    }
+  }
+
+  contractWidth(x, y) {
+    this.width /= 2;
+    if (x > 0) {
+      this.changePosition(2 * x, y);
+    } else {
+      this.changePosition(x, y);
+    }
+  }
+
+  contractHeight(x, y) {
+    this.height /= 2;
+    if (y > 0) {
+      this.changePosition(x, y * 2);
+    } else {
+      this.changePosition(x, y);
+    }
+  }
+}
+
+module.exports = Block;
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+class Display {
+  constructor(ctx, length) {
+    this.ctx = ctx;
+    this.length = length;
+    this.colors = this.colors();
+    this.ctx.fillStyle = this.colors.backgroundColor;
+    this.ctx.fillRect(0, 0, 900, 500);
+  }
+
+  colors() {
+    return {
+      backgroundColor: 'rgb(25, 25, 25)',
+      textColor: 'rgb(255, 255, 255)',
+      blockColor: 'rgb(200, 0, 255)',
+      blockFallingColor: 'rgb(255, 0, 0)',
+    };
+  }
+
+  tileColors(tileType) {
+    switch (tileType) {
+      case "start":
+        return 'rgb(0, 255, 255)';
+      case "goal":
+        return 'rgb(0, 255, 0)';
+      case "none":
+        return 'rgb(192, 192, 192)';
+    }
+  }
+
+  render(options) {
+    this.ctx.fillStyle = this.colors.backgroundColor;
+    this.ctx.fillRect(0, 0, 900, 450);
+    this.ctx.fillRect(0, 450, 700, 50);
+    this.ctx.font = '30px sans-serif';
+    this.ctx.fillStyle = this.colors.textColor;
+    this.ctx.fillText(`Level ${options.levelNumber}`, 25, 50);
+    this.ctx.fillText(`Moves: ${options.moves}`, 700, 50);
+    this.ctx.fillText(`Falls: ${options.falls}`, 25, 475);
+    this.drawFloor(options.level);
+  }
+
+  drawMenu() {
+    this.ctx.font = '50px sans-serif';
+    this.ctx.fillStyle = this.colors.textColor;
+    this.ctx.fillText('Blockhead', 400, 200);
+    this.ctx.font = '30px sans-serif';
+    this.ctx.fillStyle = 'red';
+    this.ctx.fillText('Options (coming soon!)', 350, 300);
+    this.ctx.fillText('Tutorial (coming soon!)', 350, 350);
+    this.ctx.fillStyle = this.colors.textColor;
+    this.ctx.fillText('Start', 300, 250);
+  }
+
+  drawClock(time) {
+    this.ctx.fillStyle = this.colors.backgroundColor;
+    this.ctx.fillRect(200, 450, 900, 50);
+    this.ctx.font = '30px sans-serif';
+    this.ctx.fillStyle = this.colors.textColor;
+    this.ctx.fillText(time, 700, 475);
+  }
+
+  drawFloor(floor) {
+    floor.forEach(tile => {
+      this.ctx.fillStyle = this.tileColors(tile.type);
+      const { xPos, yPos } = tile;
+      this.ctx.fillRect(xPos, yPos, this.length, this.length);
+      this.ctx.strokeRect(xPos, yPos, this.length, this.length);
+    });
+  }
+
+  drawBlock(block) {
+    const { xPos, yPos, width, height } = block;
+    this.ctx.fillStyle = this.colors.blockColor;
+    this.ctx.fillRect(xPos, yPos, width, height);
+    this.ctx.strokeRect(xPos, yPos, width, height);
+  }
+
+  stringifyRGBData(colorData) {
+    return 'rgb('.concat(colorData[0])
+      .concat(', ')
+      .concat(colorData[1])
+      .concat(', ')
+      .concat(colorData[2])
+      .concat(')');
+  }
+
+  tileMovesOffFloor(coordinates) {
+    for(let i = 0; i < coordinates.length; i++) {
+      let corner = coordinates[i];
+      let point = this.ctx.getImageData(corner[0], corner[1], 1, 1);
+      let colorData = point.data.slice(0, 3);
+      let color = this.stringifyRGBData(colorData);
+      if (color === this.colors.backgroundColor) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  drawPause() {
+    this.ctx.fillStyle = this.colors.backgroundColor;
+    this.ctx.fillRect(0, 0, 900, 500);
+    this.ctx.font = '50px sans-serif';
+    this.ctx.fillStyle = this.colors.textColor;
+    this.ctx.fillText(`Pause`, 400, 200);
+    this.ctx.font = '30px sans-serif';
+    this.ctx.fillText(`(Press enter to resume)`, 300, 300);
+  }
+
+  drawFail(oldOptions) {
+    const { xPos, yPos, width, height } = oldOptions;
+    this.ctx.fillStyle = this.colors.blockFallingColor;
+    this.ctx.fillRect(xPos, yPos, width, height);
+  }
+
+  drawFinish(options) {
+    this.ctx.fillStyle = this.colors.backgroundColor;
+    this.ctx.fillRect(0, 0, 900, 500);
+    this.ctx.font = '50px sans-serif';
+    this.ctx.fillStyle = this.colors.textColor;
+    this.ctx.fillText(`Final Tally:`, 50, 100);
+    this.ctx.font = '30px sans-serif';
+    this.ctx.fillText(`Moves: ${options.moves}`, 70, 155);
+    this.ctx.fillText(`Falls: ${options.falls}`, 70, 190);
+    this.ctx.fillText(`Time: ${options.time}`, 70, 225);
+    this.ctx.fillText(
+      "Thanks for playing! More levels will be added in the future",
+      50,
+      350);
+    this.ctx.fillText("Press spacebar to start over", 50, 400);
+  }
+}
+
+module.exports = Display;
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+class Sound {
+  constructor() {
+    this.rectangleSound = document.getElementById("block-rectangle");
+    this.squareSound = document.getElementById("block-square");
+    this.fall = document.getElementById("fall");
+    this.completeLevel = document.getElementById("complete-level");
+    this.gameMusic = document.getElementById("game-song");
+    this.menuMusic = document.getElementById("menu-song");
+
+    this.toggleMusic = this.toggleMusic.bind(this);
+  }
+
+  start() {
+    this.musicButton = document.getElementById("music");
+    this.playMusic = true;
+    this.gameMusic.loop = true;
+    this.musicButton.addEventListener("click", this.toggleMusic);
+    this.gameMusic.play();
+  }
+
+  toggleMusic() {
+    if (this.playMusic === true) {
+      this.musicButton.className = "off";
+      this.playMusic = false;
+      this.gameMusic.pause();
+    } else {
+      this.playMusic = true;
+      this.musicButton.className = "on";
+      this.gameMusic.play();
+    }
+  }
+
+  blockSound(block) {
+    if (block.height === block.width) {
+      this.squareSound.play();
+    } else {
+      this.rectangleSound.play();
+    }
+  }
+
+  fallSound() {
+    this.fall.play();
+  }
+
+  goalSound() {
+    this.completeLevel.play();
+  }
+}
+
+module.exports = Sound;
 
 
 /***/ })
