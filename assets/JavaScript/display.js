@@ -16,6 +16,17 @@ class Display {
     };
   }
 
+  tileColors(tileType) {
+    switch (tileType) {
+      case "start":
+        return 'rgb(0, 255, 255)';
+      case "goal":
+        return 'rgb(0, 255, 0)';
+      case "none":
+        return 'rgb(192, 192, 192)';
+    }
+  }
+
   render(options) {
     this.ctx.fillStyle = this.colors.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 450);
@@ -50,7 +61,7 @@ class Display {
 
   drawFloor(floor) {
     floor.forEach(tile => {
-      this.ctx.fillStyle = tile.color;
+      this.ctx.fillStyle = this.tileColors(tile.type);
       const { xPos, yPos } = tile;
       this.ctx.fillRect(xPos, yPos, this.length, this.length);
       this.ctx.strokeRect(xPos, yPos, this.length, this.length);
@@ -64,7 +75,7 @@ class Display {
     this.ctx.strokeRect(xPos, yPos, width, height);
   }
 
-  stringifyRGB(colorData) {
+  stringifyRGBData(colorData) {
     return 'rgb('.concat(colorData[0])
       .concat(', ')
       .concat(colorData[1])
@@ -78,7 +89,7 @@ class Display {
       let corner = coordinates[i];
       let point = this.ctx.getImageData(corner[0], corner[1], 1, 1);
       let colorData = point.data.slice(0, 3);
-      let color = this.stringifyRGB(colorData);
+      let color = this.stringifyRGBData(colorData);
       if (color === this.colors.backgroundColor) {
         return true;
       }
