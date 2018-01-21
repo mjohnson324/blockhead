@@ -2,8 +2,8 @@ class Sound {
   constructor() {
     this.rectangleSound = document.getElementById("block-rectangle");
     this.squareSound = document.getElementById("block-square");
-    this.fall = document.getElementById("fall");
-    this.completeLevel = document.getElementById("complete-level");
+    this.fallSound = document.getElementById("fall");
+    this.completeLevelSound = document.getElementById("complete-level");
     this.gameMusic = document.getElementById("game-song");
     this.menuMusic = document.getElementById("menu-song");
 
@@ -30,7 +30,7 @@ class Sound {
     }
   }
 
-  blockSound(block) {
+  playBlockSound(block) {
     if (block.height === block.width) {
       this.squareSound.play();
     } else {
@@ -38,12 +38,12 @@ class Sound {
     }
   }
 
-  fallSound() {
-    this.fall.play();
+  playFallSound() {
+    this.fallSound.play();
   }
 
-  goalSound() {
-    this.completeLevel.play();
+  playGoalSound() {
+    this.completeLevelSound.play();
   }
 }
 

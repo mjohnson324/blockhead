@@ -10,7 +10,6 @@ class Game {
     this.tileLength = length;
     this.sound = new Sound();
 
-    this.sound.start();
     this.getMove = this.getMove.bind(this);
     this.tick = this.tick.bind(this);
     this.pauseButton = this.pauseButton.bind(this);
@@ -32,6 +31,7 @@ class Game {
 
   start() {
     this.setState();
+    this.sound.start();
     this.state.goal = this.state.currentLevel[1];
     this.timerId = setInterval(this.tick, 1000);
     document.addEventListener("keydown", this.getMove);
@@ -162,7 +162,7 @@ class Game {
   }
 
   nextLevel() {
-    this.sound.goalSound();
+    this.sound.playGoalSound();
     this.state.levelNumber += 1;
     this.state.currentLevel = this.levels[this.state.levelNumber];
     if (this.state.currentLevel === undefined) {
@@ -194,7 +194,7 @@ class Game {
     } else if (this.state.currentLevel) {
       this.display.render(this.displayOptions());
       this.display.drawBlock(this.block);
-      this.sound.blockSound(this.block);
+      this.sound.playBlockSound(this.block);
     }
   }
 
@@ -209,7 +209,7 @@ class Game {
   flashFailure(oldOptions) {
     this.display.render(this.displayOptions());
     this.display.drawFail(oldOptions);
-    this.sound.fallSound();
+    this.sound.playFallSound();
     setTimeout(() => {
       this.display.render(this.displayOptions());
     }, 800);
