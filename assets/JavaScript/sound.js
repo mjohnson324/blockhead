@@ -12,30 +12,31 @@ class Sound {
 
   start() {
     this.musicButton = document.getElementById("music");
+    this.musicButton.addEventListener("click", this.toggleMusic);
     this.playMusic = true;
     this.gameMusic.loop = true;
-    this.musicButton.addEventListener("click", this.toggleMusic);
     this.gameMusic.play();
   }
 
   toggleMusic() {
-    if (this.playMusic === true) {
-      this.musicButton.className = "off";
-      this.playMusic = false;
-      this.gameMusic.pause();
-    } else {
-      this.playMusic = true;
-      this.musicButton.className = "on";
-      this.gameMusic.play();
-    }
+    this.playMusic === true ? this.pausMusic() : this.resumeMusic();
+  }
+
+  pausMusic() {
+    this.playMusic = false;
+    this.musicButton.className = "off";
+    this.gameMusic.pause();
+  }
+
+  resumeMusic() {
+    this.playMusic = true;
+    this.musicButton.className = "on";
+    this.gameMusic.play();
   }
 
   playBlockSound(block) {
-    if (block.height === block.width) {
-      this.squareSound.play();
-    } else {
-      this.rectangleSound.play();
-    }
+    block.height === block.width ?
+      this.squareSound.play() : this.rectangleSound.play();
   }
 
   playFallSound() {
