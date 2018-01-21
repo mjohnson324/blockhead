@@ -9,3 +9,9 @@ beforeEach(() => {
 test('block initializes with options', () => {
   expect(block).toBeInstanceOf(Block);
 });
+
+test('block changes position incrementally', () => {
+  block.changePosition(30, 30);
+  expect(block.xPos).toBe(30);
+  expect(block.yPos).toBe(30);
+});
