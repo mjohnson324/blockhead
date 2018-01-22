@@ -11,22 +11,18 @@ class Block {
     this.yPos += dy;
   }
 
-  transform(x, y) {
-    if (this.width === this.height) {
-      this.expand(x, y);
-    } else {
-      this.checkDimensionsAndMovement(x, y);
-    }
+  transformBlock(x, y) {
+    this.width === this.height ?
+      this.expand(x, y) : this.checkDimensionsAndMovement(x, y);
   }
 
   expand(x, y) {
-    if (x !== 0) {
-      this.expandWidth(x, y);
-    } else {
-      this.expandHeight(x, y);
-    }
+    x !== 0 ? this.expandWidth(x, y) : this.expandHeight(x, y);
   }
 
+  // To simulate a rectangular prism, the block's dimensions and
+  // position must change differently depending on its current size and
+  // the direction it moves.
   checkDimensionsAndMovement(x, y) {
     if (this.width > this.height && x !== 0) {
       this.contractWidth(x, y);
@@ -39,38 +35,22 @@ class Block {
 
   expandWidth(x, y) {
     this.width *= 2;
-    if (x > 0) {
-      this.changePosition(x, y);
-    } else {
-      this.changePosition(2 * x, y);
-    }
+    x > 0 ? this.changePosition(x, y) : this.changePosition(2 * x, y);
   }
 
   expandHeight(x, y) {
     this.height *= 2;
-    if (y > 0) {
-      this.changePosition(x, y);
-    } else {
-      this.changePosition(x, 2 * y);
-    }
+    y > 0 ? this.changePosition(x, y) : this.changePosition(x, 2 * y);
   }
 
   contractWidth(x, y) {
     this.width /= 2;
-    if (x > 0) {
-      this.changePosition(2 * x, y);
-    } else {
-      this.changePosition(x, y);
-    }
+    x > 0 ? this.changePosition(2 * x, y) : this.changePosition(x, y);
   }
 
   contractHeight(x, y) {
     this.height /= 2;
-    if (y > 0) {
-      this.changePosition(x, y * 2);
-    } else {
-      this.changePosition(x, y);
-    }
+    y > 0 ? this.changePosition(x, y * 2) : this.changePosition(x, y);
   }
 }
 
