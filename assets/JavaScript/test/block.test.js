@@ -40,11 +40,11 @@ describe('Wide rectangular block', () => {
 
   });
 
-  test('', () => {
+  test('Wide block moves correctly when contracting right', () => {
 
   });
 
-  test('', () => {
+  test('Wide block moves correctly when contracting left', () => {
 
   });
 })
