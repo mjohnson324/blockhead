@@ -54,11 +54,17 @@ describe('Wide rectangular blocks', () => {
   describe('Horizontal contractions', () => {
     const squareBlockSize = { width: 30, height: 30 };
     test('Wide block transforms correctly when contracting right', () => {
-
+      const rightShift = { xPos: 60, yPos: 0 };
+      wideBlock.transformBlock(30, 0);
+      expect(wideBlock.dimensions()).toEqual(squareBlockSize);
+      expect(wideBlock.position()).toEqual(rightShift);
     });
 
     test('Wide block transforms correctly when contracting left', () => {
-
+      const leftShift = { xPos: -30, yPos: 0 };
+      wideBlock.transformBlock(-30, 0);
+      expect(wideBlock.dimensions()).toEqual(squareBlockSize);
+      expect(wideBlock.position()).toEqual(leftShift);
     });
   });
 })
