@@ -13,24 +13,24 @@ describe('Square blocks becoming rectangular', () => {
     expect(block.yPos).toBe(30);
   });
 
-  test('', () => {
+  test('Square block transforms right correctly', () => {
 
   });
 
-  test('', () => {
+  test('Square block transforms left correctly', () => {
 
   });
 
-  test('', () => {
+  test('Square block transforms up correctly', () => {
 
   });
 
-  test('', () => {
+  test('Square block transforms down correctly', () => {
 
   });
 })
 
-describe('Wide rectangular block', () => {
+describe('Wide rectangular blocks', () => {
   let wideBlock;
   beforeEach(() => {
     wideBlock = new Block({xPos: 0, yPos: 0, width: 60, height: 30 });
@@ -40,16 +40,16 @@ describe('Wide rectangular block', () => {
 
   });
 
-  test('Wide block moves correctly when contracting right', () => {
+  test('Wide block transforms correctly when contracting right', () => {
 
   });
 
-  test('Wide block moves correctly when contracting left', () => {
+  test('Wide block transforms correctly when contracting left', () => {
 
   });
 })
 
-describe('Tall Rec', () => {
+describe('Tall rectangular blocks', () => {
   let tallBlock;
   beforeEach(() => {
     tallBlock = new Block({xPos: 0, yPos: 0, width: 60, height: 30 });
@@ -59,11 +59,11 @@ describe('Tall Rec', () => {
 
   });
 
-  test('Tall block moves correctly when contracting upward', () => {
+  test('Tall block transforms correctly when contracting upward', () => {
 
   });
 
-  test('Tall block moves correctly when contracting downward', () => {
+  test('Tall block transforms correctly when contracting downward', () => {
 
   });
 })
