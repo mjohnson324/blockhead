@@ -59,11 +59,11 @@ describe('Tall Rec', () => {
 
   });
 
-  test('', () => {
+  test('Tall block moves correctly when contracting upward', () => {
 
   });
 
-  test('', () => {
+  test('Tall block moves correctly when contracting downward', () => {
 
   });
 })
