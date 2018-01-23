@@ -1,5 +1,7 @@
 const Block = require('../block');
-
+// The numbers associated with the block width and height are arbitrary.
+// I found 30 to be a good default width and height for the block;
+// not too big, not too small for the screen.
 
 describe('Square blocks becoming rectangular', () => {
   let block;
