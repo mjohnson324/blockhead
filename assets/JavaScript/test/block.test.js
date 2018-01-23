@@ -38,16 +38,28 @@ describe('Wide rectangular blocks', () => {
     wideBlock = new Block({xPos: 0, yPos: 0, width: 60, height: 30 });
   });
 
-  test('Wide block retains shape when moving up and down', () => {
+  describe('Moving without changing shape', () => {
+    const wideBlockSize = { width: 60, height: 30 };
+    test('Wide block retains shape when moving up', () => {
+      wideBlock.transformBlock(0, 30);
+      expect(wideBlock.dimensions()).toEqual(wideBlockSize);
+    });
 
+    test('Wide block retains shape when moving down', () => {
+      wideBlock.transformBlock(0, -30);
+      expect(wideBlock.dimensions()).toEqual(wideBlockSize);
+    })
   });
 
-  test('Wide block transforms correctly when contracting right', () => {
+  describe('Horizontal contractions', () => {
+    const squareBlockSize = { width: 30, height: 30 };
+    test('Wide block transforms correctly when contracting right', () => {
 
-  });
+    });
 
-  test('Wide block transforms correctly when contracting left', () => {
+    test('Wide block transforms correctly when contracting left', () => {
 
+    });
   });
 })
 
