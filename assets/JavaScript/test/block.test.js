@@ -5,6 +5,7 @@ const Block = require('../block');
 
 describe('Square blocks becoming rectangular', () => {
   let block;
+  let position;
   beforeEach(() => {
     block = new Block({ xPos: 0, yPos: 0, width: 30, height: 30 });
   });
@@ -15,20 +16,32 @@ describe('Square blocks becoming rectangular', () => {
     expect(block.yPos).toBe(30);
   });
 
-  test('Square block transforms right correctly', () => {
-
+  test('Square block transforms correctly when expanding right', () => {
+    position = { xPos: 30, yPos: 0 };
+    block.transformBlock(30, 0);
+    expect(block.position()).toEqual(position);
+    expect(block.width).toBeGreaterThan(block.height);
   });
 
-  test('Square block transforms left correctly', () => {
-
+  test('Square block transforms correctly when expanding left', () => {
+    position = { xPos: -60, yPos: 0 };
+    block.transformBlock(-30, 0);
+    expect(block.position()).toEqual(position);
+    expect(block.width).toBeGreaterThan(block.height);
   });
 
-  test('Square block transforms up correctly', () => {
-
+  test('Square block transforms correctly when expanding upward', () => {
+    position = { xPos: 0, yPos: -60 };
+    block.transformBlock(0, -30);
+    expect(block.position()).toEqual(position);
+    expect(block.height).toBeGreaterThan(block.width);
   });
 
-  test('Square block transforms down correctly', () => {
-
+  test('Square block transforms correctly when expanding downward', () => {
+    position = { xPos: 0, yPos: 30 };
+    block.transformBlock(0, 30);
+    expect(block.position()).toEqual(position);
+    expect(block.height).toBeGreaterThan(block.width);
   });
 })
 
