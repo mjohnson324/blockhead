@@ -88,11 +88,20 @@ describe('Tall rectangular blocks', () => {
     });
   });
 
-  test('Tall block transforms correctly when contracting upward', () => {
+  describe('Vertical contractions', () => {
+    const squareBlockSize = { width: 30, height: 30 };
+    test('Tall block transforms correctly when contracting upward', () => {
+      const upShift = { xPos: 0, yPos: -30 };
+      tallBlock.transformBlock(0, -30);
+      expect(tallBlock.dimensions()).toEqual(squareBlockSize);
+      expect(tallBlock.position()).toEqual(upShift);
+    });
 
-  });
-
-  test('Tall block transforms correctly when contracting downward', () => {
-
+    test('Tall block transforms correctly when contracting downward', () => {
+      const downShift = { xPos: 0, yPos: 60 };
+      tallBlock.transformBlock(0, 30);
+      expect(tallBlock.dimensions()).toEqual(squareBlockSize);
+      expect(tallBlock.position()).toEqual(downShift);
+    });
   });
 })
