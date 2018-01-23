@@ -6,6 +6,13 @@ class Block {
     this.height = options.height;
   }
 
+  dimensions() {
+    return {
+      width: this.width,
+      height: this.height,
+    }
+  }
+
   changePosition(dx, dy) {
     this.xPos += dx;
     this.yPos += dy;

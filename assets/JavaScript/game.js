@@ -100,16 +100,16 @@ class Game {
       e.preventDefault();
       switch (e.keyCode) {
         case 40: // down arrow key
-          this.block.transform(0, this.state.length);
+          this.block.transformBlock(0, this.state.length);
           break;
         case 38: // up arrow key
-          this.block.transform(0, this.state.length * -1);
+          this.block.transformBlock(0, this.state.length * -1);
           break;
         case 37: // left arrow key
-          this.block.transform(this.state.length * -1, 0);
+          this.block.transformBlock(this.state.length * -1, 0);
           break;
         case 39: // right arrow key
-          this.block.transform(this.state.length, 0);
+          this.block.transformBlock(this.state.length, 0);
       }
       this.state.moves += 1;
       this.checkBlock();
