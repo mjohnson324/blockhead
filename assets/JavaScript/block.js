@@ -10,7 +10,14 @@ class Block {
     return {
       width: this.width,
       height: this.height,
-    }
+    };
+  }
+
+  position() {
+    return {
+      xPos: this.xPos,
+      yPos: this.yPos
+    };
   }
 
   changePosition(dx, dy) {
