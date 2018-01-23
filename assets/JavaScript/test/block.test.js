@@ -72,11 +72,20 @@ describe('Wide rectangular blocks', () => {
 describe('Tall rectangular blocks', () => {
   let tallBlock;
   beforeEach(() => {
-    tallBlock = new Block({xPos: 0, yPos: 0, width: 60, height: 30 });
+    tallBlock = new Block({xPos: 0, yPos: 0, width: 30, height: 60 });
   });
 
-  test('Tall block retains shape when moving left and right', () => {
+  describe('Moving without changing shape', () => {
+    const tallBlockSize = { width: 30, height: 60 };
+    test('Tall block retains shape when moving left', () => {
+      tallBlock.transformBlock(30, 0);
+      expect(tallBlock.dimensions()).toEqual(tallBlockSize);
+    });
 
+    test('Tall block retains shape when moving right', () => {
+      tallBlock.transformBlock(-30, 0);
+      expect(tallBlock.dimensions()).toEqual(tallBlockSize);
+    });
   });
 
   test('Tall block transforms correctly when contracting upward', () => {
