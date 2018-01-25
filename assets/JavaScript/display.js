@@ -3,6 +3,7 @@ class Display {
     this.ctx = ctx;
     this.length = length;
     this.colors = this.colors();
+    this.fonts = this.fonts();
     this.ctx.fillStyle = this.colors.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
   }
@@ -21,11 +22,18 @@ class Display {
     };
   }
 
+  fonts() {
+    return {
+      mediumFontSize: '30px sans-serif',
+      largeFontSize: '50px sans-serif',
+    }
+  }
+
   render(options) {
     this.ctx.fillStyle = this.colors.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 450);
     this.ctx.fillRect(0, 450, 700, 50);
-    this.ctx.font = '30px sans-serif';
+    this.ctx.font = this.fonts.mediumFontSize;
     this.ctx.fillStyle = this.colors.textColor;
     this.ctx.fillText(`Level ${options.levelNumber}`, 25, 50);
     this.ctx.fillText(`Moves: ${options.moves}`, 700, 50);
@@ -34,10 +42,10 @@ class Display {
   }
 
   drawMenu() {
-    this.ctx.font = '50px sans-serif';
+    this.ctx.font = this.fonts.largeFontSize;
     this.ctx.fillStyle = this.colors.textColor;
     this.ctx.fillText('Blockhead', 400, 200);
-    this.ctx.font = '30px sans-serif';
+    this.ctx.font = this.fonts.mediumFontSize;
     this.ctx.fillStyle = 'red';
     this.ctx.fillText('Options (coming soon!)', 350, 300);
     this.ctx.fillText('Tutorial (coming soon!)', 350, 350);
@@ -48,7 +56,7 @@ class Display {
   drawClock(time) {
     this.ctx.fillStyle = this.colors.backgroundColor;
     this.ctx.fillRect(200, 450, 900, 50);
-    this.ctx.font = '30px sans-serif';
+    this.ctx.font = this.fonts.mediumFontSize;
     this.ctx.fillStyle = this.colors.textColor;
     this.ctx.fillText(time, 700, 475);
   }
@@ -94,10 +102,10 @@ class Display {
   drawPause() {
     this.ctx.fillStyle = this.colors.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
-    this.ctx.font = '50px sans-serif';
+    this.ctx.font = this.fonts.largeFontSize;
     this.ctx.fillStyle = this.colors.textColor;
     this.ctx.fillText(`Pause`, 400, 200);
-    this.ctx.font = '30px sans-serif';
+    this.ctx.font = this.fonts.mediumFontSize;
     this.ctx.fillText(`(Press enter to resume)`, 300, 300);
   }
 
@@ -110,10 +118,10 @@ class Display {
   drawFinish(options) {
     this.ctx.fillStyle = this.colors.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
-    this.ctx.font = '50px sans-serif';
+    this.ctx.font = this.fonts.largeFontSize;
     this.ctx.fillStyle = this.colors.textColor;
     this.ctx.fillText(`Final Tally:`, 50, 100);
-    this.ctx.font = '30px sans-serif';
+    this.ctx.font = this.fonts.mediumFontSize;
     this.ctx.fillText(`Moves: ${options.moves}`, 70, 155);
     this.ctx.fillText(`Falls: ${options.falls}`, 70, 190);
     this.ctx.fillText(`Time: ${options.time}`, 70, 225);
