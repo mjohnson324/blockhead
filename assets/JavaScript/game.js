@@ -25,7 +25,7 @@ class Game {
       minutes: 0,
       seconds: 0,
       pauseStatus: false,
-      currentLevel: this.levels[1],
+      currentLevel: this.levels.levels[1],
     };
   }
 
@@ -164,7 +164,7 @@ class Game {
   nextLevel() {
     this.sound.playGoalSound();
     this.state.levelNumber += 1;
-    this.state.currentLevel = this.levels[this.state.levelNumber];
+    this.state.currentLevel = this.levels.levels[this.state.levelNumber];
     if (this.state.currentLevel === undefined) {
       this.endGame();
     } else {
