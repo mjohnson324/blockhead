@@ -13,18 +13,12 @@ class Display {
       textColor: 'rgb(255, 255, 255)',
       blockColor: 'rgb(200, 0, 255)',
       blockFallingColor: 'rgb(255, 0, 0)',
+      tileColors: {
+        start: 'rgb(0, 255, 255)',
+        goal: 'rgb(0, 255, 0)',
+        none: 'rgb(192, 192, 192)'
+      }
     };
-  }
-
-  tileColors(tileType) {
-    switch (tileType) {
-      case "start":
-        return 'rgb(0, 255, 255)';
-      case "goal":
-        return 'rgb(0, 255, 0)';
-      case "none":
-        return 'rgb(192, 192, 192)';
-    }
   }
 
   render(options) {
@@ -61,7 +55,7 @@ class Display {
 
   drawFloor(floor) {
     floor.forEach(tile => {
-      this.ctx.fillStyle = this.tileColors(tile.type);
+      this.ctx.fillStyle = this.colors.tileColors[tile.type];
       const { xPos, yPos } = tile;
       this.ctx.fillRect(xPos, yPos, this.length, this.length);
       this.ctx.strokeRect(xPos, yPos, this.length, this.length);
