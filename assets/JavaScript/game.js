@@ -6,7 +6,7 @@ const Sound = require('./sound');
 class Game {
   constructor(ctx, length) {
     this.display = new Display(ctx, length);
-    this.levels = LevelGenerator(length);
+    this.levels = new LevelGenerator(length);
     this.tileLength = length;
     this.sound = new Sound();
 
