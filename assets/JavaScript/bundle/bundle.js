@@ -68,7 +68,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const Game = __webpack_require__(1);
-const PageButtons = __webpack_require__(12);
+const PageButtons = __webpack_require__(13);
 
 document.addEventListener("DOMContentLoaded", () => {
   const buttonActivation = new PageButtons();
@@ -85,9 +85,9 @@ document.addEventListener("DOMContentLoaded", () => {
 /***/ (function(module, exports, __webpack_require__) {
 
 const LevelGenerator = __webpack_require__(2);
-const Block = __webpack_require__(9);
-const Display = __webpack_require__(10);
-const Sound = __webpack_require__(11);
+const Block = __webpack_require__(10);
+const Display = __webpack_require__(11);
+const Sound = __webpack_require__(12);
 
 class Game {
   constructor(ctx, length) {
@@ -186,16 +186,16 @@ class Game {
       e.preventDefault();
       switch (e.keyCode) {
         case 40: // down arrow key
-          this.block.transform(0, this.state.length);
+          this.block.transformBlock(0, this.state.length);
           break;
         case 38: // up arrow key
-          this.block.transform(0, this.state.length * -1);
+          this.block.transformBlock(0, this.state.length * -1);
           break;
         case 37: // left arrow key
-          this.block.transform(this.state.length * -1, 0);
+          this.block.transformBlock(this.state.length * -1, 0);
           break;
         case 39: // right arrow key
-          this.block.transform(this.state.length, 0);
+          this.block.transformBlock(this.state.length, 0);
       }
       this.state.moves += 1;
       this.checkBlock();
@@ -316,20 +316,10 @@ module.exports = Game;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Tile = __webpack_require__(3);
-
-const tutorial = __webpack_require__(4);
-const levelOne = __webpack_require__(5);
-const levelTwo = __webpack_require__(6);
-const levelThree = __webpack_require__(7);
-const levelFour = __webpack_require__(8);
-
+const allLevels = __webpack_require__(4);
 
 const levelGenerator = (length) => {
-  const levels = [tutorial(length),
-                     levelOne(length),
-                     levelTwo(length),
-                     levelThree(length),
-                     levelFour(length)];
+  const levels = allLevels.map(level => level(length));
   levels.forEach(level => {
     level.forEach((positionData, idx) => {
       level[idx] = new Tile(positionData);
@@ -360,6 +350,25 @@ module.exports = Tile;
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const tutorial = __webpack_require__(5);
+const levelOne = __webpack_require__(6);
+const levelTwo = __webpack_require__(7);
+const levelThree = __webpack_require__(8);
+const levelFour = __webpack_require__(9);
+
+module.exports = [
+  tutorial,
+  levelOne,
+  levelTwo,
+  levelThree,
+  levelFour
+];
+
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports) {
 
 const tutorial = (length, startX = 360, startY = 180) => {
@@ -402,7 +411,7 @@ module.exports = tutorial;
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 const levelOne = (length, startX = 300, startY = 180) => {
@@ -427,7 +436,7 @@ module.exports = levelOne;
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 const levelTwo = (length, startX = 330, startY = 240) => {
@@ -486,7 +495,7 @@ module.exports = levelTwo;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 const levelThree = (length, startX = 210, startY = 280) => {
@@ -563,7 +572,7 @@ module.exports = levelThree;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 const levelFour = (length, startX = 270, startY = 210) => {
@@ -640,7 +649,7 @@ module.exports = levelFour;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 class Block {
@@ -651,27 +660,37 @@ class Block {
     this.height = options.height;
   }
 
+  dimensions() {
+    return {
+      width: this.width,
+      height: this.height,
+    };
+  }
+
+  position() {
+    return {
+      xPos: this.xPos,
+      yPos: this.yPos
+    };
+  }
+
   changePosition(dx, dy) {
     this.xPos += dx;
     this.yPos += dy;
   }
 
-  transform(x, y) {
-    if (this.width === this.height) {
-      this.expand(x, y);
-    } else {
-      this.checkDimensionsAndMovement(x, y);
-    }
+  transformBlock(x, y) {
+    this.width === this.height ?
+      this.expand(x, y) : this.checkDimensionsAndMovement(x, y);
   }
 
   expand(x, y) {
-    if (x !== 0) {
-      this.expandWidth(x, y);
-    } else {
-      this.expandHeight(x, y);
-    }
+    x !== 0 ? this.expandWidth(x, y) : this.expandHeight(x, y);
   }
 
+  // To simulate a rectangular prism, the block's dimensions and
+  // position must change differently depending on its current size and
+  // the direction it moves.
   checkDimensionsAndMovement(x, y) {
     if (this.width > this.height && x !== 0) {
       this.contractWidth(x, y);
@@ -684,38 +703,22 @@ class Block {
 
   expandWidth(x, y) {
     this.width *= 2;
-    if (x > 0) {
-      this.changePosition(x, y);
-    } else {
-      this.changePosition(2 * x, y);
-    }
+    x > 0 ? this.changePosition(x, y) : this.changePosition(2 * x, y);
   }
 
   expandHeight(x, y) {
     this.height *= 2;
-    if (y > 0) {
-      this.changePosition(x, y);
-    } else {
-      this.changePosition(x, 2 * y);
-    }
+    y > 0 ? this.changePosition(x, y) : this.changePosition(x, 2 * y);
   }
 
   contractWidth(x, y) {
     this.width /= 2;
-    if (x > 0) {
-      this.changePosition(2 * x, y);
-    } else {
-      this.changePosition(x, y);
-    }
+    x > 0 ? this.changePosition(2 * x, y) : this.changePosition(x, y);
   }
 
   contractHeight(x, y) {
     this.height /= 2;
-    if (y > 0) {
-      this.changePosition(x, y * 2);
-    } else {
-      this.changePosition(x, y);
-    }
+    y > 0 ? this.changePosition(x, y * 2) : this.changePosition(x, y);
   }
 }
 
@@ -723,7 +726,7 @@ module.exports = Block;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 class Display {
@@ -731,6 +734,7 @@ class Display {
     this.ctx = ctx;
     this.length = length;
     this.colors = this.colors();
+    this.fonts = this.fonts();
     this.ctx.fillStyle = this.colors.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
   }
@@ -741,17 +745,18 @@ class Display {
       textColor: 'rgb(255, 255, 255)',
       blockColor: 'rgb(200, 0, 255)',
       blockFallingColor: 'rgb(255, 0, 0)',
+      tileColors: {
+        start: 'rgb(0, 255, 255)',
+        goal: 'rgb(0, 255, 0)',
+        none: 'rgb(192, 192, 192)'
+      }
     };
   }
 
-  tileColors(tileType) {
-    switch (tileType) {
-      case "start":
-        return 'rgb(0, 255, 255)';
-      case "goal":
-        return 'rgb(0, 255, 0)';
-      case "none":
-        return 'rgb(192, 192, 192)';
+  fonts() {
+    return {
+      mediumFontSize: '30px sans-serif',
+      largeFontSize: '50px sans-serif',
     }
   }
 
@@ -759,7 +764,7 @@ class Display {
     this.ctx.fillStyle = this.colors.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 450);
     this.ctx.fillRect(0, 450, 700, 50);
-    this.ctx.font = '30px sans-serif';
+    this.ctx.font = this.fonts.mediumFontSize;
     this.ctx.fillStyle = this.colors.textColor;
     this.ctx.fillText(`Level ${options.levelNumber}`, 25, 50);
     this.ctx.fillText(`Moves: ${options.moves}`, 700, 50);
@@ -767,11 +772,11 @@ class Display {
     this.drawFloor(options.level);
   }
 
-  drawMenu() {
-    this.ctx.font = '50px sans-serif';
+  drawMenu() { // Not yet in use
+    this.ctx.font = this.fonts.largeFontSize;
     this.ctx.fillStyle = this.colors.textColor;
     this.ctx.fillText('Blockhead', 400, 200);
-    this.ctx.font = '30px sans-serif';
+    this.ctx.font = this.fonts.mediumFontSize;
     this.ctx.fillStyle = 'red';
     this.ctx.fillText('Options (coming soon!)', 350, 300);
     this.ctx.fillText('Tutorial (coming soon!)', 350, 350);
@@ -782,14 +787,14 @@ class Display {
   drawClock(time) {
     this.ctx.fillStyle = this.colors.backgroundColor;
     this.ctx.fillRect(200, 450, 900, 50);
-    this.ctx.font = '30px sans-serif';
+    this.ctx.font = this.fonts.mediumFontSize;
     this.ctx.fillStyle = this.colors.textColor;
     this.ctx.fillText(time, 700, 475);
   }
 
   drawFloor(floor) {
     floor.forEach(tile => {
-      this.ctx.fillStyle = this.tileColors(tile.type);
+      this.ctx.fillStyle = this.colors.tileColors[tile.type];
       const { xPos, yPos } = tile;
       this.ctx.fillRect(xPos, yPos, this.length, this.length);
       this.ctx.strokeRect(xPos, yPos, this.length, this.length);
@@ -828,10 +833,10 @@ class Display {
   drawPause() {
     this.ctx.fillStyle = this.colors.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
-    this.ctx.font = '50px sans-serif';
+    this.ctx.font = this.fonts.largeFontSize;
     this.ctx.fillStyle = this.colors.textColor;
     this.ctx.fillText(`Pause`, 400, 200);
-    this.ctx.font = '30px sans-serif';
+    this.ctx.font = this.fonts.mediumFontSize;
     this.ctx.fillText(`(Press enter to resume)`, 300, 300);
   }
 
@@ -844,10 +849,10 @@ class Display {
   drawFinish(options) {
     this.ctx.fillStyle = this.colors.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
-    this.ctx.font = '50px sans-serif';
+    this.ctx.font = this.fonts.largeFontSize;
     this.ctx.fillStyle = this.colors.textColor;
     this.ctx.fillText(`Final Tally:`, 50, 100);
-    this.ctx.font = '30px sans-serif';
+    this.ctx.font = this.fonts.mediumFontSize;
     this.ctx.fillText(`Moves: ${options.moves}`, 70, 155);
     this.ctx.fillText(`Falls: ${options.falls}`, 70, 190);
     this.ctx.fillText(`Time: ${options.time}`, 70, 225);
@@ -863,7 +868,7 @@ module.exports = Display;
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 class Sound {
@@ -873,7 +878,7 @@ class Sound {
     this.fallSound = document.getElementById("fall");
     this.completeLevelSound = document.getElementById("complete-level");
     this.gameMusic = document.getElementById("game-song");
-    this.menuMusic = document.getElementById("menu-song");
+    this.menuMusic = document.getElementById("menu-song"); // Not yet in use
 
     this.toggleMusic = this.toggleMusic.bind(this);
   }
@@ -920,100 +925,44 @@ module.exports = Sound;
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 class PageButtons {
   constructor() {
-    this.activateButtons();
+    this.toggleImage = this.toggleImage.bind(this);
+
+    this.activateTutorialImages();
+    this.activateDirections();
   }
 
-  activateButtons() {
-    this.directionButtons();
-    this.fallButton();
-    this.transformButton();
-    this.goalButton();
-    this.moveButton();
-  }
-
-  directionButtons () {
-    const directionsButton = document.getElementById('direct-button');
-    const directionsDisplay = document.getElementById('direct');
-    directionsButton.addEventListener("click", () => {
-      this.toggleDirections(directionsDisplay);
+  activateTutorialImages() {
+    const imageIds = ['falling', 'goal', 'move', 'transform'];
+    imageIds.forEach(id => {
+      let button = document.getElementById(`${id}-button`);
+      let displayImage = document.getElementById(`${id}`);
+      button.addEventListener("click", () => {
+        this.toggleImage(displayImage);
+      });
     });
   }
 
-  fallButton() {
-    const fallButton = document.getElementById('falling-button');
-    const fallImage = document.getElementById('falling');
-    fallButton.addEventListener('click', () => {
-      this.fallToggle(fallImage);
+  activateDirections() {
+    const button = document.getElementById('direct-button');
+    const display = document.getElementById('direct');
+    button.addEventListener("click", () => {
+      this.toggleDirections(display);
     });
   }
 
-  goalButton() {
-    const goalButton = document.getElementById('goal-button');
-    const goalImage = document.getElementById('goal');
-    goalButton.addEventListener('click', () => {
-      this.goalToggle(goalImage);
-    });
-  }
-
-  moveButton() {
-    const moveButton = document.getElementById('move-button');
-    const moveImage = document.getElementById('move');
-    moveButton.addEventListener('click', () => {
-      this.moveToggle(moveImage);
-    });
-  }
-
-  transformButton() {
-    const transformButton = document.getElementById('transform-button');
-    const transformImage = document.getElementById('transform');
-    transformButton.addEventListener('click', () => {
-      this.transformToggle(transformImage);
-    });
+  toggleImage(image) {
+    image.className === "hidden" ?
+      image.className = "show" : image.className = "hidden";
   }
 
   toggleDirections(directions) {
-    if (directions.className === "hidden") {
-      directions.className = "display";
-    } else {
-      directions.className = "hidden";
-    }
-  }
-
-  moveToggle(image) {
-    if (image.className === "hidden") {
-      image.className = "show";
-    } else {
-      image.className = "hidden";
-    }
-  }
-
-  transformToggle(image) {
-    if (image.className === "hidden") {
-      image.className = "show";
-    } else {
-      image.className = "hidden";
-    }
-  }
-
-  fallToggle(image) {
-    if (image.className === "hidden") {
-      image.className = "show";
-    } else {
-      image.className = "hidden";
-    }
-  }
-
-  goalToggle(image) {
-    if (image.className === "hidden") {
-      image.className = "show";
-    } else {
-      image.className = "hidden";
-    }
+    directions.className === "hidden" ?
+      directions.className = "display" : directions.className = "hidden";
   }
 }
 
