@@ -5,7 +5,7 @@ class Sound {
     this.fallSound = document.getElementById("fall");
     this.completeLevelSound = document.getElementById("complete-level");
     this.gameMusic = document.getElementById("game-song");
-    this.menuMusic = document.getElementById("menu-song");
+    this.menuMusic = document.getElementById("menu-song"); // Not yet in use
 
     this.toggleMusic = this.toggleMusic.bind(this);
   }

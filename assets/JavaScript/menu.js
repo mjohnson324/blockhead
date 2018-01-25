@@ -1,4 +1,4 @@
-class Menu {
+class Menu { // Not yet in use
   constructor(context) {
     this.textSize = "medium";
     this.blockSize = "medium";

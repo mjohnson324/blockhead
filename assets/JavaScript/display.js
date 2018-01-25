@@ -41,7 +41,7 @@ class Display {
     this.drawFloor(options.level);
   }
 
-  drawMenu() {
+  drawMenu() { // Not yet in use
     this.ctx.font = this.fonts.largeFontSize;
     this.ctx.fillStyle = this.colors.textColor;
     this.ctx.fillText('Blockhead', 400, 200);
