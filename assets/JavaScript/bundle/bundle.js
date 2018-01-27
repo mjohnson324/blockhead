@@ -92,7 +92,7 @@ const Sound = __webpack_require__(12);
 class Game {
   constructor(ctx, length) {
     this.display = new Display(ctx, length);
-    this.levels = LevelGenerator(length);
+    this.levels = new LevelGenerator(length);
     this.tileLength = length;
     this.sound = new Sound();
 
@@ -111,7 +111,7 @@ class Game {
       minutes: 0,
       seconds: 0,
       pauseStatus: false,
-      currentLevel: this.levels[1],
+      currentLevel: this.levels.levels[1],
     };
   }
 
@@ -250,7 +250,7 @@ class Game {
   nextLevel() {
     this.sound.playGoalSound();
     this.state.levelNumber += 1;
-    this.state.currentLevel = this.levels[this.state.levelNumber];
+    this.state.currentLevel = this.levels.levels[this.state.levelNumber];
     if (this.state.currentLevel === undefined) {
       this.endGame();
     } else {
@@ -318,19 +318,25 @@ module.exports = Game;
 const Tile = __webpack_require__(3);
 const allLevels = __webpack_require__(4);
 
-const levelGenerator = (length) => {
-  const levels = allLevels.map(level => level(length));
-  levels.forEach(level => {
-    level.forEach((positionData, idx) => {
-      level[idx] = new Tile(positionData);
+class LevelGenerator {
+  constructor(length) {
+    this.levels = this.generateLevels(length);
+  }
+
+  generateLevels(length) {
+    const levels = allLevels.map(level => level(length));
+    levels.forEach(level => {
+      level.forEach((positionData, idx) => {
+        level[idx] = new Tile(positionData);
+      });
     });
-  });
-  return levels;
-};
+    return levels;
+  }
+}
 
 
 
-module.exports = levelGenerator;
+module.exports = LevelGenerator;
 
 
 /***/ }),
