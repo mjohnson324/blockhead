@@ -4,6 +4,7 @@ const allLevels = require('./levels/all_levels');
 class LevelGenerator {
   constructor(length) {
     this.levels = this.generateLevels(length);
+    this.currentLevel = 1;
   }
 
   generateLevels(length) {
