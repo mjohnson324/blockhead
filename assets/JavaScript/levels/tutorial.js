@@ -1,37 +1,29 @@
-const tutorial = (length, startX = 360, startY = 180) => {
-  return(
-    [
-    { x: startX, y: startY, type: "start" },
-    { x: startX + length * 2, y: startY + length * 2, type: "goal" },
-
-    { x: startX, y: startY + length, type: "none" },
-    { x: startX, y: startY + length * 2, type: "none" },
-    { x: startX, y: startY + length * 3, type: "none" },
-    { x: startX, y: startY + length * 4, type: "none" },
-
-    { x: startX + length, y: startY, type: "none" },
-    { x: startX + length, y: startY + length, type: "none" },
-    { x: startX + length, y: startY + length * 2, type: "none" },
-    { x: startX + length, y: startY + length * 3, type: "none" },
-    { x: startX + length, y: startY + length * 4, type: "none" },
-
-    { x: startX + length * 2, y: startY, type: "none" },
-    { x: startX + length * 2, y: startY + length, type: "none" },
-    { x: startX + length * 2, y: startY + length * 3, type: "none" },
-    { x: startX + length * 2, y: startY + length * 4, type: "none" },
-
-    { x: startX + length * 3, y: startY, type: "none" },
-    { x: startX + length * 3, y: startY + length, type: "none" },
-    { x: startX + length * 3, y: startY + length * 2, type: "none" },
-    { x: startX + length * 3, y: startY + length * 3, type: "none" },
-    { x: startX + length * 3, y: startY + length * 4, type: "none" },
-
-    { x: startX + length * 4, y: startY, type: "none" },
-    { x: startX + length * 4, y: startY + length, type: "none" },
-    { x: startX + length * 4, y: startY + length * 2, type: "none" },
-    { x: startX + length * 4, y: startY + length * 3, type: "none" },
-    { x: startX + length * 4, y: startY + length * 4, type: "none" },
-  ]);
-};
+const tutorial = [
+  { x: 0, y: 0, type: "start" },
+  { x: 2, y: 2, type: "goal" },
+  { x: 0, y: 1, type: "none" },
+  { x: 0, y: 2, type: "none" },
+  { x: 0, y: 3, type: "none" },
+  { x: 0, y: 4, type: "none" },
+  { x: 1, y: 0, type: "none" },
+  { x: 1, y: 1, type: "none" },
+  { x: 1, y: 2, type: "none" },
+  { x: 1, y: 3, type: "none" },
+  { x: 1, y: 4, type: "none" },
+  { x: 2, y: 0, type: "none" },
+  { x: 2, y: 1, type: "none" },
+  { x: 2, y: 3, type: "none" },
+  { x: 2, y: 4, type: "none" },
+  { x: 3, y: 0, type: "none" },
+  { x: 3, y: 1, type: "none" },
+  { x: 3, y: 2, type: "none" },
+  { x: 3, y: 3, type: "none" },
+  { x: 3, y: 4, type: "none" },
+  { x: 4, y: 0, type: "none" },
+  { x: 4, y: 1, type: "none" },
+  { x: 4, y: 2, type: "none" },
+  { x: 4, y: 3, type: "none" },
+  { x: 4, y: 4, type: "none" },
+];
 
 module.exports = tutorial;

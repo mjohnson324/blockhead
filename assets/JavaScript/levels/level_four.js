@@ -1,71 +1,54 @@
-const levelFour = (length, startX = 270, startY = 210) => {
-  return(
-    [
-      { x: startX, y: startY, type: "start" },
-      { x: startX + length * 13, y: startY - length, type: "goal" },
-
-      { x: startX + length, y: startY, type: "none" },
-
-      { x: startX + length * 2, y: startY, type: "none" },
-
-      { x: startX + length * 3, y: startY, type: "none" },
-
-      { x: startX + length * 4, y: startY, type: "none" },
-      { x: startX + length * 4, y: startY - length, type: "none" },
-      { x: startX + length * 4, y: startY - length * 2, type: "none" },
-
-      { x: startX + length * 5, y: startY + length * 3, type: "none" },
-      { x: startX + length * 5, y: startY + length * 2, type: "none" },
-      { x: startX + length * 5, y: startY + length, type: "none" },
-      { x: startX + length * 5, y: startY, type: "none" },
-      { x: startX + length * 5, y: startY - length, type: "none" },
-      { x: startX + length * 5, y: startY - length * 2, type: "none" },
-
-      { x: startX + length * 6, y: startY + length * 3, type: "none" },
-      { x: startX + length * 6, y: startY - length, type: "none" },
-      { x: startX + length * 6, y: startY - length * 2, type: "none" },
-      { x: startX + length * 6, y: startY - length * 3, type: "none" },
-      { x: startX + length * 6, y: startY - length * 4, type: "none" },
-      { x: startX + length * 6, y: startY - length * 5, type: "none" },
-
-      { x: startX + length * 7, y: startY + length * 3, type: "none" },
-      { x: startX + length * 7, y: startY - length * 4, type: "none" },
-      { x: startX + length * 7, y: startY - length * 5, type: "none" },
-      { x: startX + length * 7, y: startY - length * 6, type: "none" },
-
-      { x: startX + length * 8, y: startY + length * 3, type: "none" },
-      { x: startX + length * 8, y: startY + length * 2, type: "none" },
-      { x: startX + length * 8, y: startY + length, type: "none" },
-      { x: startX + length * 8, y: startY - length * 4, type: "none" },
-      { x: startX + length * 8, y: startY - length * 5, type: "none" },
-      { x: startX + length * 8, y: startY - length * 6, type: "none" },
-
-      { x: startX + length * 9, y: startY + length * 3, type: "none" },
-      { x: startX + length * 9, y: startY + length * 2, type: "none" },
-      { x: startX + length * 9, y: startY + length, type: "none" },
-      { x: startX + length * 9, y: startY - length * 3, type: "none" },
-      { x: startX + length * 9, y: startY - length * 4, type: "none" },
-      { x: startX + length * 9, y: startY - length * 5, type: "none" },
-      { x: startX + length * 9, y: startY - length * 6, type: "none" },
-
-      { x: startX + length * 10, y: startY + length * 3, type: "none" },
-      { x: startX + length * 10, y: startY + length * 2, type: "none" },
-      { x: startX + length * 10, y: startY + length, type: "none" },
-      { x: startX + length * 10, y: startY - length * 3, type: "none" },
-      { x: startX + length * 10, y: startY - length * 4, type: "none" },
-      { x: startX + length * 10, y: startY - length * 5, type: "none" },
-
-      { x: startX + length * 11, y: startY + length, type: "none" },
-      { x: startX + length * 11, y: startY, type: "none" },
-      { x: startX + length * 11, y: startY - length, type: "none" },
-
-      { x: startX + length * 12, y: startY + length, type: "none" },
-      { x: startX + length * 12, y: startY, type: "none" },
-      { x: startX + length * 12, y: startY - length, type: "none" },
-
-      { x: startX + length * 13, y: startY, type: "none" },
-    ]
-  );
-};
+const levelFour = [
+  { x: 0, y: 0, type: "start" },
+  { x: 13, y: -1, type: "goal" },
+  { x: 1, y: 0, type: "none" },
+  { x: 2, y: 0, type: "none" },
+  { x: 3, y: 0, type: "none" },
+  { x: 4, y: 0, type: "none" },
+  { x: 4, y: -1, type: "none" },
+  { x: 4, y: -2, type: "none" },
+  { x: 5, y: 3, type: "none" },
+  { x: 5, y: 2, type: "none" },
+  { x: 5, y: 1, type: "none" },
+  { x: 5, y: 0, type: "none" },
+  { x: 5, y: -1, type: "none" },
+  { x: 5, y: -2, type: "none" },
+  { x: 6, y: 3, type: "none" },
+  { x: 6, y: -1, type: "none" },
+  { x: 6, y: -2, type: "none" },
+  { x: 6, y: -3, type: "none" },
+  { x: 6, y: -4, type: "none" },
+  { x: 6, y: -5, type: "none" },
+  { x: 7, y: 3, type: "none" },
+  { x: 7, y: -4, type: "none" },
+  { x: 7, y: -5, type: "none" },
+  { x: 7, y: -6, type: "none" },
+  { x: 8, y: 3, type: "none" },
+  { x: 8, y: 2, type: "none" },
+  { x: 8, y: 1, type: "none" },
+  { x: 8, y: -4, type: "none" },
+  { x: 8, y: -5, type: "none" },
+  { x: 8, y: -6, type: "none" },
+  { x: 9, y: 3, type: "none" },
+  { x: 9, y: 2, type: "none" },
+  { x: 9, y: 1, type: "none" },
+  { x: 9, y: -3, type: "none" },
+  { x: 9, y: -4, type: "none" },
+  { x: 9, y: -5, type: "none" },
+  { x: 9, y: -6, type: "none" },
+  { x: 10, y: 3, type: "none" },
+  { x: 10, y: 2, type: "none" },
+  { x: 10, y: 1, type: "none" },
+  { x: 10, y: -3, type: "none" },
+  { x: 10, y: -4, type: "none" },
+  { x: 10, y: -5, type: "none" },
+  { x: 11, y: 1, type: "none" },
+  { x: 11, y: 0, type: "none" },
+  { x: 11, y: -1, type: "none" },
+  { x: 12, y: 1, type: "none" },
+  { x: 12, y: 0, type: "none" },
+  { x: 12, y: -1, type: "none" },
+  { x: 13, y: 0, type: "none" },
+]
 
 module.exports = levelFour;

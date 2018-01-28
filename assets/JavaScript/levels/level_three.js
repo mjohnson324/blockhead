@@ -49,6 +49,6 @@ const levelThree = [
   { x: 13, y: -2, type: "none" },
 ];
 
-// { xRange: 14, yRange: 5, },
+// { xRange: 15, yRange: 6, },
 
 module.exports = levelThree;

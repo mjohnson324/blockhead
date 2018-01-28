@@ -1,19 +1,16 @@
-const levelOne = (length, startX = 300, startY = 180) => {
-  return(
-    [
-      { x: startX, y: startY, type: "start" },
-      { x: startX + length * 9, y: startY, type: "goal" },
+const levelOne = [
+  { x: 0, y: 0, type: "start" },
+  { x: 9, y: 0, type: "goal" },
+  { x: 1, y: 0, type: "none" },
+  { x: 2, y: 0, type: "none" },
+  { x: 3, y: 0, type: "none" },
+  { x: 4, y: 0, type: "none" },
+  { x: 5, y: 0, type: "none" },
+  { x: 6, y: 0, type: "none" },
+  { x: 7, y: 0, type: "none" },
+  { x: 8, y: 0, type: "none" }
+];
 
-      { x: startX + length, y: startY, type: "none" },
-      { x: startX + length * 2, y: startY, type: "none" },
-      { x: startX + length * 3, y: startY, type: "none" },
-      { x: startX + length * 4, y: startY, type: "none" },
-      { x: startX + length * 5, y: startY, type: "none" },
-      { x: startX + length * 6, y: startY, type: "none" },
-      { x: startX + length * 7, y: startY, type: "none" },
-      { x: startX + length * 8, y: startY, type: "none" },
-    ]
-  );
-}
+// { xRange: 10, yRange: 1, }
 
 module.exports = levelOne;
