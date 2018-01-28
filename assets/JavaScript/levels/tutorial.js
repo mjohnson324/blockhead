@@ -26,4 +26,6 @@ const tutorial = [
   { x: 4, y: 4, type: "none" },
 ];
 
+// { xRange: 5, yRange: 5, }
+
 module.exports = tutorial;
