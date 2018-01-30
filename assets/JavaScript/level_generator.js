@@ -15,7 +15,7 @@ class LevelGenerator {
   generateLevel() {
     const level = this.levelData[this.currentLevel];
     const startPosition = this.centerFloor(level.floorDimensions);
-    return setCoordinates(level.tileData, startPosition);
+    return this.setCoordinates(level.floorData, startPosition);
   }
 
   centerFloor(floorDimensions) { // Tiles are positioned relative to the
@@ -28,15 +28,17 @@ class LevelGenerator {
     return { xPos: startCornerXPos, yPos: startCornerYPos };
   }
 
-  setCoordinates() {
+  setCoordinates(floorData, startPosition) {
 
   }
 
-  constructTileCoordinates() {
-
+  constructTileCoordinates(tileData, startPosition) {
+    const x = startPosition.xPos + this.length * tileData.x;
+    const y = startPosition.yPos + this.length * tileData.y;
+    return { xPos: x, yPos: y, type: tileData.type, };
   }
 
-  lookupTile() {
+  lookupTile(position) {
 
   }
 }
