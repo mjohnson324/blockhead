@@ -6,6 +6,8 @@ class LevelGenerator {
     this.length = length;
     this.levelData = levels;
     this.constructedFloor = this.generateLevel();
+
+    this.constructTileCoordinates = this.constructTileCoordinates.bind(this);
   }
 
   nextLevel() {
@@ -29,7 +31,14 @@ class LevelGenerator {
   }
 
   setCoordinates(floorData, startPosition) {
-
+    const newFloor = {};
+    floorData.forEach(tileData => {
+      let tileOptions = this.constructTileCoordinates(tileData, startPosition);
+      let tile = new Tile(tileOptions);
+      let tilePosition = `[${tile.xPos}, ${tile.yPos}]`;
+      newFloor[tilePosition] = tile;
+    });
+    return newFloor;
   }
 
   constructTileCoordinates(tileData, startPosition) {
