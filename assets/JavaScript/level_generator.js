@@ -5,6 +5,7 @@ class LevelGenerator {
     this.currentLevel = 1;
     this.length = length;
     this.levelData = levels;
+    this.constructedFloor = this.generateLevel();
   }
 
   nextLevel() {
@@ -13,11 +14,12 @@ class LevelGenerator {
 
   generateLevel() {
     const level = this.levelData[this.currentLevel];
-    this.centerFloor(level.floorDimensions);
+    const startPosition = this.centerFloor(level.floorDimensions);
+    return setCoordinates(level.tileData, startPosition);
   }
 
-  centerFloor(floorDimensions) {
-    const canvasWidth = 900;
+  centerFloor(floorDimensions) { // Tiles are positioned relative to the
+    const canvasWidth = 900;     // position of the top-left tile on a floor.
     const canvasHeight = 500;
     const floorWidth = floorDimensions.xRange * this.length;
     const floorHeight = floorDimensions.yRange * this.length;
