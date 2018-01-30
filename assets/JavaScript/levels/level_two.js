@@ -1,6 +1,6 @@
 const levelTwo = {
   floorDimensions: { xRange: 10, yRange: 6, },
-  tileData: [
+  floorData: [
     { x: 1, y: 1, type: "start" },
     { x: 7, y: 4, type: "goal" },
     { x: 0, y: 0, type: "none" },

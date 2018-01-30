@@ -1,6 +1,6 @@
 const tutorial = {
   floorDimensions: { xRange: 5, yRange: 5, },
-  tileData: [
+  floorData: [
     { x: 0, y: 0, type: "start" },
     { x: 2, y: 2, type: "goal" },
     { x: 0, y: 1, type: "none" },
