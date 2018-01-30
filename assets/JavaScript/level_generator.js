@@ -5,13 +5,16 @@ class LevelGenerator {
     this.currentLevel = 1;
     this.length = length;
     this.levelData = levels;
-    this.constructedFloor = this.generateLevel();
 
     this.constructTileCoordinates = this.constructTileCoordinates.bind(this);
   }
 
   nextLevel() {
     this.currentLevel += 1;
+  }
+
+  constructFloor() {
+    this.constructedFloor = this.generateLevel();
   }
 
   generateLevel() {
@@ -48,7 +51,8 @@ class LevelGenerator {
   }
 
   lookupTile(position) {
-
+    const currentPosition = `[${position.xPos}, ${position.yPos}]`;
+    return this.constructedFloor[currentPosition];
   }
 }
 
