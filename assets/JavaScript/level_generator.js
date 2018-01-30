@@ -1,23 +1,36 @@
 const Tile = require('./tile');
-const allLevels = require('./levels/all_levels');
 
 class LevelGenerator {
-  constructor(length) {
-    this.levels = this.generateLevels(length);
+  constructor(length, levels) {
     this.currentLevel = 1;
+    this.length = length;
+    this.levelData = levels;
   }
 
-  generateLevels(length) {
-    const levels = allLevels.map(level => level(length));
-    levels.forEach(level => {
-      level.forEach((positionData, idx) => {
-        level[idx] = new Tile(positionData);
-      });
-    });
-    return levels;
+  nextLevel() {
+    this.currentLevel += 1;
+  }
+
+  generateLevel() {
+    const level = this.levelData[this.currentLevel];
+    this.centerFloor(level.floorDimensions);
+  }
+
+  centerFloor() {
+
+  }
+
+  setCoordinates() {
+
+  }
+
+  constructTileCoordinates() {
+
+  }
+
+  lookupTile() {
+
   }
 }
-
-
 
 module.exports = LevelGenerator;
