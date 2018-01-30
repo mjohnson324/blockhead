@@ -16,8 +16,14 @@ class LevelGenerator {
     this.centerFloor(level.floorDimensions);
   }
 
-  centerFloor() {
-
+  centerFloor(floorDimensions) {
+    const canvasWidth = 900;
+    const canvasHeight = 500;
+    const floorWidth = floorDimensions.xRange * this.length;
+    const floorHeight = floorDimensions.yRange * this.length;
+    const startCornerXPos = Math.floor((canvasWidth - floorWidth) / 2);
+    const startCornerYPos = Math.floor((canvasHeight - floorHeight) / 2);
+    return { xPos: startCornerXPos, yPos: startCornerYPos };
   }
 
   setCoordinates() {
