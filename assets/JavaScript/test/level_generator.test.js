@@ -2,7 +2,7 @@ const LevelGenerator = require('../level_generator');
 
 const levels = {
   1: {
-    floorDimensions: { xRange: , yRange: },
+    floorDimensions: { xRange: 1, yRange: 3 },
     floorData: [
       { x: 0, y: 0, type: "start" },
       { x: 0, y: 2, type: "goal" },
@@ -10,7 +10,7 @@ const levels = {
     ]
   },
   2: {
-    floorDimensions: { xRange: , yRange: },
+    floorDimensions: { xRange: 3, yRange: 2 },
     floorData: [
       { x: 0, y: 0, type: "start" },
       { x: 2, y: 1, type: "goal" },
@@ -19,13 +19,20 @@ const levels = {
     ]
   },
 };
-const levels = new LevelGenerator(30, levels);
+const levelMaker = new LevelGenerator(30, levels);
 
 test('LevelGenerator keeps track of the current level', () => {
-  expect(levels.currentLevel).toBe(1);
+  expect(levelMaker.currentLevel).toBe(1);
+});
+
+test('Dynamically create data for tiles', () => {
+  const start = { xPos: 100, yPos: 100 };
+  const tileInfo = { x: 3, y: 5, type: "none" };
+  const tileOptions = levelMaker.constructTileCoordinates(tileInfo, start);
+  expect(tileOptions).toEqual({ xPos: 190, yPos: 250, type: "none" });
 });
 
 test('LevelGenerator progresses to the next level', () => {
-  levels.nextLevel();
-  expect(levels.currentLevel).toBe(2);
+  levelMaker.nextLevel();
+  expect(levelMaker.currentLevel).toBe(2);
 });
