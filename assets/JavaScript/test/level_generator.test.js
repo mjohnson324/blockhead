@@ -49,6 +49,13 @@ test('Set up a floor of tiles for gameplay', () => {
   expect(levelMaker.constructedFloor).toEqual(newLevel)
 });
 
+test('Tiles can be looked up individually', () => {
+  levelMaker.constructFloor();
+  const comparisonTile = new Tile({ x: 435, y: 235, type: "none" });
+  const actualTile = levelMaker.lookupTile({ xPos: 435, yPos: 235 });
+  expect(actualTile).toEqual(comparisonTile);
+});
+
 test('LevelGenerator progresses to the next level', () => {
   levelMaker.nextLevel();
   expect(levelMaker.currentLevel).toBe(2);
