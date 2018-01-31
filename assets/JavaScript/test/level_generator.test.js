@@ -32,6 +32,12 @@ test('Dynamically create data for tiles', () => {
   expect(tileOptions).toEqual({ xPos: 190, yPos: 250, type: "none" });
 });
 
+test('Dynamically center floors', () => {
+  const dimensions = { xRange: 15, yRange: 15 };
+  const start = levelMaker.centerFloor(dimensions);
+  expect(start).toEqual({ xPos: 225, yPos: 25 });
+});
+
 test('LevelGenerator progresses to the next level', () => {
   levelMaker.nextLevel();
   expect(levelMaker.currentLevel).toBe(2);
