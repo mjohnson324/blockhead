@@ -47,7 +47,7 @@ class LevelGenerator {
   constructTileCoordinates(tileData, startPosition) {
     const x = startPosition.xPos + this.length * tileData.x;
     const y = startPosition.yPos + this.length * tileData.y;
-    return { xPos: x, yPos: y, type: tileData.type, };
+    return { x: x, y: y, type: tileData.type, };
   }
 
   lookupTile(position) {
