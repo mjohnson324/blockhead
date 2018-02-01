@@ -6,12 +6,13 @@ const Block = require('../block');
 describe('Block helper functions', () => {
   let block;
   beforeEach(() => {
-    block = new Block(30, { width: 30, height: 30 });
+    block = new Block(30, { width: 60, height: 30 });
   });
 
   test('block dimensions can be checked at will', () => {
-    expect(block.dimensions()).toEqual({ width: 30, height: 30 });
+    expect(block.dimensions()).toEqual({ width: 60, height: 30 });
   });
+
   describe('positioning', () => {
     beforeEach(() => {
       block.setPosition({xPos: 0, yPos: 0 });
@@ -24,6 +25,13 @@ describe('Block helper functions', () => {
     test('block changes position incrementally', () => {
       block.changePosition(1, 1);
       expect(block.position()).toEqual({ xPos: 30, yPos: 30 });
+    });
+
+    test('Block defaults to square when position is reset', () => {
+      const testProperties = { xPos: 60, yPos: 60, width: 30, height: 30 };
+      const newPosition = { xPos: 60, yPos: 60 };
+      block.resetBlock(newPosition);
+      expect(block.properties()).toEqual(testProperties);
     });
   });
 });

@@ -5,11 +5,6 @@ class Block {
     this.height = dimensions.height;
   }
 
-  setPosition(coordinates) {
-    this.xPos = coordinates.xPos;
-    this.yPos = coordinates.yPos;
-  }
-
   dimensions() {
     return {
       width: this.width,
@@ -22,6 +17,27 @@ class Block {
       xPos: this.xPos,
       yPos: this.yPos
     };
+  }
+
+  properties() {
+    return {
+      xPos: this.xPos,
+      yPos: this.yPos,
+      width: this.width,
+      height: this.height
+    }
+  }
+
+  setPosition(coordinates) {
+    this.xPos = coordinates.xPos;
+    this.yPos = coordinates.yPos;
+  }
+
+  resetBlock(startPosition) {
+    this.width = this.length;
+    this.height = this.length;
+    this.xPos = startPosition.xPos;
+    this.yPos = startPosition.yPos;
   }
 
 // To reduce information which must be tracked by the game state,
