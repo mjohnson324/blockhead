@@ -9,6 +9,8 @@ class Display {
     this.fonts = this.fonts();
     this.ctx.fillStyle = this.colors.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
+
+    this.drawTime = this.drawTime.bind(this);
   }
 
   colors() {
@@ -68,9 +70,11 @@ class Display {
 
   stringifyTime() {
     const { minutes, seconds } = this.clock.currentTime();
+
     const minuteString = (minutes < 10) ? `0${minutes}` : minutes;
     const secondString = (seconds < 10) ? `0${seconds}` : seconds;
-    return `${minutes}:${seconds}`;
+
+    return `${minuteString}:${secondString}`;
   }
 
   drawTime() {
