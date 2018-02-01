@@ -3,11 +3,6 @@ class Clock() {
     this.time = 0;
   }
 
-  tick() {
-    const { minutes, seconds } = this.currentTime();
-    this.upTick()
-  }
-
   upTick() {
     this.time += 1;
   }

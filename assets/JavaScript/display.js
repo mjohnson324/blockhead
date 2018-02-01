@@ -1,5 +1,8 @@
+const Clock = require('./clock');
+
 class Display {
   constructor(ctx, length) {
+    this.clock = new Clock();
     this.ctx = ctx;
     this.length = length;
     this.colors = this.colors();
@@ -53,12 +56,21 @@ class Display {
     this.ctx.fillText('Start', 300, 250);
   }
 
-  drawClock(time) {
+  stringifyTime() {
+    const { minutes, second } = this.clock.currentTime();
+    const minuteString = (minutes < 10) ? `0${minutes}` : minutes;
+    const secondString = (seconds < 10) ? `0${seconds}` : seconds;
+    return `${minutes}:${seconds}`;
+  }
+
+  drawTime() {
+    const displayTime = this.stringifyTime();
     this.ctx.fillStyle = this.colors.backgroundColor;
     this.ctx.fillRect(200, 450, 900, 50);
     this.ctx.font = this.fonts.mediumFontSize;
     this.ctx.fillStyle = this.colors.textColor;
-    this.ctx.fillText(time, 700, 475);
+    this.ctx.fillText(displayTime, 700, 475);
+    this.clock.upTick();
   }
 
   drawFloor(floor) {
