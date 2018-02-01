@@ -1,9 +1,13 @@
 class Block {
-  constructor(options) {
-    this.xPos = options.xPos;
-    this.yPos = options.yPos;
-    this.width = options.width;
-    this.height = options.height;
+  constructor(length, dimensions) {
+    this.length = length;
+    this.width = dimensions.width;
+    this.height = dimensions.height;
+  }
+
+  setPosition(coordinates) {
+    this.xPos = coordinates.xPos;
+    this.yPos = coordinates.yPos;
   }
 
   dimensions() {
