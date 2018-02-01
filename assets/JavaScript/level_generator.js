@@ -13,6 +13,10 @@ class LevelGenerator {
     this.currentLevel += 1;
   }
 
+  resetCurrentLevel() {
+    this.currentLevel = 1;
+  }
+
   constructFloor() {
     this.constructedFloor = this.generateLevel();
     this.currentStartPosition = this.getStart(this.constructedFloor);
