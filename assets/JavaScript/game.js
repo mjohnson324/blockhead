@@ -12,65 +12,38 @@ class Game {
     this.sound = new Sound();
 
     this.getMove = this.getMove.bind(this);
-    this.tick = this.tick.bind(this);
     this.pauseButton = this.pauseButton.bind(this);
     this.restartGame = this.restartGame.bind(this);
-  }
-
-  setState() {
-    this.state = {
-      moves: 0,
-      falls: 0,
-      time: -1,
-      pauseStatus: false,
-    };
   }
 
   start() {
     this.setState();
     this.sound.start();
-    this.timerId = setInterval(this.tick, 1000);
+    this.levels.constructFloor();
+    this.block.setPosition(this.levels.currentStartPosition);
+    this.timerId = setInterval(this.display.drawTime, 1000);
     document.addEventListener("keydown", this.getMove);
     document.addEventListener("keydown", this.pauseButton);
     this.display.render(this.displayOptions());
     this.display.drawBlock(this.block);
   }
 
+  setState() {
+    this.state = {
+      moves: 0,
+      falls: 0,
+      pauseStatus: false,
+    };
+  }
+
   restartGame(e) {
     switch(e.keyCode) {
       case 32:
         e.preventDefault();
+        this.levels.resetCurrentLevel();
         this.start();
         document.removeEventListener("keydown", this.restartGame);
     }
-  }
-
-  tick() {
-    const { minutes, seconds } = this.upTick();
-    const timeDisplay = timeString(minutes, seconds);
-    this.display.drawClock(timeDisplay);
-  }
-
-  upTick() {
-    this.state.time += 1;
-    const gameTime = this.state.time;
-    const seconds = gameTime % 60;
-    const minutes = Math.floor(gameTime / 60) % 60;
-    return { minutes: minutes, seconds: seconds };
-  }
-
-  timeString(minutes, seconds) {
-    const minuteString = (minutes < 10) ? `0${minutes}` : minutes;
-    const secondString = (seconds < 10) ? `0${seconds}` : seconds;
-    return `${minutes}:${seconds}`;
-  }
-
-  displayOptions() {
-    return { level: this.state.currentLevel,
-             levelNumber: this.state.levelNumber,
-             moves: this.state.moves,
-             falls: this.state.falls,
-             time: this.state.timeString };
   }
 
   getMove(e) {
@@ -103,7 +76,7 @@ class Game {
         this.state.pauseStatus = true;
         this.pauseGame();
       } else {
-        this.state.pauseStatus = false
+        this.state.pauseStatus = false;
         this.resumeGame();
       }
     }
@@ -119,36 +92,42 @@ class Game {
     this.display.render(this.displayOptions());
     this.display.drawBlock(this.block);
     document.addEventListener("keydown", this.getMove);
-    this.timerId = setInterval(this.tick, 1000);
+    this.timerId = setInterval(this.display.drawTime, 1000);
+  }
+
+  displayOptions() {
+    return { level: this.levels.constructedFloor,
+             levelNumber: this.levels.currentLevel,
+             moves: this.state.moves,
+             falls: this.state.falls };
   }
 
   checkBlock() {
     if (this.block.width === this.block.height) {
       this.checkGoal();
     }
-    if (this.state.currentLevel) {
+    const { levelData, currentLevel } = this.levels;
+    if (levelData[currentLevel] !== undefined) {
       this.checkBounds();
     }
   }
 
   checkGoal() {
-    const { xPos, yPos } = this.state.goal;
-    const currentX = this.block.xPos;
-    const currentY = this.block.yPos;
-    if (xPos === currentX && yPos === currentY) {
+    const tile = this.levels.lookupTile(this.block.position());
+    if (tile !== undefined && tile.type === "goal") {
       this.nextLevel();
     }
   }
 
   nextLevel() {
     this.sound.playGoalSound();
-    this.state.levelNumber += 1;
-    this.state.currentLevel = this.levels.levels[this.state.levelNumber];
-    if (this.state.currentLevel === undefined) {
+    this.levels.nextLevel();
+    const { levelData, currentLevel } = this.levels;
+    if (levelData[currentLevel] === undefined) {
       this.endGame();
     } else {
-      this.state.goal = this.state.currentLevel[1];
-
+      this.levels.constructFloor();
+      this.block.setPosition(this.levels.currentStartPosition);
       this.display.render(this.displayOptions());
       this.display.drawBlock(this.block);
     }
@@ -163,6 +142,7 @@ class Game {
   }
 
   checkBounds() {
+    const { levelData, currentLevel } = this.levels;
     const { xPos, yPos } = this.block.position();
     const { width, height } = this.block.dimensions();
     const coordinates = [[xPos, yPos],
@@ -170,25 +150,25 @@ class Game {
       [xPos + width, yPos],
       [xPos + width, yPos + height]];
     if (this.display.tileMovesOffFloor(coordinates)) {
-      this.resetBlock();
-    } else if (this.state.currentLevel) {
+      this.resetLevel();
+    } else if (levelData[currentLevel] !== undefined) {
       this.display.render(this.displayOptions());
       this.display.drawBlock(this.block);
       this.sound.playBlockSound(this.block);
     }
   }
 
-  resetBlock() {
+  resetLevel() {
     document.removeEventListener("keydown", this.getMove);
-
     this.state.falls += 1;
-    this.flashFailure(oldOptions);
+    this.flashFailure();
   }
 
-  flashFailure(oldOptions) {
+  flashFailure() {
     this.display.render(this.displayOptions());
-    this.display.drawFail(oldOptions);
+    this.display.drawFail(this.block.properties());
     this.sound.playFallSound();
+    this.block.resetBlock(this.levels.currentStartPosition);
     setTimeout(() => {
       this.display.render(this.displayOptions());
     }, 800);
