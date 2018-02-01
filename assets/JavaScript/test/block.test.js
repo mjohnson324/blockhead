@@ -22,7 +22,7 @@ describe('Block helper functions', () => {
     });
 
     test('block changes position incrementally', () => {
-      block.changePosition(30, 30);
+      block.changePosition(1, 1);
       expect(block.position()).toEqual({ xPos: 30, yPos: 30 });
     });
   });
@@ -38,28 +38,28 @@ describe('Square blocks becoming rectangular', () => {
 
   test('Square block transforms correctly when expanding right', () => {
     position = { xPos: 30, yPos: 0 };
-    block.transformBlock(30, 0);
+    block.transformBlock(1, 0);
     expect(block.position()).toEqual(position);
     expect(block.width).toBeGreaterThan(block.height);
   });
 
   test('Square block transforms correctly when expanding left', () => {
     position = { xPos: -60, yPos: 0 };
-    block.transformBlock(-30, 0);
+    block.transformBlock(-1, 0);
     expect(block.position()).toEqual(position);
     expect(block.width).toBeGreaterThan(block.height);
   });
 
   test('Square block transforms correctly when expanding upward', () => {
     position = { xPos: 0, yPos: -60 };
-    block.transformBlock(0, -30);
+    block.transformBlock(0, -1);
     expect(block.position()).toEqual(position);
     expect(block.height).toBeGreaterThan(block.width);
   });
 
   test('Square block transforms correctly when expanding downward', () => {
     position = { xPos: 0, yPos: 30 };
-    block.transformBlock(0, 30);
+    block.transformBlock(0, 1);
     expect(block.position()).toEqual(position);
     expect(block.height).toBeGreaterThan(block.width);
   });
@@ -75,12 +75,12 @@ describe('Wide rectangular blocks', () => {
   describe('Moving without changing shape', () => {
     const wideBlockSize = { width: 60, height: 30 };
     test('Wide block retains shape when moving up', () => {
-      wideBlock.transformBlock(0, 30);
+      wideBlock.transformBlock(0, 1);
       expect(wideBlock.dimensions()).toEqual(wideBlockSize);
     });
 
     test('Wide block retains shape when moving down', () => {
-      wideBlock.transformBlock(0, -30);
+      wideBlock.transformBlock(0, -1);
       expect(wideBlock.dimensions()).toEqual(wideBlockSize);
     })
   });
@@ -89,14 +89,14 @@ describe('Wide rectangular blocks', () => {
     const squareBlockSize = { width: 30, height: 30 };
     test('Wide block transforms correctly when contracting right', () => {
       const rightShift = { xPos: 60, yPos: 0 };
-      wideBlock.transformBlock(30, 0);
+      wideBlock.transformBlock(1, 0);
       expect(wideBlock.dimensions()).toEqual(squareBlockSize);
       expect(wideBlock.position()).toEqual(rightShift);
     });
 
     test('Wide block transforms correctly when contracting left', () => {
       const leftShift = { xPos: -30, yPos: 0 };
-      wideBlock.transformBlock(-30, 0);
+      wideBlock.transformBlock(-1, 0);
       expect(wideBlock.dimensions()).toEqual(squareBlockSize);
       expect(wideBlock.position()).toEqual(leftShift);
     });
@@ -113,12 +113,12 @@ describe('Tall rectangular blocks', () => {
   describe('Moving without changing shape', () => {
     const tallBlockSize = { width: 30, height: 60 };
     test('Tall block retains shape when moving left', () => {
-      tallBlock.transformBlock(30, 0);
+      tallBlock.transformBlock(1, 0);
       expect(tallBlock.dimensions()).toEqual(tallBlockSize);
     });
 
     test('Tall block retains shape when moving right', () => {
-      tallBlock.transformBlock(-30, 0);
+      tallBlock.transformBlock(-1, 0);
       expect(tallBlock.dimensions()).toEqual(tallBlockSize);
     });
   });
@@ -127,14 +127,14 @@ describe('Tall rectangular blocks', () => {
     const squareBlockSize = { width: 30, height: 30 };
     test('Tall block transforms correctly when contracting upward', () => {
       const upShift = { xPos: 0, yPos: -30 };
-      tallBlock.transformBlock(0, -30);
+      tallBlock.transformBlock(0, -1);
       expect(tallBlock.dimensions()).toEqual(squareBlockSize);
       expect(tallBlock.position()).toEqual(upShift);
     });
 
     test('Tall block transforms correctly when contracting downward', () => {
       const downShift = { xPos: 0, yPos: 60 };
-      tallBlock.transformBlock(0, 30);
+      tallBlock.transformBlock(0, 1);
       expect(tallBlock.dimensions()).toEqual(squareBlockSize);
       expect(tallBlock.position()).toEqual(downShift);
     });
