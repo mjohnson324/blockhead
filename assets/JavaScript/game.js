@@ -2,12 +2,13 @@ const LevelGenerator = require('./level_generator');
 const Block = require('./block');
 const Display = require('./display');
 const Sound = require('./sound');
+const allLevels = require('./levels/all_levels');
 
 class Game {
   constructor(ctx, length) {
     this.display = new Display(ctx, length);
-    this.levels = new LevelGenerator(length);
-    this.tileLength = length;
+    this.levels = new LevelGenerator(length, allLevels);
+    this.block = new Block(length, { width: length, height: length });
     this.sound = new Sound();
 
     this.getMove = this.getMove.bind(this);
@@ -18,25 +19,19 @@ class Game {
 
   setState() {
     this.state = {
-      length: this.tileLength,
-      levelNumber: 1,
       moves: 0,
       falls: 0,
-      minutes: 0,
-      seconds: 0,
+      time: -1,
       pauseStatus: false,
-      currentLevel: this.levels.levels[1],
     };
   }
 
   start() {
     this.setState();
     this.sound.start();
-    this.state.goal = this.state.currentLevel[1];
     this.timerId = setInterval(this.tick, 1000);
     document.addEventListener("keydown", this.getMove);
     document.addEventListener("keydown", this.pauseButton);
-    this.constructBlock();
     this.display.render(this.displayOptions());
     this.display.drawBlock(this.block);
   }
@@ -51,39 +46,23 @@ class Game {
   }
 
   tick() {
-    let minutes = this.state.minutes;
-    let seconds = this.state.seconds;
-    minutes = (minutes < 10) ? `0${minutes}` : minutes;
-    seconds = (seconds < 10) ? `0${seconds}` : seconds;
-    this.state.timeString = `${minutes}:${seconds}`;
-    this.display.drawClock(this.state.timeString);
-    this.uptick();
+    const { minutes, seconds } = this.upTick();
+    const timeDisplay = timeString(minutes, seconds);
+    this.display.drawClock(timeDisplay);
   }
 
-  uptick() {
-    this.state.seconds += 1;
-    if (this.state.seconds >= 60) {
-      this.state.seconds = 0;
-      this.state.minutes += 1;
-      if (this.state.minutes >= 60) {
-        this.state.minutes = 0;
-      }
-    }
+  upTick() {
+    this.state.time += 1;
+    const gameTime = this.state.time;
+    const seconds = gameTime % 60;
+    const minutes = Math.floor(gameTime / 60) % 60;
+    return { minutes: minutes, seconds: seconds };
   }
 
-  constructBlock() {
-    const { xPos, yPos } = this.state.currentLevel[0];
-    const blockOptions = { xPos: xPos,
-      yPos: yPos,
-      width: this.state.length,
-      height: this.state.length,
-    };
-    this.block = new Block(blockOptions);
-  }
-
-  getBlockOptions() {
-    const { xPos, yPos, width, height } = this.block;
-    return { xPos: xPos, yPos: yPos, width: width, height:height };
+  timeString(minutes, seconds) {
+    const minuteString = (minutes < 10) ? `0${minutes}` : minutes;
+    const secondString = (seconds < 10) ? `0${seconds}` : seconds;
+    return `${minutes}:${seconds}`;
   }
 
   displayOptions() {
@@ -100,16 +79,16 @@ class Game {
       e.preventDefault();
       switch (e.keyCode) {
         case 40: // down arrow key
-          this.block.transformBlock(0, this.state.length);
+          this.block.transformBlock(0, 1);
           break;
         case 38: // up arrow key
-          this.block.transformBlock(0, this.state.length * -1);
+          this.block.transformBlock(0, -1);
           break;
         case 37: // left arrow key
-          this.block.transformBlock(this.state.length * -1, 0);
+          this.block.transformBlock(-1, 0);
           break;
         case 39: // right arrow key
-          this.block.transformBlock(this.state.length, 0);
+          this.block.transformBlock(1, 0);
       }
       this.state.moves += 1;
       this.checkBlock();
@@ -169,7 +148,7 @@ class Game {
       this.endGame();
     } else {
       this.state.goal = this.state.currentLevel[1];
-      this.constructBlock();
+
       this.display.render(this.displayOptions());
       this.display.drawBlock(this.block);
     }
@@ -184,7 +163,8 @@ class Game {
   }
 
   checkBounds() {
-    const { xPos, yPos, width, height } = this.getBlockOptions();
+    const { xPos, yPos } = this.block.position();
+    const { width, height } = this.block.dimensions();
     const coordinates = [[xPos, yPos],
       [xPos, yPos + height],
       [xPos + width, yPos],
@@ -200,8 +180,7 @@ class Game {
 
   resetBlock() {
     document.removeEventListener("keydown", this.getMove);
-    const oldOptions = this.getBlockOptions();
-    this.constructBlock();
+
     this.state.falls += 1;
     this.flashFailure(oldOptions);
   }
