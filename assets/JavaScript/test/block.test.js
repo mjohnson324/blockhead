@@ -7,7 +7,8 @@ describe('Square blocks becoming rectangular', () => {
   let block;
   let position;
   beforeEach(() => {
-    block = new Block({ xPos: 0, yPos: 0, width: 30, height: 30 });
+    block = new Block(30, { width: 30, height: 30 });
+    block.setPosition({ xPos: 0, yPos: 0 });
   });
 
   test('block changes position incrementally', () => {
@@ -48,7 +49,8 @@ describe('Square blocks becoming rectangular', () => {
 describe('Wide rectangular blocks', () => {
   let wideBlock;
   beforeEach(() => {
-    wideBlock = new Block({xPos: 0, yPos: 0, width: 60, height: 30 });
+    wideBlock = new Block(30, { width: 60, height: 30 });
+    wideBlock.setPosition({xPos: 0, yPos: 0 });
   });
 
   describe('Moving without changing shape', () => {
@@ -85,7 +87,8 @@ describe('Wide rectangular blocks', () => {
 describe('Tall rectangular blocks', () => {
   let tallBlock;
   beforeEach(() => {
-    tallBlock = new Block({xPos: 0, yPos: 0, width: 30, height: 60 });
+    tallBlock = new Block(30, { width: 30, height: 60 });
+    tallBlock.setPosition({ xPos: 0, yPos: 0 });
   });
 
   describe('Moving without changing shape', () => {
