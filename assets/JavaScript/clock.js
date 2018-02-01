@@ -1,18 +1,18 @@
-class Clock() {
+class GameClock {
   constructor() {
-    this.time = 0;
+    this.gameTimeSeconds = 0;
   }
 
   upTick() {
-    this.time += 1;
+    this.gameTimeSeconds += 1;
   }
 
   currentTime() {
-    const gameTime = this.time;
+    const gameTime = this.gameTimeSeconds;
     const seconds = gameTime % 60;
     const minutes = Math.floor(gameTime / 60) % 60;
     return { minutes: minutes, seconds: seconds };
   }
 }
 
-module.exports = Clock;
+module.exports = GameClock;

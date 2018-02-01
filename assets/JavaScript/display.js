@@ -1,8 +1,8 @@
-const Clock = require('./clock');
+const GameClock = require('./clock');
 
 class Display {
   constructor(ctx, length) {
-    this.clock = new Clock();
+    this.clock = new GameClock();
     this.ctx = ctx;
     this.length = length;
     this.colors = this.colors();
