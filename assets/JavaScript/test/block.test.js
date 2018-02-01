@@ -3,18 +3,37 @@ const Block = require('../block');
 // I found 30 to be a good default width and height for the block;
 // not too big, not too small for the screen.
 
+describe('Block helper functions', () => {
+  let block;
+  beforeEach(() => {
+    block = new Block(30, { width: 30, height: 30 });
+  });
+
+  test('block dimensions can be checked at will', () => {
+    expect(block.dimensions()).toEqual({ width: 30, height: 30 });
+  });
+  describe('positioning', () => {
+    beforeEach(() => {
+      block.setPosition({xPos: 0, yPos: 0 });
+    });
+
+    test('block position can be checked at will', () => {
+      expect(block.position()).toEqual({ xPos: 0, yPos: 0 });
+    });
+
+    test('block changes position incrementally', () => {
+      block.changePosition(30, 30);
+      expect(block.position()).toEqual({ xPos: 30, yPos: 30 });
+    });
+  });
+});
+
 describe('Square blocks becoming rectangular', () => {
   let block;
   let position;
   beforeEach(() => {
     block = new Block(30, { width: 30, height: 30 });
     block.setPosition({ xPos: 0, yPos: 0 });
-  });
-
-  test('block changes position incrementally', () => {
-    block.changePosition(30, 30);
-    expect(block.xPos).toBe(30);
-    expect(block.yPos).toBe(30);
   });
 
   test('Square block transforms correctly when expanding right', () => {
