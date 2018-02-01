@@ -5,18 +5,18 @@ const levels = {
   1: {
     floorDimensions: { xRange: 1, yRange: 3 },
     floorData: [
-      { x: 0, y: 0, type: "start" },
-      { x: 0, y: 2, type: "goal" },
-      { x: 0, y: 1, type: "none" },
+      { x: 0, y: 0, type: "s" },
+      { x: 0, y: 2, type: "g" },
+      { x: 0, y: 1, type: "n" },
     ]
   },
   2: {
     floorDimensions: { xRange: 3, yRange: 2 },
     floorData: [
-      { x: 0, y: 0, type: "start" },
-      { x: 2, y: 1, type: "goal" },
-      { x: 1, y: 0, type: "none" },
-      { x: 1, y: 1, type: "none" },
+      { x: 0, y: 0, type: "s" },
+      { x: 2, y: 1, type: "g" },
+      { x: 1, y: 0, type: "n" },
+      { x: 1, y: 1, type: "n" },
     ]
   },
 };
@@ -29,9 +29,9 @@ describe('Floor construction and helper functions', () => {
 
   test('Dynamically create data for tiles', () => {
     const start = { xPos: 100, yPos: 100 };
-    const tileInfo = { x: 3, y: 5, type: "none" };
+    const tileInfo = { x: 3, y: 5, type: "n" };
     const tileOptions = levelMaker.constructTileCoordinates(tileInfo, start);
-    expect(tileOptions).toEqual({ x: 190, y: 250, type: "none" });
+    expect(tileOptions).toEqual({ x: 190, y: 250, type: "n" });
   });
 
   test('Dynamically center floors', () => {
@@ -42,9 +42,9 @@ describe('Floor construction and helper functions', () => {
 
   test('Set up a floor of tiles for gameplay', () => {
     const newLevel = {
-      '[435, 205]': new Tile({ x: 435, y: 205, type: "start" }),
-      '[435, 265]': new Tile({ x: 435, y: 265, type: "goal" }),
-      '[435, 235]': new Tile({ x: 435, y: 235, type: "none" }),
+      '[435, 205]': new Tile({ x: 435, y: 205, type: "s" }),
+      '[435, 265]': new Tile({ x: 435, y: 265, type: "g" }),
+      '[435, 235]': new Tile({ x: 435, y: 235, type: "n" }),
     };
     levelMaker.constructFloor();
     expect(levelMaker.constructedFloor).toEqual(newLevel);
@@ -58,7 +58,7 @@ describe('Floor construction and helper functions', () => {
 
   test('Tiles can be looked up individually', () => {
     levelMaker.constructFloor();
-    const comparisonTile = new Tile({ x: 435, y: 235, type: "none" });
+    const comparisonTile = new Tile({ x: 435, y: 235, type: "n" });
     const actualTile = levelMaker.lookupTile({ xPos: 435, yPos: 235 });
     expect(actualTile).toEqual(comparisonTile);
   });
@@ -72,10 +72,10 @@ describe('Floor construction as game progresses', () => {
 
   test('LevelGenerator constructs the right floor after progressing', () => {
     const testFloor = {
-      '[405, 220]': new Tile({ x: 405, y: 220, type: "start" }),
-      '[465, 250]': new Tile({ x: 465, y: 250, type: "goal" }),
-      '[435, 220]': new Tile({ x: 435, y: 220, type: "none" }),
-      '[435, 250]': new Tile({ x: 435, y: 250, type: "none" }),
+      '[405, 220]': new Tile({ x: 405, y: 220, type: "s" }),
+      '[465, 250]': new Tile({ x: 465, y: 250, type: "g" }),
+      '[435, 220]': new Tile({ x: 435, y: 220, type: "n" }),
+      '[435, 250]': new Tile({ x: 435, y: 250, type: "n" }),
     };
     levelMaker.constructFloor();
     expect(levelMaker.constructedFloor).toEqual(testFloor);
