@@ -68,7 +68,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const Game = __webpack_require__(1);
-const PageButtons = __webpack_require__(13);
+const PageButtons = __webpack_require__(14);
 
 document.addEventListener("DOMContentLoaded", () => {
   const buttonActivation = new PageButtons();
@@ -85,99 +85,51 @@ document.addEventListener("DOMContentLoaded", () => {
 /***/ (function(module, exports, __webpack_require__) {
 
 const LevelGenerator = __webpack_require__(2);
-const Block = __webpack_require__(10);
-const Display = __webpack_require__(11);
-const Sound = __webpack_require__(12);
+const Block = __webpack_require__(4);
+const Display = __webpack_require__(5);
+const Sound = __webpack_require__(7);
+const allLevels = __webpack_require__(8);
 
 class Game {
   constructor(ctx, length) {
     this.display = new Display(ctx, length);
-    this.levels = new LevelGenerator(length);
-    this.tileLength = length;
+    this.levels = new LevelGenerator(length, allLevels);
+    this.block = new Block(length, { width: length, height: length });
     this.sound = new Sound();
 
     this.getMove = this.getMove.bind(this);
-    this.tick = this.tick.bind(this);
     this.pauseButton = this.pauseButton.bind(this);
     this.restartGame = this.restartGame.bind(this);
-  }
-
-  setState() {
-    this.state = {
-      length: this.tileLength,
-      levelNumber: 1,
-      moves: 0,
-      falls: 0,
-      minutes: 0,
-      seconds: 0,
-      pauseStatus: false,
-      currentLevel: this.levels.levels[1],
-    };
   }
 
   start() {
     this.setState();
     this.sound.start();
-    this.state.goal = this.state.currentLevel[1];
-    this.timerId = setInterval(this.tick, 1000);
+    this.levels.constructFloor();
+    this.block.setPosition(this.levels.currentStartPosition);
+    this.timerId = setInterval(this.display.drawTime, 1000);
     document.addEventListener("keydown", this.getMove);
     document.addEventListener("keydown", this.pauseButton);
-    this.constructBlock();
     this.display.render(this.displayOptions());
     this.display.drawBlock(this.block);
+  }
+
+  setState() {
+    this.state = {
+      moves: 0,
+      falls: 0,
+      pauseStatus: false,
+    };
   }
 
   restartGame(e) {
     switch(e.keyCode) {
       case 32:
         e.preventDefault();
+        this.levels.resetCurrentLevel();
         this.start();
         document.removeEventListener("keydown", this.restartGame);
     }
-  }
-
-  tick() {
-    let minutes = this.state.minutes;
-    let seconds = this.state.seconds;
-    minutes = (minutes < 10) ? `0${minutes}` : minutes;
-    seconds = (seconds < 10) ? `0${seconds}` : seconds;
-    this.state.timeString = `${minutes}:${seconds}`;
-    this.display.drawClock(this.state.timeString);
-    this.uptick();
-  }
-
-  uptick() {
-    this.state.seconds += 1;
-    if (this.state.seconds >= 60) {
-      this.state.seconds = 0;
-      this.state.minutes += 1;
-      if (this.state.minutes >= 60) {
-        this.state.minutes = 0;
-      }
-    }
-  }
-
-  constructBlock() {
-    const { xPos, yPos } = this.state.currentLevel[0];
-    const blockOptions = { xPos: xPos,
-      yPos: yPos,
-      width: this.state.length,
-      height: this.state.length,
-    };
-    this.block = new Block(blockOptions);
-  }
-
-  getBlockOptions() {
-    const { xPos, yPos, width, height } = this.block;
-    return { xPos: xPos, yPos: yPos, width: width, height:height };
-  }
-
-  displayOptions() {
-    return { level: this.state.currentLevel,
-             levelNumber: this.state.levelNumber,
-             moves: this.state.moves,
-             falls: this.state.falls,
-             time: this.state.timeString };
   }
 
   getMove(e) {
@@ -186,16 +138,16 @@ class Game {
       e.preventDefault();
       switch (e.keyCode) {
         case 40: // down arrow key
-          this.block.transformBlock(0, this.state.length);
+          this.block.transformBlock(0, 1);
           break;
         case 38: // up arrow key
-          this.block.transformBlock(0, this.state.length * -1);
+          this.block.transformBlock(0, -1);
           break;
         case 37: // left arrow key
-          this.block.transformBlock(this.state.length * -1, 0);
+          this.block.transformBlock(-1, 0);
           break;
         case 39: // right arrow key
-          this.block.transformBlock(this.state.length, 0);
+          this.block.transformBlock(1, 0);
       }
       this.state.moves += 1;
       this.checkBlock();
@@ -210,7 +162,7 @@ class Game {
         this.state.pauseStatus = true;
         this.pauseGame();
       } else {
-        this.state.pauseStatus = false
+        this.state.pauseStatus = false;
         this.resumeGame();
       }
     }
@@ -226,36 +178,42 @@ class Game {
     this.display.render(this.displayOptions());
     this.display.drawBlock(this.block);
     document.addEventListener("keydown", this.getMove);
-    this.timerId = setInterval(this.tick, 1000);
+    this.timerId = setInterval(this.display.drawTime, 1000);
+  }
+
+  displayOptions() {
+    return { level: this.levels.constructedFloor,
+             levelNumber: this.levels.currentLevel,
+             moves: this.state.moves,
+             falls: this.state.falls };
   }
 
   checkBlock() {
     if (this.block.width === this.block.height) {
       this.checkGoal();
     }
-    if (this.state.currentLevel) {
+    const { levelData, currentLevel } = this.levels;
+    if (levelData[currentLevel] !== undefined) {
       this.checkBounds();
     }
   }
 
   checkGoal() {
-    const { xPos, yPos } = this.state.goal;
-    const currentX = this.block.xPos;
-    const currentY = this.block.yPos;
-    if (xPos === currentX && yPos === currentY) {
+    const tile = this.levels.lookupTile(this.block.position());
+    if (tile !== undefined && tile.type === "goal") {
       this.nextLevel();
     }
   }
 
   nextLevel() {
     this.sound.playGoalSound();
-    this.state.levelNumber += 1;
-    this.state.currentLevel = this.levels.levels[this.state.levelNumber];
-    if (this.state.currentLevel === undefined) {
+    this.levels.nextLevel();
+    const { levelData, currentLevel } = this.levels;
+    if (levelData[currentLevel] === undefined) {
       this.endGame();
     } else {
-      this.state.goal = this.state.currentLevel[1];
-      this.constructBlock();
+      this.levels.constructFloor();
+      this.block.setPosition(this.levels.currentStartPosition);
       this.display.render(this.displayOptions());
       this.display.drawBlock(this.block);
     }
@@ -270,32 +228,33 @@ class Game {
   }
 
   checkBounds() {
-    const { xPos, yPos, width, height } = this.getBlockOptions();
+    const { levelData, currentLevel } = this.levels;
+    const { xPos, yPos } = this.block.position();
+    const { width, height } = this.block.dimensions();
     const coordinates = [[xPos, yPos],
       [xPos, yPos + height],
       [xPos + width, yPos],
       [xPos + width, yPos + height]];
     if (this.display.tileMovesOffFloor(coordinates)) {
-      this.resetBlock();
-    } else if (this.state.currentLevel) {
+      this.resetLevel();
+    } else if (levelData[currentLevel] !== undefined) {
       this.display.render(this.displayOptions());
       this.display.drawBlock(this.block);
       this.sound.playBlockSound(this.block);
     }
   }
 
-  resetBlock() {
+  resetLevel() {
     document.removeEventListener("keydown", this.getMove);
-    const oldOptions = this.getBlockOptions();
-    this.constructBlock();
     this.state.falls += 1;
-    this.flashFailure(oldOptions);
+    this.flashFailure();
   }
 
-  flashFailure(oldOptions) {
+  flashFailure() {
     this.display.render(this.displayOptions());
-    this.display.drawFail(oldOptions);
+    this.display.drawFail(this.block.properties());
     this.sound.playFallSound();
+    this.block.resetBlock(this.levels.currentStartPosition);
     setTimeout(() => {
       this.display.render(this.displayOptions());
     }, 800);
@@ -316,25 +275,76 @@ module.exports = Game;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Tile = __webpack_require__(3);
-const allLevels = __webpack_require__(4);
 
 class LevelGenerator {
-  constructor(length) {
-    this.levels = this.generateLevels(length);
+  constructor(length, levels) {
+    this.currentLevel = 1;
+    this.length = length;
+    this.levelData = levels;
+
+    this.constructTileCoordinates = this.constructTileCoordinates.bind(this);
   }
 
-  generateLevels(length) {
-    const levels = allLevels.map(level => level(length));
-    levels.forEach(level => {
-      level.forEach((positionData, idx) => {
-        level[idx] = new Tile(positionData);
-      });
+  nextLevel() {
+    this.currentLevel += 1;
+  }
+
+  resetCurrentLevel() {
+    this.currentLevel = 1;
+  }
+
+  constructFloor() {
+    this.constructedFloor = this.generateLevel();
+    this.currentStartPosition = this.getStart(this.constructedFloor);
+  }
+
+  getStart(floor) {
+    for (var position in floor) {
+      let tile = floor[position];
+      if (tile.type === "start") {
+        return { xPos: tile.xPos, yPos: tile.yPos };
+      }
+    }
+  }
+
+  generateLevel() {
+    const level = this.levelData[this.currentLevel];
+    const startPosition = this.centerFloor(level.floorDimensions);
+    return this.setCoordinates(level.floorData, startPosition);
+  }
+
+  centerFloor(floorDimensions) { // Tiles are positioned relative to the
+    const canvasWidth = 900;     // position of the top-left tile on a floor.
+    const canvasHeight = 500;
+    const floorWidth = floorDimensions.xRange * this.length;
+    const floorHeight = floorDimensions.yRange * this.length;
+    const startCornerXPos = Math.floor((canvasWidth - floorWidth) / 2);
+    const startCornerYPos = Math.floor((canvasHeight - floorHeight) / 2);
+    return { xPos: startCornerXPos, yPos: startCornerYPos };
+  }
+
+  setCoordinates(floorData, startPosition) {
+    const newFloor = {};
+    floorData.forEach(tileData => {
+      let tileOptions = this.constructTileCoordinates(tileData, startPosition);
+      let tile = new Tile(tileOptions);
+      let tilePosition = `[${tile.xPos}, ${tile.yPos}]`;
+      newFloor[tilePosition] = tile;
     });
-    return levels;
+    return newFloor;
+  }
+
+  constructTileCoordinates(tileData, startPosition) {
+    const x = startPosition.xPos + this.length * tileData.x;
+    const y = startPosition.yPos + this.length * tileData.y;
+    return { x: x, y: y, type: tileData.type, };
+  }
+
+  lookupTile(position) {
+    const currentPosition = `[${position.xPos}, ${position.yPos}]`;
+    return this.constructedFloor[currentPosition];
   }
 }
-
-
 
 module.exports = LevelGenerator;
 
@@ -356,314 +366,13 @@ module.exports = Tile;
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const tutorial = __webpack_require__(5);
-const levelOne = __webpack_require__(6);
-const levelTwo = __webpack_require__(7);
-const levelThree = __webpack_require__(8);
-const levelFour = __webpack_require__(9);
-
-module.exports = [
-  tutorial,
-  levelOne,
-  levelTwo,
-  levelThree,
-  levelFour
-];
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-const tutorial = (length, startX = 360, startY = 180) => {
-  return(
-    [
-    { x: startX, y: startY, type: "start" },
-    { x: startX + length * 2, y: startY + length * 2, type: "goal" },
-
-    { x: startX, y: startY + length, type: "none" },
-    { x: startX, y: startY + length * 2, type: "none" },
-    { x: startX, y: startY + length * 3, type: "none" },
-    { x: startX, y: startY + length * 4, type: "none" },
-
-    { x: startX + length, y: startY, type: "none" },
-    { x: startX + length, y: startY + length, type: "none" },
-    { x: startX + length, y: startY + length * 2, type: "none" },
-    { x: startX + length, y: startY + length * 3, type: "none" },
-    { x: startX + length, y: startY + length * 4, type: "none" },
-
-    { x: startX + length * 2, y: startY, type: "none" },
-    { x: startX + length * 2, y: startY + length, type: "none" },
-    { x: startX + length * 2, y: startY + length * 3, type: "none" },
-    { x: startX + length * 2, y: startY + length * 4, type: "none" },
-
-    { x: startX + length * 3, y: startY, type: "none" },
-    { x: startX + length * 3, y: startY + length, type: "none" },
-    { x: startX + length * 3, y: startY + length * 2, type: "none" },
-    { x: startX + length * 3, y: startY + length * 3, type: "none" },
-    { x: startX + length * 3, y: startY + length * 4, type: "none" },
-
-    { x: startX + length * 4, y: startY, type: "none" },
-    { x: startX + length * 4, y: startY + length, type: "none" },
-    { x: startX + length * 4, y: startY + length * 2, type: "none" },
-    { x: startX + length * 4, y: startY + length * 3, type: "none" },
-    { x: startX + length * 4, y: startY + length * 4, type: "none" },
-  ]);
-};
-
-module.exports = tutorial;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-const levelOne = (length, startX = 300, startY = 180) => {
-  return(
-    [
-      { x: startX, y: startY, type: "start" },
-      { x: startX + length * 9, y: startY, type: "goal" },
-
-      { x: startX + length, y: startY, type: "none" },
-      { x: startX + length * 2, y: startY, type: "none" },
-      { x: startX + length * 3, y: startY, type: "none" },
-      { x: startX + length * 4, y: startY, type: "none" },
-      { x: startX + length * 5, y: startY, type: "none" },
-      { x: startX + length * 6, y: startY, type: "none" },
-      { x: startX + length * 7, y: startY, type: "none" },
-      { x: startX + length * 8, y: startY, type: "none" },
-    ]
-  );
-}
-
-module.exports = levelOne;
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-const levelTwo = (length, startX = 330, startY = 240) => {
-  return(
-    [
-      { x: startX, y: startY, type: "start" },
-      { x: startX + length * 6, y: startY + length * 3, type: "goal" },
-
-      { x: startX - length, y: startY - length, type: "none" },
-      { x: startX - length, y: startY, type: "none" },
-      { x: startX - length, y: startY + length, type: "none" },
-
-      { x: startX, y: startY - length, type: "none" },
-      { x: startX, y: startY + length, type: "none" },
-      { x: startX, y: startY + length * 2, type: "none" },
-
-      { x: startX + length, y: startY - length, type: "none" },
-      { x: startX + length, y: startY, type: "none" },
-      { x: startX + length, y: startY + length, type: "none" },
-      { x: startX + length, y: startY + length * 2, type: "none" },
-
-      { x: startX + length * 2, y: startY, type: "none" },
-      { x: startX + length * 2, y: startY + length, type: "none" },
-      { x: startX + length * 2, y: startY + length * 2, type: "none" },
-
-      { x: startX + length * 3, y: startY, type: "none" },
-      { x: startX + length * 3, y: startY + length, type: "none" },
-      { x: startX + length * 3, y: startY + length * 2, type: "none" },
-
-      { x: startX + length * 4, y: startY, type: "none" },
-      { x: startX + length * 4, y: startY + length, type: "none" },
-      { x: startX + length * 4, y: startY + length * 2, type: "none" },
-      { x: startX + length * 4, y: startY + length * 3, type: "none" },
-
-      { x: startX + length * 5, y: startY + length, type: "none" },
-      { x: startX + length * 5, y: startY + length * 2, type: "none" },
-      { x: startX + length * 5, y: startY + length * 3, type: "none" },
-      { x: startX + length * 5, y: startY + length * 4, type: "none" },
-
-      { x: startX + length * 6, y: startY + length, type: "none" },
-      { x: startX + length * 6, y: startY + length * 2, type: "none" },
-      { x: startX + length * 6, y: startY + length * 4, type: "none" },
-
-      { x: startX + length * 7, y: startY + length, type: "none" },
-      { x: startX + length * 7, y: startY + length * 2, type: "none" },
-      { x: startX + length * 7, y: startY + length * 3, type: "none" },
-      { x: startX + length * 7, y: startY + length * 4, type: "none" },
-
-      { x: startX + length * 8, y: startY + length * 2, type: "none" },
-      { x: startX + length * 8, y: startY + length * 3, type: "none" },
-    ]
-  );
-};
-
-module.exports = levelTwo;
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-const levelThree = (length, startX = 210, startY = 280) => {
-  return(
-    [
-      { x: startX, y: startY, type: "start" },
-      { x: startX + length * 12, y: startY, type: "goal" },
-
-      { x: startX - length, y: startY + length * 2, type: "none" },
-      { x: startX - length, y: startY + length, type: "none" },
-      { x: startX - length, y: startY, type: "none" },
-      { x: startX - length, y: startY - length, type: "none" },
-
-      { x: startX, y: startY + length * 2, type: "none" },
-      { x: startX, y: startY + length, type: "none" },
-      { x: startX, y: startY - length, type: "none" },
-
-      { x: startX + length, y: startY + length * 2, type: "none" },
-      { x: startX + length, y: startY + length, type: "none" },
-      { x: startX + length, y: startY, type: "none" },
-      { x: startX + length, y: startY - length, type: "none" },
-
-      { x: startX + length * 2, y: startY + length * 2, type: "none" },
-      { x: startX + length * 2, y: startY + length, type: "none" },
-      { x: startX + length * 2, y: startY, type: "none" },
-      { x: startX + length * 2, y: startY - length, type: "none" },
-
-      { x: startX + length * 3, y: startY + length, type: "none" },
-
-      { x: startX + length * 4, y: startY + length, type: "none" },
-
-      { x: startX + length * 5, y: startY + length * 3, type: "none" },
-      { x: startX + length * 5, y: startY + length * 2, type: "none" },
-      { x: startX + length * 5, y: startY + length, type: "none" },
-
-      { x: startX + length * 6, y: startY + length * 3, type: "none" },
-      { x: startX + length * 6, y: startY + length * 2, type: "none" },
-      { x: startX + length * 6, y: startY + length, type: "none" },
-
-      { x: startX + length * 7, y: startY + length * 3, type: "none" },
-      { x: startX + length * 7, y: startY + length * 2, type: "none" },
-      { x: startX + length * 7, y: startY + length, type: "none" },
-
-      { x: startX + length * 8, y: startY + length * 3, type: "none" },
-
-      { x: startX + length * 9, y: startY + length * 3, type: "none" },
-
-      { x: startX + length * 10, y: startY + length * 3, type: "none" },
-      { x: startX + length * 10, y: startY + length * 2, type: "none" },
-      { x: startX + length * 10, y: startY + length, type: "none" },
-      { x: startX + length * 10, y: startY, type: "none" },
-      { x: startX + length * 10, y: startY - length, type: "none" },
-
-      { x: startX + length * 11, y: startY + length * 3, type: "none" },
-      { x: startX + length * 11, y: startY + length * 2, type: "none" },
-      { x: startX + length * 11, y: startY + length, type: "none" },
-      { x: startX + length * 11, y: startY, type: "none" },
-      { x: startX + length * 11, y: startY - length, type: "none" },
-      { x: startX + length * 11, y: startY - length * 2, type: "none" },
-
-      { x: startX + length * 12, y: startY + length, type: "none" },
-      { x: startX + length * 12, y: startY - length, type: "none" },
-      { x: startX + length * 12, y: startY - length * 2, type: "none" },
-
-      { x: startX + length * 13, y: startY + length, type: "none" },
-      { x: startX + length * 13, y: startY, type: "none" },
-      { x: startX + length * 13, y: startY - length, type: "none" },
-      { x: startX + length * 13, y: startY - length * 2, type: "none" },
-    ]
-  );
-};
-
-module.exports = levelThree;
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-const levelFour = (length, startX = 270, startY = 210) => {
-  return(
-    [
-      { x: startX, y: startY, type: "start" },
-      { x: startX + length * 13, y: startY - length, type: "goal" },
-
-      { x: startX + length, y: startY, type: "none" },
-
-      { x: startX + length * 2, y: startY, type: "none" },
-
-      { x: startX + length * 3, y: startY, type: "none" },
-
-      { x: startX + length * 4, y: startY, type: "none" },
-      { x: startX + length * 4, y: startY - length, type: "none" },
-      { x: startX + length * 4, y: startY - length * 2, type: "none" },
-
-      { x: startX + length * 5, y: startY + length * 3, type: "none" },
-      { x: startX + length * 5, y: startY + length * 2, type: "none" },
-      { x: startX + length * 5, y: startY + length, type: "none" },
-      { x: startX + length * 5, y: startY, type: "none" },
-      { x: startX + length * 5, y: startY - length, type: "none" },
-      { x: startX + length * 5, y: startY - length * 2, type: "none" },
-
-      { x: startX + length * 6, y: startY + length * 3, type: "none" },
-      { x: startX + length * 6, y: startY - length, type: "none" },
-      { x: startX + length * 6, y: startY - length * 2, type: "none" },
-      { x: startX + length * 6, y: startY - length * 3, type: "none" },
-      { x: startX + length * 6, y: startY - length * 4, type: "none" },
-      { x: startX + length * 6, y: startY - length * 5, type: "none" },
-
-      { x: startX + length * 7, y: startY + length * 3, type: "none" },
-      { x: startX + length * 7, y: startY - length * 4, type: "none" },
-      { x: startX + length * 7, y: startY - length * 5, type: "none" },
-      { x: startX + length * 7, y: startY - length * 6, type: "none" },
-
-      { x: startX + length * 8, y: startY + length * 3, type: "none" },
-      { x: startX + length * 8, y: startY + length * 2, type: "none" },
-      { x: startX + length * 8, y: startY + length, type: "none" },
-      { x: startX + length * 8, y: startY - length * 4, type: "none" },
-      { x: startX + length * 8, y: startY - length * 5, type: "none" },
-      { x: startX + length * 8, y: startY - length * 6, type: "none" },
-
-      { x: startX + length * 9, y: startY + length * 3, type: "none" },
-      { x: startX + length * 9, y: startY + length * 2, type: "none" },
-      { x: startX + length * 9, y: startY + length, type: "none" },
-      { x: startX + length * 9, y: startY - length * 3, type: "none" },
-      { x: startX + length * 9, y: startY - length * 4, type: "none" },
-      { x: startX + length * 9, y: startY - length * 5, type: "none" },
-      { x: startX + length * 9, y: startY - length * 6, type: "none" },
-
-      { x: startX + length * 10, y: startY + length * 3, type: "none" },
-      { x: startX + length * 10, y: startY + length * 2, type: "none" },
-      { x: startX + length * 10, y: startY + length, type: "none" },
-      { x: startX + length * 10, y: startY - length * 3, type: "none" },
-      { x: startX + length * 10, y: startY - length * 4, type: "none" },
-      { x: startX + length * 10, y: startY - length * 5, type: "none" },
-
-      { x: startX + length * 11, y: startY + length, type: "none" },
-      { x: startX + length * 11, y: startY, type: "none" },
-      { x: startX + length * 11, y: startY - length, type: "none" },
-
-      { x: startX + length * 12, y: startY + length, type: "none" },
-      { x: startX + length * 12, y: startY, type: "none" },
-      { x: startX + length * 12, y: startY - length, type: "none" },
-
-      { x: startX + length * 13, y: startY, type: "none" },
-    ]
-  );
-};
-
-module.exports = levelFour;
-
-
-/***/ }),
-/* 10 */
 /***/ (function(module, exports) {
 
 class Block {
-  constructor(options) {
-    this.xPos = options.xPos;
-    this.yPos = options.yPos;
-    this.width = options.width;
-    this.height = options.height;
+  constructor(length, dimensions) {
+    this.length = length;
+    this.width = dimensions.width;
+    this.height = dimensions.height;
   }
 
   dimensions() {
@@ -680,9 +389,36 @@ class Block {
     };
   }
 
+  properties() {
+    return {
+      xPos: this.xPos,
+      yPos: this.yPos,
+      width: this.width,
+      height: this.height
+    };
+  }
+
+  setPosition(coordinates) {
+    this.xPos = coordinates.xPos;
+    this.yPos = coordinates.yPos;
+  }
+
+  resetBlock(startPosition) {
+    this.width = this.length;
+    this.height = this.length;
+    this.xPos = startPosition.xPos;
+    this.yPos = startPosition.yPos;
+  }
+
+// To reduce information which must be tracked by the game state,
+// Length is kept as a block attribute. This is because length is a
+// constant dictating the size of each tile, and the block always
+// moves a discrete distance (1 or 2 tiles). dx and dy therefore
+// represent discrete tile steps and are multiplied by length to account
+// for varying tile sizes set by the player.
   changePosition(dx, dy) {
-    this.xPos += dx;
-    this.yPos += dy;
+    this.xPos += dx * this.length;
+    this.yPos += dy * this.length;
   }
 
   transformBlock(x, y) {
@@ -732,17 +468,22 @@ module.exports = Block;
 
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports) {
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const GameClock = __webpack_require__(6);
 
 class Display {
   constructor(ctx, length) {
+    this.clock = new GameClock();
     this.ctx = ctx;
     this.length = length;
     this.colors = this.colors();
     this.fonts = this.fonts();
     this.ctx.fillStyle = this.colors.backgroundColor;
     this.ctx.fillRect(0, 0, 900, 500);
+
+    this.drawTime = this.drawTime.bind(this);
   }
 
   colors() {
@@ -763,7 +504,7 @@ class Display {
     return {
       mediumFontSize: '30px sans-serif',
       largeFontSize: '50px sans-serif',
-    }
+    };
   }
 
   render(options) {
@@ -778,6 +519,16 @@ class Display {
     this.drawFloor(options.level);
   }
 
+  drawFloor(floor) {
+    for (var position in floor) {
+      let tile = floor[position];
+      this.ctx.fillStyle = this.colors.tileColors[tile.type];
+      const { xPos, yPos } = tile;
+      this.ctx.fillRect(xPos, yPos, this.length, this.length);
+      this.ctx.strokeRect(xPos, yPos, this.length, this.length);
+    }
+  }
+
   drawMenu() { // Not yet in use
     this.ctx.font = this.fonts.largeFontSize;
     this.ctx.fillStyle = this.colors.textColor;
@@ -790,21 +541,23 @@ class Display {
     this.ctx.fillText('Start', 300, 250);
   }
 
-  drawClock(time) {
+  stringifyTime() {
+    const { minutes, seconds } = this.clock.currentTime();
+
+    const minuteString = (minutes < 10) ? `0${minutes}` : minutes;
+    const secondString = (seconds < 10) ? `0${seconds}` : seconds;
+
+    return `${minuteString}:${secondString}`;
+  }
+
+  drawTime() {
+    const displayTime = this.stringifyTime();
     this.ctx.fillStyle = this.colors.backgroundColor;
     this.ctx.fillRect(200, 450, 900, 50);
     this.ctx.font = this.fonts.mediumFontSize;
     this.ctx.fillStyle = this.colors.textColor;
-    this.ctx.fillText(time, 700, 475);
-  }
-
-  drawFloor(floor) {
-    floor.forEach(tile => {
-      this.ctx.fillStyle = this.colors.tileColors[tile.type];
-      const { xPos, yPos } = tile;
-      this.ctx.fillRect(xPos, yPos, this.length, this.length);
-      this.ctx.strokeRect(xPos, yPos, this.length, this.length);
-    });
+    this.ctx.fillText(displayTime, 700, 475);
+    this.clock.upTick();
   }
 
   drawBlock(block) {
@@ -874,7 +627,31 @@ module.exports = Display;
 
 
 /***/ }),
-/* 12 */
+/* 6 */
+/***/ (function(module, exports) {
+
+class GameClock {
+  constructor() {
+    this.gameTimeSeconds = 0;
+  }
+
+  upTick() {
+    this.gameTimeSeconds += 1;
+  }
+
+  currentTime() {
+    const gameTime = this.gameTimeSeconds;
+    const seconds = gameTime % 60;
+    const minutes = Math.floor(gameTime / 60) % 60;
+    return { minutes: minutes, seconds: seconds };
+  }
+}
+
+module.exports = GameClock;
+
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports) {
 
 class Sound {
@@ -931,7 +708,259 @@ module.exports = Sound;
 
 
 /***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const tutorial = __webpack_require__(9);
+const levelOne = __webpack_require__(10);
+const levelTwo = __webpack_require__(11);
+const levelThree = __webpack_require__(12);
+const levelFour = __webpack_require__(13);
+
+module.exports = {
+  tutorial: tutorial,
+  1: levelOne,
+  2: levelTwo,
+  3: levelThree,
+  4: levelFour,
+};
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+const tutorial = {
+  floorDimensions: { xRange: 5, yRange: 5, },
+  floorData: [
+    { x: 0, y: 0, type: "start" },
+    { x: 2, y: 2, type: "goal" },
+    { x: 0, y: 1, type: "none" },
+    { x: 0, y: 2, type: "none" },
+    { x: 0, y: 3, type: "none" },
+    { x: 0, y: 4, type: "none" },
+    { x: 1, y: 0, type: "none" },
+    { x: 1, y: 1, type: "none" },
+    { x: 1, y: 2, type: "none" },
+    { x: 1, y: 3, type: "none" },
+    { x: 1, y: 4, type: "none" },
+    { x: 2, y: 0, type: "none" },
+    { x: 2, y: 1, type: "none" },
+    { x: 2, y: 3, type: "none" },
+    { x: 2, y: 4, type: "none" },
+    { x: 3, y: 0, type: "none" },
+    { x: 3, y: 1, type: "none" },
+    { x: 3, y: 2, type: "none" },
+    { x: 3, y: 3, type: "none" },
+    { x: 3, y: 4, type: "none" },
+    { x: 4, y: 0, type: "none" },
+    { x: 4, y: 1, type: "none" },
+    { x: 4, y: 2, type: "none" },
+    { x: 4, y: 3, type: "none" },
+    { x: 4, y: 4, type: "none" },
+  ],
+};
+
+module.exports = tutorial;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+const levelOne = {
+  floorDimensions: { xRange: 10, yRange: 1, },
+  floorData: [
+    { x: 0, y: 0, type: "start" },
+    { x: 9, y: 0, type: "goal" },
+    { x: 1, y: 0, type: "none" },
+    { x: 2, y: 0, type: "none" },
+    { x: 3, y: 0, type: "none" },
+    { x: 4, y: 0, type: "none" },
+    { x: 5, y: 0, type: "none" },
+    { x: 6, y: 0, type: "none" },
+    { x: 7, y: 0, type: "none" },
+    { x: 8, y: 0, type: "none" }
+  ],
+};
+
+module.exports = levelOne;
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+const levelTwo = {
+  floorDimensions: { xRange: 10, yRange: 6, },
+  floorData: [
+    { x: 1, y: 1, type: "start" },
+    { x: 7, y: 4, type: "goal" },
+    { x: 0, y: 0, type: "none" },
+    { x: 0, y: 1, type: "none" },
+    { x: 0, y: 2, type: "none" },
+    { x: 1, y: 0, type: "none" },
+    { x: 1, y: 2, type: "none" },
+    { x: 1, y: 3, type: "none" },
+    { x: 2, y: 0, type: "none" },
+    { x: 2, y: 1, type: "none" },
+    { x: 2, y: 2, type: "none" },
+    { x: 2, y: 3, type: "none" },
+    { x: 3, y: 1, type: "none" },
+    { x: 3, y: 2, type: "none" },
+    { x: 3, y: 3, type: "none" },
+    { x: 4, y: 1, type: "none" },
+    { x: 4, y: 2, type: "none" },
+    { x: 4, y: 3, type: "none" },
+    { x: 5, y: 1, type: "none" },
+    { x: 5, y: 2, type: "none" },
+    { x: 5, y: 3, type: "none" },
+    { x: 5, y: 4, type: "none" },
+    { x: 6, y: 2, type: "none" },
+    { x: 6, y: 3, type: "none" },
+    { x: 6, y: 4, type: "none" },
+    { x: 6, y: 5, type: "none" },
+    { x: 7, y: 2, type: "none" },
+    { x: 7, y: 3, type: "none" },
+    { x: 7, y: 5, type: "none" },
+    { x: 8, y: 2, type: "none" },
+    { x: 8, y: 3, type: "none" },
+    { x: 8, y: 4, type: "none" },
+    { x: 8, y: 5, type: "none" },
+    { x: 9, y: 3, type: "none" },
+    { x: 9, y: 4, type: "none" },
+  ],
+};
+
+module.exports = levelTwo;
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+const levelThree = {
+  floorDimensions: { xRange: 15, yRange: 6, },
+  floorData: [
+    { x: 1, y: 2, type: "start" },
+    { x: 13, y: 2, type: "goal" },
+    { x: 0, y: 4, type: "none" },
+    { x: 0, y: 3, type: "none" },
+    { x: 0, y: 2, type: "none" },
+    { x: 0, y: 1, type: "none" },
+    { x: 1, y: 4, type: "none" },
+    { x: 1, y: 3, type: "none" },
+    { x: 1, y: 1, type: "none" },
+    { x: 2, y: 4, type: "none" },
+    { x: 2, y: 3, type: "none" },
+    { x: 2, y: 2, type: "none" },
+    { x: 2, y: 1, type: "none" },
+    { x: 3, y: 4, type: "none" },
+    { x: 3, y: 3, type: "none" },
+    { x: 3, y: 2, type: "none" },
+    { x: 3, y: 1, type: "none" },
+    { x: 4, y: 3, type: "none" },
+    { x: 5, y: 3, type: "none" },
+    { x: 6, y: 5, type: "none" },
+    { x: 6, y: 4, type: "none" },
+    { x: 6, y: 3, type: "none" },
+    { x: 7, y: 5, type: "none" },
+    { x: 7, y: 4, type: "none" },
+    { x: 7, y: 3, type: "none" },
+    { x: 8, y: 5, type: "none" },
+    { x: 8, y: 4, type: "none" },
+    { x: 8, y: 3, type: "none" },
+    { x: 9, y: 5, type: "none" },
+    { x: 10, y: 5, type: "none" },
+    { x: 11, y: 5, type: "none" },
+    { x: 11, y: 4, type: "none" },
+    { x: 11, y: 3, type: "none" },
+    { x: 11, y: 2, type: "none" },
+    { x: 11, y: 1, type: "none" },
+    { x: 12, y: 5, type: "none" },
+    { x: 12, y: 4, type: "none" },
+    { x: 12, y: 3, type: "none" },
+    { x: 12, y: 2, type: "none" },
+    { x: 12, y: 1, type: "none" },
+    { x: 12, y: 0, type: "none" },
+    { x: 13, y: 3, type: "none" },
+    { x: 13, y: 1, type: "none" },
+    { x: 13, y: 0, type: "none" },
+    { x: 14, y: 3, type: "none" },
+    { x: 14, y: 2, type: "none" },
+    { x: 14, y: 1, type: "none" },
+    { x: 14, y: 0, type: "none" },
+  ],
+};
+
+module.exports = levelThree;
+
+
+/***/ }),
 /* 13 */
+/***/ (function(module, exports) {
+
+const levelFour = {
+  floorDimensions: { xRange: 14, yRange: 10, },
+  floorData: [
+    { x: 0, y: 6, type: "start" },
+    { x: 13, y: 5, type: "goal" },
+    { x: 1, y: 6, type: "none" },
+    { x: 2, y: 6, type: "none" },
+    { x: 3, y: 6, type: "none" },
+    { x: 4, y: 6, type: "none" },
+    { x: 4, y: 5, type: "none" },
+    { x: 4, y: 4, type: "none" },
+    { x: 5, y: 9, type: "none" },
+    { x: 5, y: 8, type: "none" },
+    { x: 5, y: 7, type: "none" },
+    { x: 5, y: 6, type: "none" },
+    { x: 5, y: 5, type: "none" },
+    { x: 5, y: 4, type: "none" },
+    { x: 6, y: 9, type: "none" },
+    { x: 6, y: 5, type: "none" },
+    { x: 6, y: 4, type: "none" },
+    { x: 6, y: 3, type: "none" },
+    { x: 6, y: 2, type: "none" },
+    { x: 6, y: 1, type: "none" },
+    { x: 7, y: 9, type: "none" },
+    { x: 7, y: 2, type: "none" },
+    { x: 7, y: 1, type: "none" },
+    { x: 7, y: 0, type: "none" },
+    { x: 8, y: 9, type: "none" },
+    { x: 8, y: 8, type: "none" },
+    { x: 8, y: 7, type: "none" },
+    { x: 8, y: 2, type: "none" },
+    { x: 8, y: 1, type: "none" },
+    { x: 8, y: 0, type: "none" },
+    { x: 9, y: 9, type: "none" },
+    { x: 9, y: 8, type: "none" },
+    { x: 9, y: 7, type: "none" },
+    { x: 9, y: 3, type: "none" },
+    { x: 9, y: 2, type: "none" },
+    { x: 9, y: 1, type: "none" },
+    { x: 9, y: 0, type: "none" },
+    { x: 10, y: 9, type: "none" },
+    { x: 10, y: 8, type: "none" },
+    { x: 10, y: 7, type: "none" },
+    { x: 10, y: 3, type: "none" },
+    { x: 10, y: 2, type: "none" },
+    { x: 10, y: 1, type: "none" },
+    { x: 11, y: 7, type: "none" },
+    { x: 11, y: 6, type: "none" },
+    { x: 11, y: 5, type: "none" },
+    { x: 12, y: 7, type: "none" },
+    { x: 12, y: 6, type: "none" },
+    { x: 12, y: 5, type: "none" },
+    { x: 13, y: 6, type: "none" },
+  ],
+};
+
+module.exports = levelFour;
+
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports) {
 
 class PageButtons {
