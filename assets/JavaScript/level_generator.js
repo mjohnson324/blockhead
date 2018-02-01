@@ -15,6 +15,16 @@ class LevelGenerator {
 
   constructFloor() {
     this.constructedFloor = this.generateLevel();
+    this.currentStartPosition = this.getStart(this.constructedFloor);
+  }
+
+  getStart(floor) {
+    for (var position in floor) {
+      let tile = floor[position];
+      if (tile.type === "start") {
+        return { xPos: tile.xPos, yPos: tile.yPos };
+      }
+    }
   }
 
   generateLevel() {

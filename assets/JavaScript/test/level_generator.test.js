@@ -50,6 +50,12 @@ describe('Floor construction and helper functions', () => {
     expect(levelMaker.constructedFloor).toEqual(newLevel)
   });
 
+  test('Start tile for constructed floor can be looked up instantly', () => {
+    const testPosition = { xPos: 435, yPos: 205 }
+    levelMaker.constructFloor();
+    expect(levelMaker.currentStartPosition).toEqual(testPosition);
+  });
+
   test('Tiles can be looked up individually', () => {
     levelMaker.constructFloor();
     const comparisonTile = new Tile({ x: 435, y: 235, type: "none" });
