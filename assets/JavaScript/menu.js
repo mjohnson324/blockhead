@@ -6,8 +6,6 @@ class Menu { // Not yet in use
     this.challenge = false;
     this.canvas = document.getElementById("blockhead");
     this.context = context;
-
-    this.activateMenu();
   }
 
   activateMenu() {
