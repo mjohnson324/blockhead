@@ -44,6 +44,15 @@ class Display {
     this.drawFloor(options.level);
   }
 
+  drawFloor(floor) {
+    for (var tile in floor) {
+      this.ctx.fillStyle = this.colors.tileColors[tile.type];
+      const { xPos, yPos } = tile;
+      this.ctx.fillRect(xPos, yPos, this.length, this.length);
+      this.ctx.strokeRect(xPos, yPos, this.length, this.length);
+    }
+  }
+
   drawMenu() { // Not yet in use
     this.ctx.font = this.fonts.largeFontSize;
     this.ctx.fillStyle = this.colors.textColor;
@@ -71,15 +80,6 @@ class Display {
     this.ctx.fillStyle = this.colors.textColor;
     this.ctx.fillText(displayTime, 700, 475);
     this.clock.upTick();
-  }
-
-  drawFloor(floor) {
-    floor.forEach(tile => {
-      this.ctx.fillStyle = this.colors.tileColors[tile.type];
-      const { xPos, yPos } = tile;
-      this.ctx.fillRect(xPos, yPos, this.length, this.length);
-      this.ctx.strokeRect(xPos, yPos, this.length, this.length);
-    });
   }
 
   drawBlock(block) {
