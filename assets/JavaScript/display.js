@@ -45,7 +45,8 @@ class Display {
   }
 
   drawFloor(floor) {
-    for (var tile in floor) {
+    for (var position in floor) {
+      let tile = floor[position];
       this.ctx.fillStyle = this.colors.tileColors[tile.type];
       const { xPos, yPos } = tile;
       this.ctx.fillRect(xPos, yPos, this.length, this.length);
