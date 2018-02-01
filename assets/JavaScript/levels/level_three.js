@@ -50,6 +50,6 @@ const levelThree = {
     { x: 14, y: 1, type: "none" },
     { x: 14, y: 0, type: "none" },
   ],
-}
+};
 
 module.exports = levelThree;

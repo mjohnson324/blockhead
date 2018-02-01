@@ -25,7 +25,7 @@ class Block {
       yPos: this.yPos,
       width: this.width,
       height: this.height
-    }
+    };
   }
 
   setPosition(coordinates) {

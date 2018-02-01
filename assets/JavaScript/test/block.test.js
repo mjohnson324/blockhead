@@ -71,7 +71,7 @@ describe('Square blocks becoming rectangular', () => {
     expect(block.position()).toEqual(position);
     expect(block.height).toBeGreaterThan(block.width);
   });
-})
+});
 
 describe('Wide rectangular blocks', () => {
   let wideBlock;
@@ -90,7 +90,7 @@ describe('Wide rectangular blocks', () => {
     test('Wide block retains shape when moving down', () => {
       wideBlock.transformBlock(0, -1);
       expect(wideBlock.dimensions()).toEqual(wideBlockSize);
-    })
+    });
   });
 
   describe('Horizontal contractions', () => {
@@ -109,7 +109,7 @@ describe('Wide rectangular blocks', () => {
       expect(wideBlock.position()).toEqual(leftShift);
     });
   });
-})
+});
 
 describe('Tall rectangular blocks', () => {
   let tallBlock;
@@ -147,4 +147,4 @@ describe('Tall rectangular blocks', () => {
       expect(tallBlock.position()).toEqual(downShift);
     });
   });
-})
+});

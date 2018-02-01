@@ -29,7 +29,7 @@ class Display {
     return {
       mediumFontSize: '30px sans-serif',
       largeFontSize: '50px sans-serif',
-    }
+    };
   }
 
   render(options) {
@@ -67,7 +67,7 @@ class Display {
   }
 
   stringifyTime() {
-    const { minutes, second } = this.clock.currentTime();
+    const { minutes, seconds } = this.clock.currentTime();
     const minuteString = (minutes < 10) ? `0${minutes}` : minutes;
     const secondString = (seconds < 10) ? `0${seconds}` : seconds;
     return `${minutes}:${seconds}`;
