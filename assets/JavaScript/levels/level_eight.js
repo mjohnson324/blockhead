@@ -47,3 +47,12 @@ const levelEight = {
 };
 
 module.exports = levelEight;
+
+// warp: [9, 5], warps to: [0, 1], [1, 0]
+// warp: [1, 2], warps to: [1, 2], [0, 1]
+// warp: [2, 1], warps to: [0, 1], [2, 1]
+// warp: [0, 1], warps to: [1, 0], [2, 1]
+// warp: [1, 0], warps to: [5, 1], [7, 1]
+// heavySwitch [5, 1] toggles bridges [3-1, 4-1]
+// heavySwitch [6, 1] toggles bridges [8-1, 9-1]
+// bridges both off by default

@@ -14,7 +14,7 @@ const levelSix = {
     { x: 1, y: 9, type: "n" },
     { x: 2, y: 1, type: "n" },
     { x: 2, y: 2, type: "n" },
-    { x: 2, y: 3, type: "l" },
+    { x: 2, y: 3, type: "n" },
     { x: 2, y: 4, type: "n" },
     { x: 2, y: 7, type: "n" },
     { x: 2, y: 8, type: "n" },
@@ -28,7 +28,7 @@ const levelSix = {
     { x: 3, y: 9, type: "n" },
     { x: 4, y: 1, type: "n" },
     { x: 4, y: 2, type: "n" },
-    { x: 4, y: 3, type: "l" },
+    { x: 4, y: 3, type: "n" },
     { x: 4, y: 4, type: "n" },
     { x: 4, y: 5, type: "n" },
     { x: 4, y: 8, type: "n" },
@@ -79,3 +79,11 @@ const levelSix = {
 };
 
 module.exports = levelSix;
+
+// heavySwitch [9, 1] toggles bridges [5-1, 6-1]
+// heavySwitch [6, 5] toggles bridges [8-5, 9-5] and [5-8, 6-8]
+// heavySwitch [14, 6] toggles bridges [5-8, 6-8]
+// lightSwitch [3, 3] and [1, 3] toggle bridges [8-5, 9-5]
+// bridges [5-1, 6-1] default on
+// bridges [8-5, 9-5] default off
+// bridges [5-8, 6-8] default on

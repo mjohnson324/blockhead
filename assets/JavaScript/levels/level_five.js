@@ -69,3 +69,5 @@ const levelFive = {
 };
 
 module.exports = levelFive;
+
+// warp: [6, 2], warps to: [9, 2], [11, 2]
