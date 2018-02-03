@@ -34,6 +34,8 @@ Blockhead is a game that is based on the 3D puzzle game bloxors, in which the pl
 
 ![wireframe](./assets/Images/BlockHead.png)
 
+Here's an example code snippet of level data:
+
 ``` JavaScript
 const levelOne = {
   floorDimensions: { xRange: 10, yRange: 1, },
@@ -45,11 +47,28 @@ const levelOne = {
     { x: 3, y: 0, type: "n" },
 ```
 
+The goal of the above code is to store information on levels in a dynamic and minimalistic manner. I want players to be able to adjust tile size when starting the game to make the game more visually accessible. I also want floors to always be centered so the game looks more professional. To that end I only store the tile's type which dictates its behavior, and its position relative to other tiles in a level. The floorDimensions is used to center a floor based on the tile size chosen by the player, which is then used to to position each tile individually.
 
 
 ``` JavaScript
+setCoordinates(floorData, startPosition) {
+  const newFloor = {};
+  floorData.forEach(tileData => {
+    let tileOptions = this.constructTileCoordinates(tileData, startPosition);
+    let tile = new Tile(tileOptions);
+    let tilePosition = `[${tile.xPos}, ${tile.yPos}]`;
+    newFloor[tilePosition] = tile;
+  });
+  return newFloor;
+}
 
+lookupTile(position) {
+  const currentPosition = `[${position.xPos}, ${position.yPos}]`;
+  return this.constructedFloor[currentPosition];
+}
 ```
+
+*setCoordinates* constructs a floor for gameplay, consisting of tiles where each key represents the tile's position on the floor. I use an object instead of an array for instant lookup. Any time the player makes a move *lookupTile* can be used to look up the tile at their location to enable various actions (reaching the goal, pressing a button, etc.)
 
 ### Future Features:
 
