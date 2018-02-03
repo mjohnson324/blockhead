@@ -19,14 +19,16 @@ Blockhead is a game that is based on the 3D puzzle game bloxors, in which the pl
 ### File Structure:
 
 - **blockhead.js**, the root file for the game.
-- **display.js** to handle rendering.
-- **block.js** to handle the movement and transformations of the player block.
-- **sound.js** to control when sound effects and music play.
 - **page_buttons.js** to handle all buttons on the page including sound and tutorial display.
-- **tile.js** to store information on individual floor tiles.
-- **level_generator.js** to store information on level progression and create floors consisting of tile objects. Serves as a bundle for all levels.
-  + Level and tile data are stored in the **levels** directory, one file for each level with data for each tile making up a floor.
 - **game.js** to handle the rules of the game and bring other game files together.
+  - **menu.js**, the start menu with various options
+  - **display.js** to handle rendering.
+    - **clock.js** to keep track of session lengths.
+  - **block.js** to handle the movement and transformations of the player block.
+  - **sound.js** to control when sound effects and music play.
+  - **level_generator.js** to manage levels. This class handles the construction of floors, creating sets of tiles for each level. for the current level it also tracks the relationships between tiles and state of each tile.
+    - **tile.js** to store information on individual floor tiles.
++ Level and tile data are stored in the **levels** directory, one file for each level with data for each tile making up a floor. Levels are aggregated together into one object.
 
 ### Screenshot:
 
