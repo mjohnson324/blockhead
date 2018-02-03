@@ -24,28 +24,8 @@ class Menu { // Not yet in use
 
   }
 
-  accessOptions() {
-    e.preventDefault(e);
-
-  }
-
-  alterTextSize() {
-    e.preventDefault(e);
-
-  }
-
   alterBlockSize() {
     e.preventDefault(e);
-
-  }
-
-  enableLives() {
-    e.preventDefault(e);
-
-  }
-
-  enableChallengeMode(e) {
-    e.preventDefault();
 
   }
 }
