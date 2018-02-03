@@ -1,5 +1,5 @@
-const LevelGenerator = require('../level_generator');
-const Tile = require('../tile');
+const LevelGenerator = require('../game_objects/level_generator');
+const Tile = require('../game_objects/tile');
 
 const levels = {
   1: {

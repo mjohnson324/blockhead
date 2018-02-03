@@ -1,4 +1,4 @@
-const GameClock = require('../clock');
+const GameClock = require('../game_objects/clock');
 
 const testClock = new GameClock();
 

@@ -1,9 +1,6 @@
-class Menu { // Not yet in use
+class Menu {
   constructor(context) {
-    this.textSize = "medium";
     this.blockSize = "medium";
-    this.lives = false;
-    this.challenge = false;
     this.canvas = document.getElementById("blockhead");
     this.context = context;
   }
@@ -12,7 +9,7 @@ class Menu { // Not yet in use
 
     this.canvas.addEventListenenr('click', this.startGame);
     this.canvas.addEventListener('click', this.beginTutorial);
-    this.canvas.addEventListener('click', this.accessOptions);
+    this.canvas.addEventListener('click', this.alterOptions);
   }
 
   startGame(e) {

@@ -1,7 +1,8 @@
-const LevelGenerator = require('./level_generator');
-const Block = require('./block');
-const Display = require('./display');
-const Sound = require('./sound');
+const LevelGenerator = require('./game_objects/level_generator');
+const Block = require('./game_objects/block');
+const Display = require('./game_objects/display');
+const Sound = require('./game_objects/sound');
+const Menu = require('./game_objects/menu');
 const allLevels = require('./levels/all_levels');
 
 class Game {

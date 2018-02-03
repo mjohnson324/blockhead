@@ -68,7 +68,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const Game = __webpack_require__(1);
-const PageButtons = __webpack_require__(14);
+const PageButtons = __webpack_require__(20);
 
 document.addEventListener("DOMContentLoaded", () => {
   const buttonActivation = new PageButtons();
@@ -88,7 +88,8 @@ const LevelGenerator = __webpack_require__(2);
 const Block = __webpack_require__(4);
 const Display = __webpack_require__(5);
 const Sound = __webpack_require__(7);
-const allLevels = __webpack_require__(8);
+const Menu = __webpack_require__(8);
+const allLevels = __webpack_require__(9);
 
 class Game {
   constructor(ctx, length) {
@@ -730,13 +731,54 @@ module.exports = Sound;
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports) {
+
+class Menu {
+  constructor(context) {
+    this.blockSize = "medium";
+    this.canvas = document.getElementById("blockhead");
+    this.context = context;
+  }
+
+  activateMenu() {
+
+    this.canvas.addEventListenenr('click', this.startGame);
+    this.canvas.addEventListener('click', this.beginTutorial);
+    this.canvas.addEventListener('click', this.alterOptions);
+  }
+
+  startGame(e) {
+    e.preventDefault();
+  }
+
+  beginTutorial(e) {
+    e.preventDefault(e);
+
+  }
+
+  alterBlockSize() {
+    e.preventDefault(e);
+
+  }
+}
+
+module.exports = Menu;
+
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const tutorial = __webpack_require__(9);
-const levelOne = __webpack_require__(10);
-const levelTwo = __webpack_require__(11);
-const levelThree = __webpack_require__(12);
-const levelFour = __webpack_require__(13);
+const tutorial = __webpack_require__(10);
+const levelOne = __webpack_require__(11);
+const levelTwo = __webpack_require__(12);
+const levelThree = __webpack_require__(13);
+const levelFour = __webpack_require__(14);
+const levelFive = __webpack_require__(15);
+const levelSix = __webpack_require__(16);
+const levelSeven = __webpack_require__(17);
+const levelEight = __webpack_require__(18);
+const levelNine = __webpack_require__(19);
 
 module.exports = {
   tutorial: tutorial,
@@ -746,9 +788,15 @@ module.exports = {
   4: levelFour,
 };
 
+// 6: levelSix,
+// 7: levelSeven,
+// 8: levelEight,
+// 9: levelNine,
+// 5: levelFive,
+
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 const tutorial = {
@@ -786,7 +834,7 @@ module.exports = tutorial;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 const levelOne = {
@@ -809,7 +857,7 @@ module.exports = levelOne;
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 const levelTwo = {
@@ -857,7 +905,7 @@ module.exports = levelTwo;
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 const levelThree = {
@@ -918,7 +966,7 @@ module.exports = levelThree;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 const levelFour = {
@@ -981,7 +1029,455 @@ module.exports = levelFour;
 
 
 /***/ }),
-/* 14 */
+/* 15 */
+/***/ (function(module, exports) {
+
+const levelFive = {
+  floorDimensions: { xRange: 14, yRange: 9 },
+  floorData: [
+    { x: 1, y: 5, type: "s" },
+    { x: 12, y: 7, type: "g" },
+    { x: 0, y: 2, type: "n" },
+    { x: 0, y: 3, type: "n" },
+    { x: 0, y: 4, type: "n" },
+    { x: 0, y: 5, type: "n" },
+    { x: 0, y: 6, type: "n" },
+    { x: 1, y: 2, type: "n" },
+    { x: 1, y: 3, type: "n" },
+    { x: 1, y: 4, type: "n" },
+    { x: 1, y: 6, type: "n" },
+    { x: 2, y: 2, type: "n" },
+    { x: 2, y: 3, type: "n" },
+    { x: 2, y: 4, type: "n" },
+    { x: 2, y: 5, type: "n" },
+    { x: 2, y: 6, type: "n" },
+    { x: 3, y: 0, type: "c" },
+    { x: 3, y: 1, type: "c" },
+    { x: 3, y: 2, type: "n" },
+    { x: 4, y: 0, type: "c" },
+    { x: 4, y: 1, type: "c" },
+    { x: 5, y: 0, type: "c" },
+    { x: 5, y: 1, type: "c" },
+    { x: 5, y: 5, type: "n" },
+    { x: 5, y: 6, type: "n" },
+    { x: 5, y: 7, type: "n" },
+    { x: 5, y: 8, type: "n" },
+    { x: 6, y: 0, type: "c" },
+    { x: 6, y: 1, type: "c" },
+    { x: 6, y: 2, type: "w" },
+    { x: 6, y: 5, type: "n" },
+    { x: 6, y: 6, type: "n" },
+    { x: 6, y: 7, type: "n" },
+    { x: 6, y: 8, type: "n" },
+    { x: 7, y: 5, type: "n" },
+    { x: 7, y: 6, type: "n" },
+    { x: 7, y: 7, type: "n" },
+    { x: 7, y: 8, type: "n" },
+    { x: 8, y: 5, type: "n" },
+    { x: 8, y: 6, type: "n" },
+    { x: 9, y: 2, type: "n" },
+    { x: 9, y: 5, type: "c" },
+    { x: 9, y: 6, type: "c" },
+    { x: 10, y: 2, type: "n" },
+    { x: 10, y: 3, type: "n" },
+    { x: 10, y: 4, type: "n" },
+    { x: 10, y: 5, type: "c" },
+    { x: 10, y: 6, type: "c" },
+    { x: 10, y: 7, type: "c" },
+    { x: 10, y: 8, type: "c" },
+    { x: 11, y: 2, type: "n" },
+    { x: 11, y: 3, type: "n" },
+    { x: 11, y: 4, type: "n" },
+    { x: 11, y: 5, type: "c" },
+    { x: 11, y: 6, type: "c" },
+    { x: 11, y: 7, type: "c" },
+    { x: 11, y: 8, type: "c" },
+    { x: 12, y: 5, type: "n" },
+    { x: 12, y: 6, type: "n" },
+    { x: 12, y: 8, type: "n" },
+    { x: 13, y: 5, type: "n" },
+    { x: 13, y: 6, type: "n" },
+    { x: 13, y: 7, type: "n" },
+    { x: 13, y: 8, type: "n" },
+  ],
+};
+
+module.exports = levelFive;
+
+// warp: [6, 2], warps to: [9, 2], [11, 2]
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
+
+const levelSix = {
+  floorDimensions: { xRange: 16, yRange: 10 },
+  floorData: [
+    { x: 14, y: 1, type: "s" },
+    { x: 1, y: 8, type: "g" },
+    { x: 0, y: 7, type: "n" },
+    { x: 0, y: 8, type: "n" },
+    { x: 0, y: 9, type: "n" },
+    { x: 1, y: 1, type: "n" },
+    { x: 1, y: 2, type: "n" },
+    { x: 1, y: 3, type: "l" },
+    { x: 1, y: 4, type: "n" },
+    { x: 1, y: 7, type: "n" },
+    { x: 1, y: 9, type: "n" },
+    { x: 2, y: 1, type: "n" },
+    { x: 2, y: 2, type: "n" },
+    { x: 2, y: 3, type: "n" },
+    { x: 2, y: 4, type: "n" },
+    { x: 2, y: 7, type: "n" },
+    { x: 2, y: 8, type: "n" },
+    { x: 2, y: 9, type: "n" },
+    { x: 3, y: 1, type: "n" },
+    { x: 3, y: 2, type: "n" },
+    { x: 3, y: 3, type: "l" },
+    { x: 3, y: 4, type: "n" },
+    { x: 3, y: 5, type: "n" },
+    { x: 3, y: 8, type: "n" },
+    { x: 3, y: 9, type: "n" },
+    { x: 4, y: 1, type: "n" },
+    { x: 4, y: 2, type: "n" },
+    { x: 4, y: 3, type: "n" },
+    { x: 4, y: 4, type: "n" },
+    { x: 4, y: 5, type: "n" },
+    { x: 4, y: 8, type: "n" },
+    { x: 5, y: 1, type: "b" },
+    { x: 5, y: 5, type: "n" },
+    { x: 5, y: 8, type: "b" },
+    { x: 6, y: 1, type: "b" },
+    { x: 6, y: 5, type: "h" },
+    { x: 6, y: 8, type: "b" },
+    { x: 7, y: 1, type: "n" },
+    { x: 7, y: 5, type: "n" },
+    { x: 7, y: 8, type: "n" },
+    { x: 8, y: 1, type: "n" },
+    { x: 8, y: 5, type: "b" },
+    { x: 8, y: 8, type: "n" },
+    { x: 9, y: 1, type: "h" },
+    { x: 9, y: 5, type: "b" },
+    { x: 9, y: 8, type: "n" },
+    { x: 10, y: 1, type: "n" },
+    { x: 10, y: 5, type: "n" },
+    { x: 10, y: 6, type: "n" },
+    { x: 10, y: 7, type: "n" },
+    { x: 10, y: 8, type: "n" },
+    { x: 11, y: 1, type: "n" },
+    { x: 11, y: 5, type: "n" },
+    { x: 11, y: 6, type: "n" },
+    { x: 11, y: 7, type: "n" },
+    { x: 11, y: 8, type: "n" },
+    { x: 12, y: 0, type: "n" },
+    { x: 12, y: 1, type: "n" },
+    { x: 12, y: 5, type: "n" },
+    { x: 12, y: 6, type: "n" },
+    { x: 12, y: 7, type: "n" },
+    { x: 12, y: 8, type: "n" },
+    { x: 13, y: 0, type: "n" },
+    { x: 13, y: 1, type: "n" },
+    { x: 13, y: 2, type: "n" },
+    { x: 13, y: 6, type: "n" },
+    { x: 13, y: 7, type: "n" },
+    { x: 14, y: 0, type: "n" },
+    { x: 14, y: 2, type: "n" },
+    { x: 14, y: 6, type: "h" },
+    { x: 14, y: 7, type: "n" },
+    { x: 15, y: 0, type: "n" },
+    { x: 15, y: 1, type: "n" },
+    { x: 15, y: 2, type: "n" },
+  ],
+};
+
+module.exports = levelSix;
+
+// heavySwitch [9, 1] toggles bridges [5-1, 6-1]
+// heavySwitch [6, 5] toggles bridges [8-5, 9-5] and [5-8, 6-8]
+// heavySwitch [14, 6] toggles bridges [5-8, 6-8]
+// lightSwitch [3, 3] and [1, 3] toggle bridges [8-5, 9-5]
+// bridges [5-1, 6-1] default on
+// bridges [8-5, 9-5] default off
+// bridges [5-8, 6-8] default on
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+const levelSeven = {
+  floorDimensions: { xRange: 14, yRange: 10 },
+  floorData: [
+    { x: 12, y: 3, type: "s" },
+    { x: 7, y: 4, type: "g" },
+    { x: 0, y: 0, type: "n" },
+    { x: 0, y: 1, type: "n" },
+    { x: 0, y: 2, type: "n" },
+    { x: 0, y: 3, type: "n" },
+    { x: 0, y: 4, type: "n" },
+    { x: 0, y: 5, type: "n" },
+    { x: 1, y: 0, type: "n" },
+    { x: 1, y: 1, type: "n" },
+    { x: 1, y: 2, type: "n" },
+    { x: 1, y: 3, type: "n" },
+    { x: 1, y: 4, type: "n" },
+    { x: 1, y: 5, type: "n" },
+    { x: 2, y: 0, type: "n" },
+    { x: 2, y: 3, type: "n" },
+    { x: 2, y: 4, type: "n" },
+    { x: 2, y: 5, type: "n" },
+    { x: 2, y: 6, type: "n" },
+    { x: 2, y: 7, type: "n" },
+    { x: 3, y: 0, type: "c" },
+    { x: 3, y: 4, type: "c" },
+    { x: 3, y: 7, type: "n" },
+    { x: 3, y: 8, type: "n" },
+    { x: 3, y: 9, type: "n" },
+    { x: 4, y: 0, type: "n" },
+    { x: 4, y: 4, type: "c" },
+    { x: 4, y: 7, type: "n" },
+    { x: 4, y: 8, type: "n" },
+    { x: 4, y: 9, type: "n" },
+    { x: 5, y: 0, type: "n" },
+    { x: 5, y: 4, type: "c" },
+    { x: 5, y: 5, type: "c" },
+    { x: 5, y: 6, type: "c" },
+    { x: 5, y: 7, type: "c" },
+    { x: 5, y: 8, type: "c" },
+    { x: 5, y: 9, type: "n" },
+    { x: 6, y: 0, type: "n" },
+    { x: 6, y: 3, type: "n" },
+    { x: 6, y: 4, type: "n" },
+    { x: 6, y: 5, type: "n" },
+    { x: 6, y: 6, type: "c" },
+    { x: 6, y: 7, type: "c" },
+    { x: 6, y: 8, type: "c" },
+    { x: 7, y: 0, type: "n" },
+    { x: 7, y: 3, type: "n" },
+    { x: 7, y: 5, type: "n" },
+    { x: 7, y: 6, type: "c" },
+    { x: 7, y: 7, type: "n" },
+    { x: 7, y: 8, type: "c" },
+    { x: 8, y: 0, type: "c" },
+    { x: 8, y: 3, type: "n" },
+    { x: 8, y: 4, type: "n" },
+    { x: 8, y: 5, type: "n" },
+    { x: 8, y: 6, type: "c" },
+    { x: 8, y: 7, type: "c" },
+    { x: 8, y: 8, type: "c" },
+    { x: 8, y: 9, type: "n" },
+    { x: 9, y: 0, type: "n" },
+    { x: 9, y: 6, type: "c" },
+    { x: 9, y: 7, type: "c" },
+    { x: 9, y: 8, type: "c" },
+    { x: 9, y: 9, type: "n" },
+    { x: 10, y: 0, type: "n" },
+    { x: 10, y: 1, type: "n" },
+    { x: 10, y: 6, type: "n" },
+    { x: 10, y: 7, type: "c" },
+    { x: 10, y: 8, type: "c" },
+    { x: 11, y: 0, type: "n" },
+    { x: 11, y: 1, type: "n" },
+    { x: 11, y: 2, type: "n" },
+    { x: 11, y: 3, type: "n" },
+    { x: 11, y: 4, type: "n" },
+    { x: 11, y: 5, type: "n" },
+    { x: 11, y: 6, type: "n" },
+    { x: 12, y: 0, type: "n" },
+    { x: 12, y: 1, type: "n" },
+    { x: 12, y: 2, type: "n" },
+    { x: 12, y: 4, type: "n" },
+    { x: 13, y: 2, type: "n" },
+    { x: 13, y: 3, type: "n" },
+    { x: 13, y: 4, type: "n" },
+  ],
+};
+
+module.exports = levelSeven;
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+const levelEight = {
+  floorDimensions: { xRange: 13, yRange: 7 },
+  floorData: [
+    { x: 11, y: 1, type: "g" },
+    { x: 3, y: 5, type: "s" },
+    { x: 0, y: 1, type: "w" },
+    { x: 1, y: 0, type: "w" },
+    { x: 1, y: 1, type: "n" },
+    { x: 1, y: 2, type: "w" },
+    { x: 2, y: 1, type: "w" },
+    { x: 2, y: 4, type: "n" },
+    { x: 2, y: 5, type: "n" },
+    { x: 2, y: 6, type: "n" },
+    { x: 3, y: 1, type: "b" },
+    { x: 3, y: 4, type: "n" },
+    { x: 3, y: 6, type: "n" },
+    { x: 4, y: 1, type: "b" },
+    { x: 4, y: 4, type: "n" },
+    { x: 4, y: 5, type: "n" },
+    { x: 4, y: 6, type: "n" },
+    { x: 5, y: 1, type: "h" },
+    { x: 5, y: 5, type: "n" },
+    { x: 6, y: 1, type: "h" },
+    { x: 6, y: 5, type: "n" },
+    { x: 7, y: 1, type: "n" },
+    { x: 7, y: 5, type: "n" },
+    { x: 8, y: 1, type: "b" },
+    { x: 8, y: 4, type: "n" },
+    { x: 8, y: 5, type: "n" },
+    { x: 8, y: 6, type: "n" },
+    { x: 9, y: 1, type: "b" },
+    { x: 9, y: 4, type: "n" },
+    { x: 9, y: 5, type: "w" },
+    { x: 9, y: 6, type: "n" },
+    { x: 10, y: 0, type: "n" },
+    { x: 10, y: 1, type: "n" },
+    { x: 10, y: 2, type: "n" },
+    { x: 10, y: 4, type: "n" },
+    { x: 10, y: 5, type: "n" },
+    { x: 10, y: 6, type: "n" },
+    { x: 11, y: 0, type: "n" },
+    { x: 11, y: 2, type: "n" },
+    { x: 12, y: 0, type: "n" },
+    { x: 12, y: 1, type: "n" },
+    { x: 12, y: 2, type: "n" },
+  ],
+};
+
+module.exports = levelEight;
+
+// warp: [9, 5], warps to: [0, 1], [1, 0]
+// warp: [1, 2], warps to: [1, 2], [0, 1]
+// warp: [2, 1], warps to: [0, 1], [2, 1]
+// warp: [0, 1], warps to: [1, 0], [2, 1]
+// warp: [1, 0], warps to: [5, 1], [7, 1]
+// heavySwitch [5, 1] toggles bridges [3-1, 4-1]
+// heavySwitch [6, 1] toggles bridges [8-1, 9-1]
+// bridges both off by default
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+const levelNine = {
+  floorDimensions: { xRange: 15, yRange: 10 },
+  floorData: [
+    { x: 4, y: 8, type: "s" },
+    { x: 8, y: 3, type: "g" },
+    { x: 0, y: 3, type: "b" },
+    { x: 0, y: 4, type: "n" },
+    { x: 0, y: 5, type: "l" },
+    { x: 0, y: 6, type: "n" },
+    { x: 1, y: 0, type: "n" },
+    { x: 1, y: 1, type: "n" },
+    { x: 1, y: 2, type: "n" },
+    { x: 1, y: 3, type: "n" },
+    { x: 1, y: 6, type: "b" },
+    { x: 2, y: 0, type: "n" },
+    { x: 2, y: 1, type: "h" },
+    { x: 2, y: 2, type: "n" },
+    { x: 2, y: 3, type: "n" },
+    { x: 2, y: 6, type: "b" },
+    { x: 3, y: 0, type: "n" },
+    { x: 3, y: 1, type: "n" },
+    { x: 3, y: 2, type: "n" },
+    { x: 3, y: 3, type: "n" },
+    { x: 3, y: 6, type: "n" },
+    { x: 3, y: 7, type: "n" },
+    { x: 3, y: 8, type: "n" },
+    { x: 3, y: 9, type: "n" },
+    { x: 4, y: 3, type: "b" },
+    { x: 4, y: 4, type: "n" },
+    { x: 4, y: 5, type: "n" },
+    { x: 4, y: 6, type: "n" },
+    { x: 4, y: 7, type: "n" },
+    { x: 4, y: 9, type: "n" },
+    { x: 5, y: 6, type: "n" },
+    { x: 5, y: 7, type: "n" },
+    { x: 5, y: 8, type: "n" },
+    { x: 5, y: 9, type: "n" },
+    { x: 6, y: 6, type: "c" },
+    { x: 6, y: 7, type: "c" },
+    { x: 6, y: 8, type: "c" },
+    { x: 6, y: 9, type: "n" },
+    { x: 7, y: 2, type: "n" },
+    { x: 7, y: 3, type: "n" },
+    { x: 7, y: 4, type: "n" },
+    { x: 7, y: 5, type: "c" },
+    { x: 7, y: 6, type: "c" },
+    { x: 7, y: 7, type: "c" },
+    { x: 7, y: 8, type: "c" },
+    { x: 7, y: 9, type: "n" },
+    { x: 8, y: 2, type: "n" },
+    { x: 8, y: 4, type: "n" },
+    { x: 8, y: 5, type: "c" },
+    { x: 8, y: 6, type: "c" },
+    { x: 8, y: 7, type: "c" },
+    { x: 8, y: 8, type: "c" },
+    { x: 8, y: 9, type: "b" },
+    { x: 9, y: 2, type: "n" },
+    { x: 9, y: 3, type: "n" },
+    { x: 9, y: 4, type: "n" },
+    { x: 9, y: 5, type: "c" },
+    { x: 9, y: 6, type: "c" },
+    { x: 9, y: 7, type: "c" },
+    { x: 9, y: 8, type: "c" },
+    { x: 10, y: 2, type: "b" },
+    { x: 10, y: 6, type: "c" },
+    { x: 10, y: 7, type: "c" },
+    { x: 10, y: 8, type: "c" },
+    { x: 11, y: 2, type: "b" },
+    { x: 11, y: 6, type: "n" },
+    { x: 11, y: 7, type: "n" },
+    { x: 11, y: 8, type: "n" },
+    { x: 12, y: 0, type: "n" },
+    { x: 12, y: 1, type: "n" },
+    { x: 12, y: 2, type: "n" },
+    { x: 12, y: 3, type: "n" },
+    { x: 12, y: 6, type: "n" },
+    { x: 12, y: 7, type: "w" },
+    { x: 12, y: 8, type: "n" },
+    { x: 13, y: 0, type: "n" },
+    { x: 13, y: 1, type: "l" },
+    { x: 13, y: 2, type: "n" },
+    { x: 13, y: 3, type: "n" },
+    { x: 13, y: 6, type: "n" },
+    { x: 13, y: 7, type: "n" },
+    { x: 13, y: 8, type: "n" },
+    { x: 14, y: 0, type: "n" },
+    { x: 14, y: 1, type: "n" },
+    { x: 14, y: 2, type: "n" },
+    { x: 14, y: 3, type: "l" },
+    { x: 14, y: 4, type: "n" },
+    { x: 14, y: 5, type: "n" },
+    { x: 14, y: 6, type: "b" },
+  ],
+};
+
+module.exports = levelNine;
+
+// refer to bloxors level 23
+// warp [12, 7] warps to [12, 7], [2, 2]
+// lightSwitch [14, 3] toggles ?
+// lightSwitch [13, 1] toggles bridges [1-6 , 2-6] and bridge [8-9]
+// lightSwitch [0, 5] toggles bridges [1-6 , 2-6] and bridge [0, 3]
+// heavySwitch [2, 1] toggles bridge [4, 3]
+// bridge [14-6] default is ?
+// bridges [10-2, 11-2] default is ?
+// bridge [8, 9] default is on
+// bridges [1-6, 2-6] default is ?
+// bridge [0, 3] default is off
+// bridge [4, 3] default is off
+
+
+/***/ }),
+/* 20 */
 /***/ (function(module, exports) {
 
 class PageButtons {
