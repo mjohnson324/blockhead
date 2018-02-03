@@ -1,8 +1,10 @@
-const LevelGenerator = require('./game_objects/level_generator');
 const Block = require('./game_objects/block');
+const Controls = require('./game_objects/controls');
 const Display = require('./game_objects/display');
-const Sound = require('./game_objects/sound');
+const LevelGenerator = require('./game_objects/level_generator');
 const Menu = require('./game_objects/menu');
+const Sound = require('./game_objects/sound');
+
 const allLevels = require('./levels/all_levels');
 
 class Game {
@@ -11,96 +13,50 @@ class Game {
     this.levels = new LevelGenerator(length, allLevels);
     this.block = new Block(length, { width: length, height: length });
     this.sound = new Sound();
+    this.controls = new Controls();
 
-    this.getMove = this.getMove.bind(this);
-    this.pauseButton = this.pauseButton.bind(this);
-    this.restartGame = this.restartGame.bind(this);
+    this.move = this.move.bind(this);
+    this.pause = this.pause.bind(this);
+    this.restart = this.restart.bind(this);
   }
 
   start() {
-    this.setState();
+    this.moves = 0;
+    this.falls = 0;
     this.sound.start();
     this.levels.constructFloor();
     this.block.setPosition(this.levels.currentStartPosition);
     this.timerId = setInterval(this.display.drawTime, 1000);
-    document.addEventListener("keydown", this.getMove);
-    document.addEventListener("keydown", this.pauseButton);
+    document.addEventListener("keydown", this.move);
+    document.addEventListener("keydown", this.pause);
     this.display.render(this.displayOptions());
     this.display.drawBlock(this.block);
   }
 
-  setState() {
-    this.state = {
-      moves: 0,
-      falls: 0,
-      pauseStatus: false,
-    };
+  restart(e) {
+    this.controls.restartGame(e, this);
   }
 
-  restartGame(e) {
-    switch(e.keyCode) {
-      case 32:
-        e.preventDefault();
-        this.levels.resetCurrentLevel();
-        this.start();
-        document.removeEventListener("keydown", this.restartGame);
-    }
-  }
-
-  getMove(e) {
+  move(e) {
     const arrowKeycodes = [37, 38, 39, 40];
     if (arrowKeycodes.includes(e.keyCode)) {
-      e.preventDefault();
-      switch (e.keyCode) {
-        case 40: // down arrow key
-          this.block.transformBlock(0, 1);
-          break;
-        case 38: // up arrow key
-          this.block.transformBlock(0, -1);
-          break;
-        case 37: // left arrow key
-          this.block.transformBlock(-1, 0);
-          break;
-        case 39: // right arrow key
-          this.block.transformBlock(1, 0);
-      }
-      this.state.moves += 1;
+      this.controls.getMove(e, this.block);
+      this.moves += 1;
       this.checkBlock();
     }
   }
 
-  pauseButton(e) {
-    switch(e.keyCode) {
-      case 13:
-      e.preventDefault();
-      if (this.state.pauseStatus === false) {
-        this.state.pauseStatus = true;
-        this.pauseGame();
-      } else {
-        this.state.pauseStatus = false;
-        this.resumeGame();
-      }
-    }
-  }
-
-  pauseGame() {
-    clearInterval(this.timerId);
-    document.removeEventListener("keydown", this.getMove);
-    this.display.drawPause();
-  }
-
-  resumeGame() {
-    this.display.render(this.displayOptions());
-    this.display.drawBlock(this.block);
-    document.addEventListener("keydown", this.getMove);
-    this.timerId = setInterval(this.display.drawTime, 1000);
+  pause(e) {
+    this.controls.pauseButton(e, this);
   }
 
   displayOptions() {
-    return { level: this.levels.constructedFloor,
-             levelNumber: this.levels.currentLevel,
-             moves: this.state.moves,
-             falls: this.state.falls };
+    return {
+      level: this.levels.constructedFloor,
+      levelNumber: this.levels.currentLevel,
+      moves: this.moves,
+      falls: this.falls,
+    };
   }
 
   checkBlock() {
@@ -135,11 +91,11 @@ class Game {
   }
 
   endGame() {
-    document.removeEventListener("keydown", this.getMove);
-    document.removeEventListener("keydown", this.pauseButton);
+    document.removeEventListener("keydown", this.move);
+    document.removeEventListener("keydown", this.pause);
     clearInterval(this.timerId);
     this.display.drawFinish(this.displayOptions());
-    document.addEventListener("keydown", this.restartGame);
+    document.addEventListener("keydown", this.restart);
   }
 
   checkBounds() {
@@ -160,8 +116,8 @@ class Game {
   }
 
   resetLevel() {
-    document.removeEventListener("keydown", this.getMove);
-    this.state.falls += 1;
+    document.removeEventListener("keydown", this.move);
+    this.falls += 1;
     this.flashFailure();
   }
 
@@ -172,12 +128,8 @@ class Game {
     this.block.resetBlock(this.levels.currentStartPosition);
     setTimeout(() => {
       this.display.render(this.displayOptions());
-    }, 800);
-    setTimeout(() => {
       this.display.drawBlock(this.block);
-    }, 800);
-    setTimeout(() => {
-      document.addEventListener("keydown", this.getMove);
+      document.addEventListener("keydown", this.move);
     }, 800);
   }
 }
