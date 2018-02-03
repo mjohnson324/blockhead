@@ -7,7 +7,7 @@ Blockhead is a game that is based on the 3D puzzle game bloxors, in which the pl
 - Controls: Move the block with arrow keys
 - Counters are set for the current level as well as the time, number of moves taken thus far, and total number of falls for a current game session.
 
-**Notice**: This game is (currently) not accessible from mobile devices. A keyboard is required to play the game. I may change this in the future with, say, page buttons that can be used to control the block. I do not consider this approach ideal as they would lack responsiveness.
+**Notice**: This game is (currently) not accessible from mobile devices. A keyboard is required to play the game. I may change this in the future with, say, page buttons that can be used to control the block. I do not consider this approach ideal as I've noticed lag in the responsiveness of page buttons on mobile phones.
 
 ### Architecture and Technologies:
 
@@ -15,6 +15,7 @@ Blockhead is a game that is based on the 3D puzzle game bloxors, in which the pl
 - 'Canvas' (rendering of board tiles and block)
 - 'Webpack' (bundling files together)
 - 'SASS' (styling page)
+- 'Jest' (game testing)
 
 ### File Structure:
 
@@ -29,6 +30,7 @@ Blockhead is a game that is based on the 3D puzzle game bloxors, in which the pl
   - **level_generator.js** to manage levels. This class handles the construction of floors, creating sets of tiles for each level. for the current level it also tracks the relationships between tiles and state of each tile.
     - **tile.js** to store information on individual floor tiles.
 + Level and tile data are stored in the **levels** directory, one file for each level with data for each tile making up a floor. Levels are aggregated together into one object.
++ Tests are stored in the **test** directory and assist in preventing bugs and adding documentation via a test-driven development approach.
 
 ### Screenshot:
 
