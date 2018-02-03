@@ -34,42 +34,26 @@ Blockhead is a game that is based on the 3D puzzle game bloxors, in which the pl
 
 ![wireframe](./assets/Images/BlockHead.png)
 
-Level files consist of arrays of objects, with each object consisting of data for a tile object. Tile objects are organized like a grid, with each grouping of objects corresponding to tiles in the same column (save for the start and goal tile). Length is a constant dictating the size of the tiles and block to allow for easy resizing.
-
 ``` JavaScript
-const levelOne = (length, startX = 330, startY = 240) => {
-  return(
-    [
-      { x: startX, y: startY, type: "start" },
-      { x: startX + length * 6, y: startY + length * 3, type: "goal" },
-
-      { x: startX - length, y: startY - length, type: "none" },
-      { x: startX - length, y: startY, type: "none" },
-      { x: startX - length, y: startY + length, type: "none" },
+const levelOne = {
+  floorDimensions: { xRange: 10, yRange: 1, },
+  floorData: [
+    { x: 0, y: 0, type: "s" },
+    { x: 9, y: 0, type: "g" },
+    { x: 1, y: 0, type: "n" },
+    { x: 2, y: 0, type: "n" },
+    { x: 3, y: 0, type: "n" },
 ```
 
-Level Data is fed to the level generator (code below), which takes each level array and constructs arrays of tile objects to track floor information during play.
+
 
 ``` JavaScript
-const levelGenerator = (length) => {
-  const levels = [Tutorial(length),
-                     LevelOne(length),
-                     LevelTwo(length),
-                     LevelThree(length)];
-  levels.forEach(level => {
-    level.forEach((positionData, idx) => {
-      level[idx] = new Tile(positionData);
-    });
-  });
-  return levels;
-};
+
 ```
 
 ### Future Features:
 
-[ ] 'Make floor destructible:' Normal tiles will disappear after being stepped on x times. The current steps remaining on a tile will be marked by a number.
-
-[ ] 'Other tile types:' The original game has multiple tiles with functionalities such as switches, different weight-bearing capacities, teleportation, etc.
+[ ] (In progress) 'Other tile types:' The original game has multiple tiles with functionalities such as switches, different weight-bearing capacities, teleportation, etc.
 
 [ ] 'Score tracker:' The original game tracks the number of moves a player has taken. It would make for a fun competition if, in addition to tracking a player's current score the game ranked players. I've considered Firebase as a possible server option.
 
