@@ -8,7 +8,7 @@ const levelSix = {
     { x: 0, y: 9, type: "n" },
     { x: 1, y: 1, type: "n" },
     { x: 1, y: 2, type: "n" },
-    { x: 1, y: 3, type: "l" },
+    { x: 1, y: 3, type: "n" },
     { x: 1, y: 4, type: "n" },
     { x: 1, y: 7, type: "n" },
     { x: 1, y: 9, type: "n" },
@@ -21,7 +21,7 @@ const levelSix = {
     { x: 2, y: 9, type: "n" },
     { x: 3, y: 1, type: "n" },
     { x: 3, y: 2, type: "n" },
-    { x: 3, y: 3, type: "l" },
+    { x: 3, y: 3, type: "n" },
     { x: 3, y: 4, type: "n" },
     { x: 3, y: 5, type: "n" },
     { x: 3, y: 8, type: "n" },
@@ -36,7 +36,7 @@ const levelSix = {
     { x: 5, y: 5, type: "n" },
     { x: 5, y: 8, type: "b" },
     { x: 6, y: 1, type: "b" },
-    { x: 6, y: 5, type: "h" },
+    { x: 6, y: 5, type: "a" },
     { x: 6, y: 8, type: "b" },
     { x: 7, y: 1, type: "n" },
     { x: 7, y: 5, type: "n" },
@@ -44,7 +44,7 @@ const levelSix = {
     { x: 8, y: 1, type: "n" },
     { x: 8, y: 5, type: "b" },
     { x: 8, y: 8, type: "n" },
-    { x: 9, y: 1, type: "h" },
+    { x: 9, y: 1, type: "a" },
     { x: 9, y: 5, type: "b" },
     { x: 9, y: 8, type: "n" },
     { x: 10, y: 1, type: "n" },
@@ -70,7 +70,7 @@ const levelSix = {
     { x: 13, y: 7, type: "n" },
     { x: 14, y: 0, type: "n" },
     { x: 14, y: 2, type: "n" },
-    { x: 14, y: 6, type: "h" },
+    { x: 14, y: 6, type: "a" },
     { x: 14, y: 7, type: "n" },
     { x: 15, y: 0, type: "n" },
     { x: 15, y: 1, type: "n" },
@@ -80,10 +80,9 @@ const levelSix = {
 
 module.exports = levelSix;
 
-// heavySwitch [9, 1] toggles bridges [5-1, 6-1]
-// heavySwitch [6, 5] toggles bridges [8-5, 9-5] and [5-8, 6-8]
-// heavySwitch [14, 6] toggles bridges [5-8, 6-8]
-// lightSwitch [3, 3] and [1, 3] toggle bridges [8-5, 9-5]
-// bridges [5-1, 6-1] default on
+// activator [9, 1] toggles bridges [5-1, 6-1]
+// activator [6, 5] toggles bridges [8-5, 9-5] and [5-8, 6-8]
+// activator [14, 6] toggles bridges [5-8, 6-8]
+// bridges [5-1, 6-1] default off
 // bridges [8-5, 9-5] default off
-// bridges [5-8, 6-8] default on
+// bridges [5-8, 6-8] default off

@@ -18,9 +18,9 @@ const levelEight = {
     { x: 4, y: 4, type: "n" },
     { x: 4, y: 5, type: "n" },
     { x: 4, y: 6, type: "n" },
-    { x: 5, y: 1, type: "h" },
+    { x: 5, y: 1, type: "a" },
     { x: 5, y: 5, type: "n" },
-    { x: 6, y: 1, type: "h" },
+    { x: 6, y: 1, type: "a" },
     { x: 6, y: 5, type: "n" },
     { x: 7, y: 1, type: "n" },
     { x: 7, y: 5, type: "n" },
@@ -53,6 +53,6 @@ module.exports = levelEight;
 // warp: [2, 1], warps to: [0, 1], [2, 1]
 // warp: [0, 1], warps to: [1, 0], [2, 1]
 // warp: [1, 0], warps to: [5, 1], [7, 1]
-// heavySwitch [5, 1] toggles bridges [3-1, 4-1]
-// heavySwitch [6, 1] toggles bridges [8-1, 9-1]
+// activator [5, 1] toggles bridges [3-1, 4-1]
+// activator [6, 1] toggles bridges [8-1, 9-1]
 // bridges both off by default
