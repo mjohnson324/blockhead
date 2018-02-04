@@ -1,5 +1,18 @@
 const levelSix = {
   floorDimensions: { xRange: 16, yRange: 10 },
+  activatorData: {
+    '9.1': [[5, 1], [6, 1]],
+    '6.5': [[8, 5], [9, 5], [5, 8], [6, 8]],
+    '14.6':  [[5, 8], [6, 8]],
+  },
+  bridgeStartData: {
+    '5.1': "off",
+    '6.1': "off",
+    '8.5': "off",
+    '9.5': "off",
+    '5.8': "off",
+    '6.8': "off",
+  },
   floorData: [
     { x: 14, y: 1, type: "s" },
     { x: 1, y: 8, type: "g" },
@@ -79,10 +92,3 @@ const levelSix = {
 };
 
 module.exports = levelSix;
-
-// activator [9, 1] toggles bridges [5-1, 6-1]
-// activator [6, 5] toggles bridges [8-5, 9-5] and [5-8, 6-8]
-// activator [14, 6] toggles bridges [5-8, 6-8]
-// bridges [5-1, 6-1] default off
-// bridges [8-5, 9-5] default off
-// bridges [5-8, 6-8] default off

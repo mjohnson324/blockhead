@@ -1,5 +1,22 @@
 const levelEight = {
   floorDimensions: { xRange: 13, yRange: 7 },
+  warpData: {
+    '9.5': [[0, 1], [1, 0]],
+    '1.2': [[1, 2], [0, 1]],
+    '2.1': [[0, 1], [2, 1]],
+    '0.1': [[1, 0], [2, 1]],
+    '1.0': [[5, 1], [7, 1]],
+  },
+  activatorData: {
+    '5.1': [[3, 1], [4, 1]],
+    '6.1': [[8, 1], [9, 1]],
+  },
+  bridgeStartData: {
+    '3.1': "off",
+    '4.1': "off",
+    '8.1': "off",
+    '9.1': "off",
+  },
   floorData: [
     { x: 11, y: 1, type: "g" },
     { x: 3, y: 5, type: "s" },
@@ -47,12 +64,3 @@ const levelEight = {
 };
 
 module.exports = levelEight;
-
-// warp: [9, 5], warps to: [0, 1], [1, 0]
-// warp: [1, 2], warps to: [1, 2], [0, 1]
-// warp: [2, 1], warps to: [0, 1], [2, 1]
-// warp: [0, 1], warps to: [1, 0], [2, 1]
-// warp: [1, 0], warps to: [5, 1], [7, 1]
-// activator [5, 1] toggles bridges [3-1, 4-1]
-// activator [6, 1] toggles bridges [8-1, 9-1]
-// bridges both off by default

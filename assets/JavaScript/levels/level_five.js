@@ -1,5 +1,6 @@
 const levelFive = {
   floorDimensions: { xRange: 14, yRange: 9 },
+  warpData: { '6.2': [[9, 2], [11, 2]] },
   floorData: [
     { x: 1, y: 5, type: "s" },
     { x: 12, y: 7, type: "g" },
@@ -69,5 +70,3 @@ const levelFive = {
 };
 
 module.exports = levelFive;
-
-// warp: [6, 2], warps to: [9, 2], [11, 2]

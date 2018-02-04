@@ -1,5 +1,22 @@
 const levelNine = {
   floorDimensions: { xRange: 15, yRange: 10 },
+  warpData: { '12.7': [[12, 7], [2, 1]] },
+  activatorData: {
+    '8.9': [[1, 6], [2, 6], [0, 2]],
+    '13.1': [[10, 2], [11, 2], [8, 2], [8, 3], [7, 3]],
+    '14.3': [[14, 6]],
+  },
+  bridgeStartData: {
+    '0.2': "off",
+    '1.6': "off",
+    '2.6': "off",
+    '7.3': "off",
+    '8.2': "off",
+    '8.3': "off", 
+    '10.2': "on",
+    '11.2': "on",
+    '14.6': "off",
+  },
   floorData: [
     { x: 4, y: 8, type: "s" },
     { x: 7, y: 2, type: "g" },
@@ -89,10 +106,3 @@ const levelNine = {
 };
 
 module.exports = levelNine;
-
-// warp [12, 7] warps to [12, 7], [2, 1]
-// activator [8, 9] toggles bridges 1-6, 2-6 & 0-2
-// activator [13, 1] toggles bridges 10-2, 11-2, 8-2. 8-3 & 7-3
-// activator [14, 3] toggles bridge 14-6
-// bridges 0-2, 1-6, 2-6, 7-3, 8-3, 8-2, 14-6 default off
-// bridge 10-2, 11-2 default on
