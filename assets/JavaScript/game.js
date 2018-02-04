@@ -99,13 +99,8 @@ class Game {
   }
 
   checkBounds() {
-    const { levelData, currentLevel } = this.levels;
-    const { xPos, yPos } = this.block.position();
-    const { width, height } = this.block.dimensions();
-    const coordinates = [[xPos, yPos],
-      [xPos, yPos + height],
-      [xPos + width, yPos],
-      [xPos + width, yPos + height]];
+    const { currentLevel, levelData } = this.levels;
+    const coordinates = this.getCoordinates();
     if (this.display.tileMovesOffFloor(coordinates)) {
       this.resetLevel();
     } else if (levelData[currentLevel] !== undefined) {
@@ -113,6 +108,15 @@ class Game {
       this.display.drawBlock(this.block);
       this.sound.playBlockSound(this.block);
     }
+  }
+
+  getCoordinates() {
+    const { xPos, yPos } = this.block.position();
+    const { width, height } = this.block.dimensions();
+    return [
+      [xPos + Math.floor(width / 4), yPos + Math.floor(height / 4)],
+      [xPos + Math.floor(width * 3 / 4), yPos + Math.floor(height * 3 / 4)],
+    ];
   }
 
   resetLevel() {
