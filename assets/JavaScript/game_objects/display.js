@@ -22,7 +22,11 @@ class Display {
       tileColors: {
         start: 'rgb(0, 255, 255)',
         goal: 'rgb(0, 255, 0)',
-        none: 'rgb(192, 192, 192)'
+        none: 'rgb(192, 192, 192)',
+        collapsible: 'rgb(255, 128, 0)',
+        warp: 'rgb(255, 255, 0)',
+        activator: 'rgb(255, 255, 255)',
+        bridge: 'rgb(128, 0, 0)',
       }
     };
   }

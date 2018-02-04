@@ -17,10 +17,8 @@ class Tile {
         return "collapsible";
       case "w":
         return "warp";
-      case "h":
-        return "heavySwitch";
-      case "l":
-        return "lightSwitch";
+      case "a":
+        return "activator";
       case "b":
         return "bridge";
     }
