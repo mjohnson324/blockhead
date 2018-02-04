@@ -20,3 +20,22 @@ test('Tiles are assigned the correct type', () => {
   expect(startType).toEqual("start");
   expect(bridgeType).toEqual("bridge");
 });
+
+describe('Tile activation', () => {
+  let bridgeTile;
+  beforeEach(() => {
+    bridgeTile = new Tile({ x: 0, y: 0, type: "b", active: false });
+  })
+
+  test('Tiles default to active state', () => {
+    expect(tile.active).toBeTruthy();
+    expect(bridgeTile.active).toBeFalsy();
+  })
+
+  test('The active state of bridge tiles can be toggled', () => {
+    bridgeTile.toggleActive();
+    tile.toggleActive();
+    expect(bridgeTile.active).toBeTruthy();
+    expect(tile.active).toBeTruthy();
+  });
+});

@@ -3,6 +3,7 @@ class Tile {
     this.xPos = options.x;
     this.yPos = options.y;
     this.type = this.typeReference(options.type);
+    this.active = this.checkActiveStatus(options.active);
   }
 
   typeReference(type) {
@@ -21,6 +22,16 @@ class Tile {
         return "activator";
       case "b":
         return "bridge";
+    }
+  }
+
+  checkActiveStatus(status) {
+    return status === undefined ? true : status;
+  }
+
+  toggleActive() {
+    if (this.type === "bridge") {
+      this.active = !this.active;
     }
   }
 }
