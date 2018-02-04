@@ -146,10 +146,6 @@ class Display {
     this.ctx.fillText(`Moves: ${options.moves}`, 70, 155);
     this.ctx.fillText(`Falls: ${options.falls}`, 70, 190);
     this.ctx.fillText(`Time: ${options.time}`, 70, 225);
-    this.ctx.fillText(
-      "Thanks for playing! More levels will be added in the future",
-      50,
-      350);
     this.ctx.fillText("Press spacebar to start over", 50, 400);
   }
 }
