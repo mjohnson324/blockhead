@@ -4,8 +4,11 @@ class Sound {
     this.squareSound = document.getElementById("block-square");
     this.fallSound = document.getElementById("fall");
     this.completeLevelSound = document.getElementById("complete-level");
+    this.warpSound = document.getElementById("warp");
+    this.bridgeUpSound = document.getElementById("bridge-up");
+    this.bridgeDownSound = document.getElementById("bridge-down");
     this.gameMusic = document.getElementById("game-song");
-    this.menuMusic = document.getElementById("menu-song"); // Not yet in use
+    this.menuMusic = document.getElementById("menu-song");
 
     this.toggleMusic = this.toggleMusic.bind(this);
   }
@@ -39,12 +42,21 @@ class Sound {
       this.squareSound.play() : this.rectangleSound.play();
   }
 
+  playBridgeSound(tile) {
+    tile.active ?
+      this.bridgeUpSound.play() : this.bridgeDownSound.play();
+  }
+
   playFallSound() {
     this.fallSound.play();
   }
 
   playGoalSound() {
     this.completeLevelSound.play();
+  }
+
+  playWarpSound() {
+    this.warpSound.play();
   }
 }
 
