@@ -68,7 +68,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const Game = __webpack_require__(1);
-const PageButtons = __webpack_require__(20);
+const PageButtons = __webpack_require__(21);
 
 document.addEventListener("DOMContentLoaded", () => {
   const buttonActivation = new PageButtons();
@@ -84,12 +84,14 @@ document.addEventListener("DOMContentLoaded", () => {
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const LevelGenerator = __webpack_require__(2);
-const Block = __webpack_require__(4);
-const Display = __webpack_require__(5);
-const Sound = __webpack_require__(7);
+const Block = __webpack_require__(2);
+const Controls = __webpack_require__(3);
+const Display = __webpack_require__(4);
+const LevelGenerator = __webpack_require__(6);
 const Menu = __webpack_require__(8);
-const allLevels = __webpack_require__(9);
+const Sound = __webpack_require__(9);
+
+const allLevels = __webpack_require__(10);
 
 class Game {
   constructor(ctx, length) {
@@ -97,96 +99,50 @@ class Game {
     this.levels = new LevelGenerator(length, allLevels);
     this.block = new Block(length, { width: length, height: length });
     this.sound = new Sound();
+    this.controls = new Controls();
 
-    this.getMove = this.getMove.bind(this);
-    this.pauseButton = this.pauseButton.bind(this);
-    this.restartGame = this.restartGame.bind(this);
+    this.move = this.move.bind(this);
+    this.pause = this.pause.bind(this);
+    this.restart = this.restart.bind(this);
   }
 
   start() {
-    this.setState();
+    this.moves = 0;
+    this.falls = 0;
     this.sound.start();
     this.levels.constructFloor();
     this.block.setPosition(this.levels.currentStartPosition);
     this.timerId = setInterval(this.display.drawTime, 1000);
-    document.addEventListener("keydown", this.getMove);
-    document.addEventListener("keydown", this.pauseButton);
+    document.addEventListener("keydown", this.move);
+    document.addEventListener("keydown", this.pause);
     this.display.render(this.displayOptions());
     this.display.drawBlock(this.block);
   }
 
-  setState() {
-    this.state = {
-      moves: 0,
-      falls: 0,
-      pauseStatus: false,
-    };
+  restart(e) {
+    this.controls.restartGame(e, this);
   }
 
-  restartGame(e) {
-    switch(e.keyCode) {
-      case 32:
-        e.preventDefault();
-        this.levels.resetCurrentLevel();
-        this.start();
-        document.removeEventListener("keydown", this.restartGame);
-    }
-  }
-
-  getMove(e) {
+  move(e) {
     const arrowKeycodes = [37, 38, 39, 40];
     if (arrowKeycodes.includes(e.keyCode)) {
-      e.preventDefault();
-      switch (e.keyCode) {
-        case 40: // down arrow key
-          this.block.transformBlock(0, 1);
-          break;
-        case 38: // up arrow key
-          this.block.transformBlock(0, -1);
-          break;
-        case 37: // left arrow key
-          this.block.transformBlock(-1, 0);
-          break;
-        case 39: // right arrow key
-          this.block.transformBlock(1, 0);
-      }
-      this.state.moves += 1;
+      this.controls.getMove(e, this.block);
+      this.moves += 1;
       this.checkBlock();
     }
   }
 
-  pauseButton(e) {
-    switch(e.keyCode) {
-      case 13:
-      e.preventDefault();
-      if (this.state.pauseStatus === false) {
-        this.state.pauseStatus = true;
-        this.pauseGame();
-      } else {
-        this.state.pauseStatus = false;
-        this.resumeGame();
-      }
-    }
-  }
-
-  pauseGame() {
-    clearInterval(this.timerId);
-    document.removeEventListener("keydown", this.getMove);
-    this.display.drawPause();
-  }
-
-  resumeGame() {
-    this.display.render(this.displayOptions());
-    this.display.drawBlock(this.block);
-    document.addEventListener("keydown", this.getMove);
-    this.timerId = setInterval(this.display.drawTime, 1000);
+  pause(e) {
+    this.controls.pauseButton(e, this);
   }
 
   displayOptions() {
-    return { level: this.levels.constructedFloor,
-             levelNumber: this.levels.currentLevel,
-             moves: this.state.moves,
-             falls: this.state.falls };
+    return {
+      level: this.levels.constructedFloor,
+      levelNumber: this.levels.currentLevel,
+      moves: this.moves,
+      falls: this.falls,
+    };
   }
 
   checkBlock() {
@@ -221,21 +177,16 @@ class Game {
   }
 
   endGame() {
-    document.removeEventListener("keydown", this.getMove);
-    document.removeEventListener("keydown", this.pauseButton);
+    document.removeEventListener("keydown", this.move);
+    document.removeEventListener("keydown", this.pause);
     clearInterval(this.timerId);
     this.display.drawFinish(this.displayOptions());
-    document.addEventListener("keydown", this.restartGame);
+    document.addEventListener("keydown", this.restart);
   }
 
   checkBounds() {
-    const { levelData, currentLevel } = this.levels;
-    const { xPos, yPos } = this.block.position();
-    const { width, height } = this.block.dimensions();
-    const coordinates = [[xPos, yPos],
-      [xPos, yPos + height],
-      [xPos + width, yPos],
-      [xPos + width, yPos + height]];
+    const { currentLevel, levelData } = this.levels;
+    const coordinates = this.getCoordinates();
     if (this.display.tileMovesOffFloor(coordinates)) {
       this.resetLevel();
     } else if (levelData[currentLevel] !== undefined) {
@@ -245,9 +196,18 @@ class Game {
     }
   }
 
+  getCoordinates() {
+    const { xPos, yPos } = this.block.position();
+    const { width, height } = this.block.dimensions();
+    return [
+      [xPos + Math.floor(width / 4), yPos + Math.floor(height / 4)],
+      [xPos + Math.floor(width * 3 / 4), yPos + Math.floor(height * 3 / 4)],
+    ];
+  }
+
   resetLevel() {
-    document.removeEventListener("keydown", this.getMove);
-    this.state.falls += 1;
+    document.removeEventListener("keydown", this.move);
+    this.falls += 1;
     this.flashFailure();
   }
 
@@ -258,12 +218,8 @@ class Game {
     this.block.resetBlock(this.levels.currentStartPosition);
     setTimeout(() => {
       this.display.render(this.displayOptions());
-    }, 800);
-    setTimeout(() => {
       this.display.drawBlock(this.block);
-    }, 800);
-    setTimeout(() => {
-      document.addEventListener("keydown", this.getMove);
+      document.addEventListener("keydown", this.move);
     }, 800);
   }
 }
@@ -273,121 +229,6 @@ module.exports = Game;
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Tile = __webpack_require__(3);
-
-class LevelGenerator {
-  constructor(length, levels) {
-    this.currentLevel = 1;
-    this.length = length;
-    this.levelData = levels;
-
-    this.constructTileCoordinates = this.constructTileCoordinates.bind(this);
-  }
-
-  nextLevel() {
-    this.currentLevel += 1;
-  }
-
-  resetCurrentLevel() {
-    this.currentLevel = 1;
-  }
-
-  constructFloor() {
-    this.constructedFloor = this.generateLevel();
-    this.currentStartPosition = this.getStart(this.constructedFloor);
-  }
-
-  getStart(floor) {
-    for (var position in floor) {
-      let tile = floor[position];
-      if (tile.type === "start") {
-        return { xPos: tile.xPos, yPos: tile.yPos };
-      }
-    }
-  }
-
-  generateLevel() {
-    const level = this.levelData[this.currentLevel];
-    const startPosition = this.centerFloor(level.floorDimensions);
-    return this.setCoordinates(level.floorData, startPosition);
-  }
-
-  centerFloor(floorDimensions) { // Tiles are positioned relative to the
-    const canvasWidth = 900;     // position of the top-left tile on a floor.
-    const canvasHeight = 500;
-    const floorWidth = floorDimensions.xRange * this.length;
-    const floorHeight = floorDimensions.yRange * this.length;
-    const startCornerXPos = Math.floor((canvasWidth - floorWidth) / 2);
-    const startCornerYPos = Math.floor((canvasHeight - floorHeight) / 2);
-    return { xPos: startCornerXPos, yPos: startCornerYPos };
-  }
-
-  setCoordinates(floorData, startPosition) {
-    const newFloor = {};
-    floorData.forEach(tileData => {
-      let tileOptions = this.constructTileCoordinates(tileData, startPosition);
-      let tile = new Tile(tileOptions);
-      let tilePosition = `[${tile.xPos}, ${tile.yPos}]`;
-      newFloor[tilePosition] = tile;
-    });
-    return newFloor;
-  }
-
-  constructTileCoordinates(tileData, startPosition) {
-    const x = startPosition.xPos + this.length * tileData.x;
-    const y = startPosition.yPos + this.length * tileData.y;
-    return { x: x, y: y, type: tileData.type, };
-  }
-
-  lookupTile(position) {
-    const currentPosition = `[${position.xPos}, ${position.yPos}]`;
-    return this.constructedFloor[currentPosition];
-  }
-}
-
-module.exports = LevelGenerator;
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-class Tile {
-  constructor(options) {
-    this.xPos = options.x;
-    this.yPos = options.y;
-    this.type = this.typeReference(options.type);
-  }
-
-  typeReference(type) {
-    switch(type) {
-      case "n":
-        return "none";
-      case "s":
-        return "start";
-      case "g":
-        return "goal";
-      case "c":
-        return "collapsible";
-      case "w":
-        return "warp";
-      case "h":
-        return "heavySwitch";
-      case "l":
-        return "lightSwitch";
-      case "b":
-        return "bridge";
-    }
-  }
-}
-
-module.exports = Tile;
-
-
-/***/ }),
-/* 4 */
 /***/ (function(module, exports) {
 
 class Block {
@@ -490,10 +331,70 @@ module.exports = Block;
 
 
 /***/ }),
-/* 5 */
+/* 3 */
+/***/ (function(module, exports) {
+
+class Controls {
+  constructor() {
+    this.pauseStatus = false;
+  }
+
+  restartGame(e, game) {
+    if (e.keyCode === 32) {
+        e.preventDefault();
+        game.levels.resetCurrentLevel();
+        game.start();
+        document.removeEventListener("keydown", game.restart);
+    }
+  }
+
+  getMove(e, block) {
+    e.preventDefault();
+    switch (e.keyCode) {
+      case 40: // down arrow key
+        block.transformBlock(0, 1);
+        break;
+      case 38: // up arrow key
+        block.transformBlock(0, -1);
+        break;
+      case 37: // left arrow key
+        block.transformBlock(-1, 0);
+        break;
+      case 39: // right arrow key
+        block.transformBlock(1, 0);
+    }
+  }
+
+  pauseButton(e, game) {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      this.pauseStatus = !this.pauseStatus;
+      this.pauseStatus === true ? this.pauseGame(game) : this.resumeGame(game);
+    }
+  }
+
+  pauseGame(game) {
+    clearInterval(game.timerId);
+    document.removeEventListener("keydown", game.move);
+    game.display.drawPause();
+  }
+
+  resumeGame(game) {
+    game.display.render(game.displayOptions());
+    game.display.drawBlock(game.block);
+    document.addEventListener("keydown", game.move);
+    game.timerId = setInterval(game.display.drawTime, 1000);
+  }
+}
+
+module.exports = Controls;
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const GameClock = __webpack_require__(6);
+const GameClock = __webpack_require__(5);
 
 class Display {
   constructor(ctx, length) {
@@ -517,7 +418,11 @@ class Display {
       tileColors: {
         start: 'rgb(0, 255, 255)',
         goal: 'rgb(0, 255, 0)',
-        none: 'rgb(192, 192, 192)'
+        none: 'rgb(192, 192, 192)',
+        collapsible: 'rgb(255, 128, 0)',
+        warp: 'rgb(255, 255, 0)',
+        activator: 'rgb(255, 255, 255)',
+        bridge: 'rgb(128, 0, 0)',
       }
     };
   }
@@ -637,10 +542,6 @@ class Display {
     this.ctx.fillText(`Moves: ${options.moves}`, 70, 155);
     this.ctx.fillText(`Falls: ${options.falls}`, 70, 190);
     this.ctx.fillText(`Time: ${options.time}`, 70, 225);
-    this.ctx.fillText(
-      "Thanks for playing! More levels will be added in the future",
-      50,
-      350);
     this.ctx.fillText("Press spacebar to start over", 50, 400);
   }
 }
@@ -649,7 +550,7 @@ module.exports = Display;
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports) {
 
 class GameClock {
@@ -673,7 +574,156 @@ module.exports = GameClock;
 
 
 /***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Tile = __webpack_require__(7);
+
+class LevelGenerator {
+  constructor(length, levels) {
+    this.currentLevel = 1;
+    this.length = length;
+    this.levelData = levels;
+
+    this.constructTileCoordinates = this.constructTileCoordinates.bind(this);
+  }
+
+  nextLevel() {
+    this.currentLevel += 1;
+  }
+
+  resetCurrentLevel() {
+    this.currentLevel = 1;
+  }
+
+  constructFloor() {
+    this.constructedFloor = this.generateLevel();
+    this.currentStartPosition = this.getStart(this.constructedFloor);
+  }
+
+  getStart(floor) {
+    for (var position in floor) {
+      let tile = floor[position];
+      if (tile.type === "start") {
+        return { xPos: tile.xPos, yPos: tile.yPos };
+      }
+    }
+  }
+
+  generateLevel() {
+    const level = this.levelData[this.currentLevel];
+    const startPosition = this.centerFloor(level.floorDimensions);
+    return this.setCoordinates(level.floorData, startPosition);
+  }
+
+  centerFloor(floorDimensions) { // Tiles are positioned relative to the
+    const canvasWidth = 900;     // position of the top-left tile on a floor.
+    const canvasHeight = 500;
+    const floorWidth = floorDimensions.xRange * this.length;
+    const floorHeight = floorDimensions.yRange * this.length;
+    const startCornerXPos = Math.floor((canvasWidth - floorWidth) / 2);
+    const startCornerYPos = Math.floor((canvasHeight - floorHeight) / 2);
+    return { xPos: startCornerXPos, yPos: startCornerYPos };
+  }
+
+  setCoordinates(floorData, startPosition) {
+    const newFloor = {};
+    floorData.forEach(tileData => {
+      let tileOptions = this.constructTileCoordinates(tileData, startPosition);
+      let tile = new Tile(tileOptions);
+      let tilePosition = `[${tile.xPos}, ${tile.yPos}]`;
+      newFloor[tilePosition] = tile;
+    });
+    return newFloor;
+  }
+
+  constructTileCoordinates(tileData, startPosition) {
+    const x = startPosition.xPos + this.length * tileData.x;
+    const y = startPosition.yPos + this.length * tileData.y;
+    return { x: x, y: y, type: tileData.type, };
+  }
+
+  lookupTile(position) {
+    const currentPosition = `[${position.xPos}, ${position.yPos}]`;
+    return this.constructedFloor[currentPosition];
+  }
+}
+
+module.exports = LevelGenerator;
+
+
+/***/ }),
 /* 7 */
+/***/ (function(module, exports) {
+
+class Tile {
+  constructor(options) {
+    this.xPos = options.x;
+    this.yPos = options.y;
+    this.type = this.typeReference(options.type);
+  }
+
+  typeReference(type) {
+    switch(type) {
+      case "n":
+        return "none";
+      case "s":
+        return "start";
+      case "g":
+        return "goal";
+      case "c":
+        return "collapsible";
+      case "w":
+        return "warp";
+      case "a":
+        return "activator";
+      case "b":
+        return "bridge";
+    }
+  }
+}
+
+module.exports = Tile;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+class Menu {
+  constructor(context) {
+    this.blockSize = "medium";
+    this.canvas = document.getElementById("blockhead");
+    this.context = context;
+  }
+
+  activateMenu() {
+
+    this.canvas.addEventListenenr('click', this.startGame);
+    this.canvas.addEventListener('click', this.beginTutorial);
+    this.canvas.addEventListener('click', this.alterOptions);
+  }
+
+  startGame(e) {
+    e.preventDefault();
+  }
+
+  beginTutorial(e) {
+    e.preventDefault(e);
+
+  }
+
+  alterBlockSize() {
+    e.preventDefault(e);
+
+  }
+}
+
+module.exports = Menu;
+
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports) {
 
 class Sound {
@@ -730,55 +780,19 @@ module.exports = Sound;
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-class Menu {
-  constructor(context) {
-    this.blockSize = "medium";
-    this.canvas = document.getElementById("blockhead");
-    this.context = context;
-  }
-
-  activateMenu() {
-
-    this.canvas.addEventListenenr('click', this.startGame);
-    this.canvas.addEventListener('click', this.beginTutorial);
-    this.canvas.addEventListener('click', this.alterOptions);
-  }
-
-  startGame(e) {
-    e.preventDefault();
-  }
-
-  beginTutorial(e) {
-    e.preventDefault(e);
-
-  }
-
-  alterBlockSize() {
-    e.preventDefault(e);
-
-  }
-}
-
-module.exports = Menu;
-
-
-/***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const tutorial = __webpack_require__(10);
-const levelOne = __webpack_require__(11);
-const levelTwo = __webpack_require__(12);
-const levelThree = __webpack_require__(13);
-const levelFour = __webpack_require__(14);
-const levelFive = __webpack_require__(15);
-const levelSix = __webpack_require__(16);
-const levelSeven = __webpack_require__(17);
-const levelEight = __webpack_require__(18);
-const levelNine = __webpack_require__(19);
+const tutorial = __webpack_require__(11);
+const levelOne = __webpack_require__(12);
+const levelTwo = __webpack_require__(13);
+const levelThree = __webpack_require__(14);
+const levelFour = __webpack_require__(15);
+const levelFive = __webpack_require__(16);
+const levelSix = __webpack_require__(17);
+const levelSeven = __webpack_require__(18);
+const levelEight = __webpack_require__(19);
+const levelNine = __webpack_require__(20);
 
 module.exports = {
   tutorial: tutorial,
@@ -796,7 +810,7 @@ module.exports = {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 const tutorial = {
@@ -834,7 +848,7 @@ module.exports = tutorial;
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 const levelOne = {
@@ -857,7 +871,7 @@ module.exports = levelOne;
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 const levelTwo = {
@@ -905,7 +919,7 @@ module.exports = levelTwo;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 const levelThree = {
@@ -966,7 +980,7 @@ module.exports = levelThree;
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 const levelFour = {
@@ -1029,7 +1043,7 @@ module.exports = levelFour;
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports) {
 
 const levelFive = {
@@ -1108,7 +1122,7 @@ module.exports = levelFive;
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports) {
 
 const levelSix = {
@@ -1121,7 +1135,7 @@ const levelSix = {
     { x: 0, y: 9, type: "n" },
     { x: 1, y: 1, type: "n" },
     { x: 1, y: 2, type: "n" },
-    { x: 1, y: 3, type: "l" },
+    { x: 1, y: 3, type: "n" },
     { x: 1, y: 4, type: "n" },
     { x: 1, y: 7, type: "n" },
     { x: 1, y: 9, type: "n" },
@@ -1134,7 +1148,7 @@ const levelSix = {
     { x: 2, y: 9, type: "n" },
     { x: 3, y: 1, type: "n" },
     { x: 3, y: 2, type: "n" },
-    { x: 3, y: 3, type: "l" },
+    { x: 3, y: 3, type: "n" },
     { x: 3, y: 4, type: "n" },
     { x: 3, y: 5, type: "n" },
     { x: 3, y: 8, type: "n" },
@@ -1149,7 +1163,7 @@ const levelSix = {
     { x: 5, y: 5, type: "n" },
     { x: 5, y: 8, type: "b" },
     { x: 6, y: 1, type: "b" },
-    { x: 6, y: 5, type: "h" },
+    { x: 6, y: 5, type: "a" },
     { x: 6, y: 8, type: "b" },
     { x: 7, y: 1, type: "n" },
     { x: 7, y: 5, type: "n" },
@@ -1157,7 +1171,7 @@ const levelSix = {
     { x: 8, y: 1, type: "n" },
     { x: 8, y: 5, type: "b" },
     { x: 8, y: 8, type: "n" },
-    { x: 9, y: 1, type: "h" },
+    { x: 9, y: 1, type: "a" },
     { x: 9, y: 5, type: "b" },
     { x: 9, y: 8, type: "n" },
     { x: 10, y: 1, type: "n" },
@@ -1183,7 +1197,7 @@ const levelSix = {
     { x: 13, y: 7, type: "n" },
     { x: 14, y: 0, type: "n" },
     { x: 14, y: 2, type: "n" },
-    { x: 14, y: 6, type: "h" },
+    { x: 14, y: 6, type: "a" },
     { x: 14, y: 7, type: "n" },
     { x: 15, y: 0, type: "n" },
     { x: 15, y: 1, type: "n" },
@@ -1193,17 +1207,16 @@ const levelSix = {
 
 module.exports = levelSix;
 
-// heavySwitch [9, 1] toggles bridges [5-1, 6-1]
-// heavySwitch [6, 5] toggles bridges [8-5, 9-5] and [5-8, 6-8]
-// heavySwitch [14, 6] toggles bridges [5-8, 6-8]
-// lightSwitch [3, 3] and [1, 3] toggle bridges [8-5, 9-5]
-// bridges [5-1, 6-1] default on
+// activator [9, 1] toggles bridges [5-1, 6-1]
+// activator [6, 5] toggles bridges [8-5, 9-5] and [5-8, 6-8]
+// activator [14, 6] toggles bridges [5-8, 6-8]
+// bridges [5-1, 6-1] default off
 // bridges [8-5, 9-5] default off
-// bridges [5-8, 6-8] default on
+// bridges [5-8, 6-8] default off
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports) {
 
 const levelSeven = {
@@ -1298,7 +1311,7 @@ module.exports = levelSeven;
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 const levelEight = {
@@ -1321,9 +1334,9 @@ const levelEight = {
     { x: 4, y: 4, type: "n" },
     { x: 4, y: 5, type: "n" },
     { x: 4, y: 6, type: "n" },
-    { x: 5, y: 1, type: "h" },
+    { x: 5, y: 1, type: "a" },
     { x: 5, y: 5, type: "n" },
-    { x: 6, y: 1, type: "h" },
+    { x: 6, y: 1, type: "a" },
     { x: 6, y: 5, type: "n" },
     { x: 7, y: 1, type: "n" },
     { x: 7, y: 5, type: "n" },
@@ -1356,45 +1369,40 @@ module.exports = levelEight;
 // warp: [2, 1], warps to: [0, 1], [2, 1]
 // warp: [0, 1], warps to: [1, 0], [2, 1]
 // warp: [1, 0], warps to: [5, 1], [7, 1]
-// heavySwitch [5, 1] toggles bridges [3-1, 4-1]
-// heavySwitch [6, 1] toggles bridges [8-1, 9-1]
+// activator [5, 1] toggles bridges [3-1, 4-1]
+// activator [6, 1] toggles bridges [8-1, 9-1]
 // bridges both off by default
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports) {
 
 const levelNine = {
   floorDimensions: { xRange: 15, yRange: 10 },
   floorData: [
     { x: 4, y: 8, type: "s" },
-    { x: 8, y: 3, type: "g" },
-    { x: 0, y: 3, type: "b" },
+    { x: 7, y: 2, type: "g" },
+    { x: 0, y: 2, type: "b" },
+    { x: 0, y: 3, type: "n" },
     { x: 0, y: 4, type: "n" },
-    { x: 0, y: 5, type: "l" },
+    { x: 0, y: 5, type: "n" },
     { x: 0, y: 6, type: "n" },
     { x: 1, y: 0, type: "n" },
     { x: 1, y: 1, type: "n" },
     { x: 1, y: 2, type: "n" },
-    { x: 1, y: 3, type: "n" },
     { x: 1, y: 6, type: "b" },
     { x: 2, y: 0, type: "n" },
-    { x: 2, y: 1, type: "h" },
+    { x: 2, y: 1, type: "n" },
     { x: 2, y: 2, type: "n" },
-    { x: 2, y: 3, type: "n" },
     { x: 2, y: 6, type: "b" },
     { x: 3, y: 0, type: "n" },
     { x: 3, y: 1, type: "n" },
     { x: 3, y: 2, type: "n" },
-    { x: 3, y: 3, type: "n" },
     { x: 3, y: 6, type: "n" },
     { x: 3, y: 7, type: "n" },
     { x: 3, y: 8, type: "n" },
     { x: 3, y: 9, type: "n" },
-    { x: 4, y: 3, type: "b" },
-    { x: 4, y: 4, type: "n" },
-    { x: 4, y: 5, type: "n" },
     { x: 4, y: 6, type: "n" },
     { x: 4, y: 7, type: "n" },
     { x: 4, y: 9, type: "n" },
@@ -1406,21 +1414,21 @@ const levelNine = {
     { x: 6, y: 7, type: "c" },
     { x: 6, y: 8, type: "c" },
     { x: 6, y: 9, type: "n" },
-    { x: 7, y: 2, type: "n" },
-    { x: 7, y: 3, type: "n" },
+    { x: 7, y: 3, type: "b" },
     { x: 7, y: 4, type: "n" },
     { x: 7, y: 5, type: "c" },
     { x: 7, y: 6, type: "c" },
     { x: 7, y: 7, type: "c" },
     { x: 7, y: 8, type: "c" },
     { x: 7, y: 9, type: "n" },
-    { x: 8, y: 2, type: "n" },
+    { x: 8, y: 2, type: "b" },
+    { x: 8, y: 3, type: "b" },
     { x: 8, y: 4, type: "n" },
     { x: 8, y: 5, type: "c" },
     { x: 8, y: 6, type: "c" },
     { x: 8, y: 7, type: "c" },
     { x: 8, y: 8, type: "c" },
-    { x: 8, y: 9, type: "b" },
+    { x: 8, y: 9, type: "a" },
     { x: 9, y: 2, type: "n" },
     { x: 9, y: 3, type: "n" },
     { x: 9, y: 4, type: "n" },
@@ -1444,7 +1452,7 @@ const levelNine = {
     { x: 12, y: 7, type: "w" },
     { x: 12, y: 8, type: "n" },
     { x: 13, y: 0, type: "n" },
-    { x: 13, y: 1, type: "l" },
+    { x: 13, y: 1, type: "a" },
     { x: 13, y: 2, type: "n" },
     { x: 13, y: 3, type: "n" },
     { x: 13, y: 6, type: "n" },
@@ -1453,7 +1461,7 @@ const levelNine = {
     { x: 14, y: 0, type: "n" },
     { x: 14, y: 1, type: "n" },
     { x: 14, y: 2, type: "n" },
-    { x: 14, y: 3, type: "l" },
+    { x: 14, y: 3, type: "a" },
     { x: 14, y: 4, type: "n" },
     { x: 14, y: 5, type: "n" },
     { x: 14, y: 6, type: "b" },
@@ -1462,22 +1470,16 @@ const levelNine = {
 
 module.exports = levelNine;
 
-// refer to bloxors level 23
-// warp [12, 7] warps to [12, 7], [2, 2]
-// lightSwitch [14, 3] toggles ?
-// lightSwitch [13, 1] toggles bridges [1-6 , 2-6] and bridge [8-9]
-// lightSwitch [0, 5] toggles bridges [1-6 , 2-6] and bridge [0, 3]
-// heavySwitch [2, 1] toggles bridge [4, 3]
-// bridge [14-6] default is ?
-// bridges [10-2, 11-2] default is ?
-// bridge [8, 9] default is on
-// bridges [1-6, 2-6] default is ?
-// bridge [0, 3] default is off
-// bridge [4, 3] default is off
+// warp [12, 7] warps to [12, 7], [2, 1]
+// activator [8, 9] toggles bridges 1-6, 2-6 & 0-2
+// activator [13, 1] toggles bridges 10-2, 11-2, 8-2. 8-3 & 7-3
+// activator [14, 3] toggles bridge 14-6
+// bridges 0-2, 1-6, 2-6, 7-3, 8-3, 8-2, 14-6 default off
+// bridge 10-2, 11-2 default on
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 class PageButtons {
