@@ -20,6 +20,10 @@ class Game {
     this.restart = this.restart.bind(this);
   }
 
+  startMenu() {
+    
+  }
+
   start() {
     this.moves = 0;
     this.falls = 0;

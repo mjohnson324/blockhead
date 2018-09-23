@@ -65,11 +65,8 @@ class Display {
     this.ctx.fillStyle = this.colors.textColor;
     this.ctx.fillText('Blockhead', 400, 200);
     this.ctx.font = this.fonts.mediumFontSize;
-    this.ctx.fillStyle = 'red';
-    this.ctx.fillText('Options (coming soon!)', 350, 300);
-    this.ctx.fillText('Tutorial (coming soon!)', 350, 350);
-    this.ctx.fillStyle = this.colors.textColor;
     this.ctx.fillText('Start', 300, 250);
+    this.ctx.fillText('Directions', 300, 300);
   }
 
   stringifyTime() {
