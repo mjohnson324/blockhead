@@ -3,59 +3,40 @@
   <head>
     <meta charset="utf-8">
     <title>Blockhead: A Canvas HTML5 Game</title>
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/my-logo.ico" />
     <link href="https://fonts.googleapis.com/css?family=Russo+One&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/CSS/output.css"/>
+    <link rel="stylesheet" href="assets/CSS/main.css" />
     <script src="https://kit.fontawesome.com/7d86ae8635.js"></script>
   </head>
-  <audio id="fall" src="assets/Sounds/Effects/lrsf-explode-3-fall.wav"></audio>
-  <audio id="block-rectangle" src="assets/Sounds/Effects/lrsf-menu-nav-3-rec.wav"></audio>
-  <audio id="block-square" src="assets/Sounds/Effects/lrsf-menu-nav-0-square.wav"></audio>
-  <audio id="complete-level" src="assets/Sounds/Effects/lrsf-collect-point-1-comp-lev.wav"></audio>
-  <audio id="warp" src="assets/Sounds/Effects/lrsf-pickup-2-warp.wav"></audio>
-  <audio id="bridge-down" src="assets/Sounds/Effects/lrsf-explode-0-bridgeDown.wav"></audio>
-  <audio id="bridge-up" src="assets/Sounds/Effects/lrsf-explode-1-bridgeUp.wav"></audio>
-  <audio id="game-song" src="assets/Sounds/Music/undertale-09.mp3"></audio>
-  <audio id="menu-song" src="assets/Sounds/Music/undertale-15.mp3"></audio>
   <body>
-  <i class="fas fa-volume-up"></i>
-  <i class="fas fa-volume-mute"></i>
-    <nav>
+    <header>
+      <a href="http://michael-w-johnson.com/"><img src="assets/images/Logo.svg" alt="my portfolio page" /></a>
+      <h1>Blockhead:</h1>
+      <h2>a game by Michael Johnson</h2>
+    </header>
+    <button type="button" id="music"><i id="music-icon"></i></button>
+    <!-- <div class="controls">
+      <button></button>
+      <button></button>
+      <button></button>
+      <button></button>
+    </div> -->
+    <div id="canvas-container"><canvas id="blockhead"></canvas></div>
+    <footer>
       <a href="https://github.com/mjohnson324/Blockhead"><i class="fab fa-github" /></a>
       <a href="https://www.linkedin.com/in/mwjohnson324/"><i class="fab fa-linkedin" /></a>
-      <a href="http://michael-w-johnson.com/"><i class="fas fa-file-code" /></a>
-    </nav>
-    <h1>Blockhead:</h1>
-    <h2>a game by Michael Johnson</h2>
-    <div class="key">
-      <label>Key:</label>
-      <img src='assets/Images/key.png'></img>
-    </div>
-    <button type="button" class="on" id="music"></button>
-    <button type="button" id="direct-button">Directions</button>
-    <canvas id="blockhead"></canvas>
-    <section class="hidden" id="direct">
-      <ol>
-        <li>
-          <h2>Click to Display</h2>
-        </li>
-      <li>
-        <button id="move-button">How to move</button>
-        <img class="hidden" id="move" src='assets/Images/arrow-keys.png'></img>
-      </li>
-      <li>
-        <button id="transform-button">The block transforms as you move</button>
-        <img class="hidden" id="transform" src='assets/Images/movement.gif'></img>
-      </li>
-      <li>
-        <button id="falling-button">Don't fall off the edge</button>
-        <img class="hidden" id="falling" src='assets/Images/death.gif'></img>
-      </li>
-      <li>
-        <button id="goal-button">Reach the goal</button>
-        <img class="hidden" id="goal" src='assets/Images/goal.gif'></img>
-      </li>
-    </ol>
-    </section>
+      <p id="copyright-desktop">Copyright 201, Michael W Johnson</p>
+      <p id="copyright-mobile">&copy;</p>
+    </footer>
+    <audio id="fall" src="assets/Sounds/Effects/lrsf-explode-3-fall.wav"></audio>
+    <audio id="block-rectangle" src="assets/Sounds/Effects/lrsf-menu-nav-3-rec.wav"></audio>
+    <audio id="block-square" src="assets/Sounds/Effects/lrsf-menu-nav-0-square.wav"></audio>
+    <audio id="complete-level" src="assets/Sounds/Effects/lrsf-collect-point-1-comp-lev.wav"></audio>
+    <audio id="warp" src="assets/Sounds/Effects/lrsf-pickup-2-warp.wav"></audio>
+    <audio id="bridge-down" src="assets/Sounds/Effects/lrsf-explode-0-bridgeDown.wav"></audio>
+    <audio id="bridge-up" src="assets/Sounds/Effects/lrsf-explode-1-bridgeUp.wav"></audio>
+    <audio id="game-song" src="assets/Sounds/Music/undertale-09.mp3"></audio>
+    <audio id="menu-song" src="assets/Sounds/Music/undertale-15.mp3"></audio>
     <script src="assets/JavaScript/bundle/bundle.js"></script>
   </body>
 </html>

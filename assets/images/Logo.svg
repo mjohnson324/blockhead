@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <clipPath id="clip-Logo">
+      <rect width="256" height="256"/>
+    </clipPath>
+  </defs>
+  <g id="Logo" clip-path="url(#clip-Logo)">
+    <rect width="256" height="256" fill="#fff"/>
+    <g id="Path_1" data-name="Path 1" transform="translate(16 43.628)" fill="#fff">
+      <path d="M 208.3519439697266 211.872314453125 L 15.90643882751465 211.872314453125 L 15.90643882751465 -5.54719877243042 L 112.0021896362305 91.10337066650391 L 112.3576049804688 91.46083831787109 L 112.712158203125 91.10253143310547 L 208.3519439697266 -5.543163776397705 L 208.3519439697266 211.872314453125 Z" stroke="none"/>
+      <path d="M 16.40643310546875 -4.335174560546875 L 16.40643310546875 211.372314453125 L 207.8519439697266 211.372314453125 L 207.8519439697266 -4.327056884765625 L 113.0675811767578 91.45423126220703 L 112.3584365844727 92.17081451416016 L 111.6476364135742 91.45589447021484 L 16.40643310546875 -4.335174560546875 M 15.40643310546875 -6.759246826171875 L 112.3567733764648 90.75083923339844 L 208.8519439697266 -6.759246826171875 L 208.8519439697266 212.372314453125 L 15.40643310546875 212.372314453125 L 15.40643310546875 -6.759246826171875 Z" stroke="none" fill="#707070"/>
+    </g>
+    <g id="Rectangle_1" data-name="Rectangle 1" fill="#00234b" stroke="#00234b" stroke-width="1">
+      <rect width="32" height="256" stroke="none"/>
+      <rect x="0.5" y="0.5" width="31" height="255" fill="none"/>
+    </g>
+    <g id="Rectangle_2" data-name="Rectangle 2" transform="translate(224)" fill="#00234b" stroke="#00234b" stroke-width="1">
+      <rect width="32" height="256" stroke="none"/>
+      <rect x="0.5" y="0.5" width="31" height="255" fill="none"/>
+    </g>
+    <g id="Rectangle_3" data-name="Rectangle 3" transform="translate(9.48 22.308) rotate(-45)" fill="#00234b" stroke="#00234b" stroke-width="1">
+      <rect width="32" height="139" stroke="none"/>
+      <rect x="0.5" y="0.5" width="31" height="138" fill="none"/>
+    </g>
+    <g id="Rectangle_4" data-name="Rectangle 4" transform="translate(223.573 0.125) rotate(45)" fill="#00234b" stroke="#00234b" stroke-width="1">
+      <rect width="32" height="167" stroke="none"/>
+      <rect x="0.5" y="0.5" width="31" height="166" fill="none"/>
+    </g>
+    <g id="Ellipse_1" data-name="Ellipse 1" transform="translate(39 124)" fill="#00234b" stroke="#00234b" stroke-width="1">
+      <circle cx="14.5" cy="14.5" r="14.5" stroke="none"/>
+      <circle cx="14.5" cy="14.5" r="14" fill="none"/>
+    </g>
+    <g id="Ellipse_2" data-name="Ellipse 2" transform="translate(188 124)" fill="#00234b" stroke="#00234b" stroke-width="1">
+      <circle cx="14.5" cy="14.5" r="14.5" stroke="none"/>
+      <circle cx="14.5" cy="14.5" r="14" fill="none"/>
+    </g>
+    <g id="Rectangle_6" data-name="Rectangle 6" transform="translate(149 198)" fill="#fff" stroke="#00234b" stroke-width="4">
+      <rect width="39" height="46" stroke="none"/>
+      <rect x="2" y="2" width="35" height="42" fill="none"/>
+    </g>
+    <g id="Ellipse_3" data-name="Ellipse 3" transform="translate(149 234)" fill="#fff" stroke="#00234b" stroke-width="4">
+      <ellipse cx="19.5" cy="9" rx="19.5" ry="9" stroke="none"/>
+      <ellipse cx="19.5" cy="9" rx="17.5" ry="7" fill="none"/>
+    </g>
+    <g id="Rectangle_7" data-name="Rectangle 7" transform="translate(153 234)" fill="#fff" stroke="#fff" stroke-width="1">
+      <rect width="31" height="9" stroke="none"/>
+      <rect x="0.5" y="0.5" width="30" height="8" fill="none"/>
+    </g>
+    <line id="Line_3" data-name="Line 3" y2="38" transform="translate(168.5 200.5)" fill="none" stroke="#00234b" stroke-width="4"/>
+    <g id="Rectangle_5" data-name="Rectangle 5" transform="translate(68 192)" fill="#00234b" stroke="#00234b" stroke-linejoin="round" stroke-width="3">
+      <rect width="120" height="9" stroke="none"/>
+      <rect x="1.5" y="1.5" width="117" height="6" fill="none"/>
+    </g>
+  </g>
+</svg>
