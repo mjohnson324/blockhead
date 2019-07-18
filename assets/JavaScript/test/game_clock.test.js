@@ -1,4 +1,4 @@
-/* global test expect require */
+/* global test expect */
 
 const GameClock = require("../game_objects/clock");
 

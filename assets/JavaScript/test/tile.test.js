@@ -1,4 +1,4 @@
-/* global beforeEach test describe expect require */
+/* global beforeEach test describe expect */
 
 const Tile = require("../game_objects/tile");
 

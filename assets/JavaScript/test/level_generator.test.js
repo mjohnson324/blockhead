@@ -1,4 +1,4 @@
-/* global test describe expect require */
+/* global test describe expect */
 
 const LevelGenerator = require("../game_objects/level_generator");
 const Tile = require("../game_objects/tile");

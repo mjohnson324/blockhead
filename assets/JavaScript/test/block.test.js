@@ -1,4 +1,4 @@
-/* global beforeEach test describe expect require */
+/* global beforeEach test describe expect */
 
 const Block = require("../game_objects/block");
 // The numbers associated with the block width and height are arbitrary.
