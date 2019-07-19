@@ -1,33 +1,9 @@
 class Block {
-    constructor(length, dimensions) {
-        this.length = length;
-        this.width = dimensions.width;
-        this.height = dimensions.height;
+    constructor(width, height) {
+        this.width = width;
+        this.height = height;
         this.xPos = undefined;
         this.yPos = undefined;
-    }
-
-    dimensions() {
-        return {
-            width: this.width,
-            height: this.height,
-        };
-    }
-
-    position() {
-        return {
-            xPos: this.xPos,
-            yPos: this.yPos
-        };
-    }
-
-    properties() {
-        return {
-            xPos: this.xPos,
-            yPos: this.yPos,
-            width: this.width,
-            height: this.height
-        };
     }
 
     setPosition(coordinates) {
@@ -35,22 +11,16 @@ class Block {
         this.yPos = coordinates.yPos;
     }
 
-    resetBlock(startPosition) {
-        this.width = this.length;
-        this.height = this.length;
+    resetBlock(length, startPosition) {
+        this.width = length;
+        this.height = length;
         this.xPos = startPosition.xPos;
         this.yPos = startPosition.yPos;
     }
 
-    // To reduce information which must be tracked by the game state,
-    // Length is kept as a block attribute. This is because length is a
-    // constant dictating the size of each tile, and the block always
-    // moves a discrete distance (1 or 2 tiles). dx and dy therefore
-    // represent discrete tile steps and are multiplied by length to account
-    // for varying tile sizes set by the player.
     changePosition(dx, dy) {
-        this.xPos += dx * this.length;
-        this.yPos += dy * this.length;
+        this.xPos += dx;
+        this.yPos += dy;
     }
 
     transformBlock(x, y) {
