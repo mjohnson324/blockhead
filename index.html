@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
     <title>Blockhead: A Canvas HTML5 Game</title>
-    <link rel="shortcut icon" type="image/x-icon" href="assets/images/my-logo.ico" />
+    <meta charset="utf-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link href="https://fonts.googleapis.com/css?family=Russo+One&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/my-logo.ico" />
     <link rel="stylesheet" href="assets/CSS/main.css" />
     <script src="https://kit.fontawesome.com/7d86ae8635.js"></script>
   </head>
   <body>
     <header>
-      <a href="http://michael-w-johnson.com/"><img src="assets/images/Logo.svg" alt="my portfolio page" /></a>
+      <a id="logo" href="http://michael-w-johnson.com/"><img src="assets/images/logo.png" alt="my portfolio page" /></a>
       <h1>Blockhead:</h1>
       <h2>a game by Michael Johnson</h2>
     </header>
-    <button type="button" id="music"><i id="music-icon"></i></button>
+    <button type="button" id="music"><i id="music-icon" class="fas fa-volume-mute fa-2x"></i></button>
     <!-- <div class="controls">
       <button></button>
       <button></button>
@@ -22,21 +23,21 @@
       <button></button>
     </div> -->
     <div id="canvas-container"><canvas id="blockhead"></canvas></div>
-    <footer>
-      <a href="https://github.com/mjohnson324/Blockhead"><i class="fab fa-github" /></a>
-      <a href="https://www.linkedin.com/in/mwjohnson324/"><i class="fab fa-linkedin" /></a>
-      <p id="copyright-desktop">Copyright 201, Michael W Johnson</p>
+    <footer id="footer">
+      <a href="https://github.com/mjohnson324/Blockhead"><i class="fab fa-github fa-2x"></i></a>
+      <a href="https://www.linkedin.com/in/mwjohnson324/"><i class="fab fa-linkedin fa-2x"></i></a>
+      <p id="copyright-desktop">Copyright 2018, Michael W Johnson</p>
       <p id="copyright-mobile">&copy;</p>
     </footer>
     <audio id="fall" src="assets/Sounds/Effects/lrsf-explode-3-fall.wav"></audio>
     <audio id="block-rectangle" src="assets/Sounds/Effects/lrsf-menu-nav-3-rec.wav"></audio>
     <audio id="block-square" src="assets/Sounds/Effects/lrsf-menu-nav-0-square.wav"></audio>
     <audio id="complete-level" src="assets/Sounds/Effects/lrsf-collect-point-1-comp-lev.wav"></audio>
-    <audio id="warp" src="assets/Sounds/Effects/lrsf-pickup-2-warp.wav"></audio>
-    <audio id="bridge-down" src="assets/Sounds/Effects/lrsf-explode-0-bridgeDown.wav"></audio>
-    <audio id="bridge-up" src="assets/Sounds/Effects/lrsf-explode-1-bridgeUp.wav"></audio>
+    <audio id="warp" src="assets/Sounds/Effects/lsrf-pickup-2-warp.wav"></audio>
+    <audio id="bridge-down" src="assets/Sounds/Effects/lsrf-explode-0-bridgeDown.wav"></audio>
+    <audio id="bridge-up" src="assets/Sounds/Effects/lsrf-explode-1-bridgeUp.wav"></audio>
     <audio id="game-song" src="assets/Sounds/Music/undertale-09.mp3"></audio>
     <audio id="menu-song" src="assets/Sounds/Music/undertale-15.mp3"></audio>
-    <script src="assets/JavaScript/bundle/bundle.js"></script>
+    <!-- <script src="assets/JavaScript/bundle/bundle.js"></script> -->
   </body>
 </html>
