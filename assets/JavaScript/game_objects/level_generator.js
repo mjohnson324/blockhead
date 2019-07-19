@@ -1,10 +1,11 @@
 const Tile = require("./tile");
+const allLevels = require("../levels/all_levels");
 
 class LevelGenerator {
-    constructor(length, levels) {
+    constructor(length) {
         this.currentLevel = 1;
         this.length = length;
-        this.levelData = levels;
+        this.levelData = allLevels;
 
         this.constructTileCoordinates = this.constructTileCoordinates.bind(this);
     }
