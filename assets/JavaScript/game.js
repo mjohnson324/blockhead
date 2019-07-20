@@ -18,23 +18,25 @@ class Game {
         this.display = new Display(ctx);
         this.levels = new LevelGenerator();
         this.block = new Block(length, length);
-        // this.menu = new Menu(this.display);
+        this.menu = new Menu(this.display, boardSize);
 
         this.move = this.move.bind(this);
         this.pause = this.pause.bind(this);
         this.restart = this.restart.bind(this);
+        this.start = this.start.bind(this);
     }
 
-    // start() {
-    //     this.display.drawStart();
-    //     document.addEventListener("keydown", this.StartMenu);
-    // }
+    start() {
+        this.display.drawStart();
+        const board = document.getElementById("blockhead");
+        board.addEventListener("onclick", this.startMenu);
+    }
 
-    // startMenu() {
-    //     GameMusic.startMenu();
-    // }
-
-    startGame() {
+    startGame(e) {
+        e.preventDefault();
+        this.menu.removeMenuButton("start-button", this.startGame);
+        this.menu.removeMenuButton("tutorial-button", this.startTutorial);
+        this.menu.removeMenuButton("controls-button", this.showControls);
         GameMusic.startGame();
         this.levels.constructFloor(this.length, this.boardSize);
         this.block.setPosition(this.levels.currentStartPosition);
@@ -45,10 +47,34 @@ class Game {
         this.display.drawBlock(this.block);
     }
 
+    // startTutorial(e) {
+    //     e.preventDefault();
+    //     this.menu.removeMenuButton("start-button", this.startGame);
+    //     this.menu.removeMenuButton("tutorial-button", this.startTutorial);
+    //     this.menu.removeMenuButton("controls-button", this.showControls);
+    //     GameMusic.startMenu();
+    // }
+
+    startMenu(e) {
+        e.preventDefault();
+        const board = document.getElementById("blockhead");
+        this.menu.start(this.display, this, this.boardSize);
+        GameMusic.startMenu();
+        board.removeEventListener("onclick", this.startMenu);
+    }
+
+    redrawMenu(e) {
+        e.preventDefault();
+        const backButton = document.getElementById("back-button");
+        if (backButton !== null) {
+            backButton.removeEventListener("onclick", this.reDrawMenu);
+            backButton.parentNode.removeChild(backButton);
+        }
+        this.menu.start(this.display, this, this.boardSize);
+    }
+
     restart(e) {
         controls.restartGame(e, this);
-        this.moves = 0;
-        this.falls = 0;
     }
 
     move(e) {

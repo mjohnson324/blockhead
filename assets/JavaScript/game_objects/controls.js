@@ -39,6 +39,8 @@ function getMove(e, block, length) {
 function restartGame(e, game) {
     if (e.keyCode === 32) {
         e.preventDefault();
+        game.moves = 0;
+        game.falls = 0;
         game.levels.resetCurrentLevel();
         game.startGame();
         document.removeEventListener("keydown", game.restart);

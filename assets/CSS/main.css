@@ -72,6 +72,31 @@ button {
     width: 100%;
 }
 
+#start-button, #tutorial-button, #controls-button, #back-button {
+    position: relative;
+    font-size: 30px;
+}
+
+#back-button {
+    right: 10%;
+    top: 10%;
+}
+
+#start-button {
+    right: 50%;
+    top: 50%;
+}
+
+#tutorial-button {
+    right: 50%;
+    top: 62%;
+}
+
+#controls-button {
+    right: 50%;
+    top: 75%;
+}
+
 #footer {
     position: absolute;
     left: 0;

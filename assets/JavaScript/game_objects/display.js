@@ -40,13 +40,13 @@ class Display {
         this.drawTime = this.drawTime.bind(this);
     }
 
-    // drawStart(options) {
-    //     const { width, height } = options.boardSize
-    //     this.ctx.fillStyle = colors.backgroundColor;
-    //     this.ctx.font = fonts.largeFontSize;
-    //     this.ctx.fillRect(0, 0, width, height);
-    //     this.ctx.fillText("Click anywhere to begin", width / 2, height / 2);
-    // }
+    drawStart(options) {
+        const { width, height } = options.boardSize;
+        this.ctx.fillStyle = colors.backgroundColor;
+        this.ctx.font = fonts.largeFontSize;
+        this.ctx.fillRect(0, 0, width, height);
+        this.ctx.fillText("Click anywhere to begin", width / 2, height / 2);
+    }
 
     render(options) {
         const { width, height } = options.boardSize;
@@ -71,15 +71,27 @@ class Display {
         }
     }
 
-    // drawMenu(options) {
-    //     const { width, height } = options.boardSize;
-    //     this.ctx.font = fonts.largeFontSize;
-    //     this.ctx.fillStyle = colors.textColor;
-    //     this.ctx.fillText("Blockhead", width / 2, height / 3);
-    //     this.ctx.font = fonts.mediumFontSize;
-    //     this.ctx.fillText("Start", width / 2, height / 2);
-    //     this.ctx.fillText("Tutorial", width / 2, height * 2 / 3);
-    // }
+    drawMenu(boardSize) {
+        const { width, height } = boardSize;
+        this.ctx.font = fonts.largeFontSize;
+        this.ctx.fillStyle = colors.textColor;
+        this.ctx.fillText("Blockhead:", width / 2, height / 4);
+        this.ctx.font = fonts.mediumFontSize;
+        this.ctx.fillText("a game by Michael Johnson", width / 2, height / 3);
+    }
+
+    drawControls(boardSize) {
+        const { width, height } = boardSize;
+        this.ctx.font = fonts.largeFontSize;
+        this.ctx.fillStyle = colors.textColor;
+        this.ctx.fillText("Controls:", width / 2, height / 4);
+        this.ctx.font = fonts.mediumFontSize;
+        this.ctx.fillText("Up: up-arrow", width / 2, height * 3 / 8);
+        this.ctx.fillText("Down: down-arrow", width / 2, height / 2);
+        this.ctx.fillText("Left: left-arrow", width / 2, height * 5 / 8);
+        this.ctx.fillText("Right: right-arrow", width / 2, height * 3 / 4);
+        this.ctx.fillText("Pause: enter", width / 2, height * 7 / 8);
+    }
 
     stringifyTime() {
         const { minutes, seconds } = clock.currentTime();
