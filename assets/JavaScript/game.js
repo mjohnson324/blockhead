@@ -15,10 +15,10 @@ class Game {
         this.moves = 0;
         this.falls = 0;
 
-        this.display = new Display(ctx, length);
-        this.levels = new LevelGenerator(length);
+        this.display = new Display(ctx);
+        this.levels = new LevelGenerator();
         this.block = new Block(length, length);
-        this.menu = new Menu(this.display);
+        // this.menu = new Menu(this.display);
 
         this.move = this.move.bind(this);
         this.pause = this.pause.bind(this);
@@ -36,7 +36,7 @@ class Game {
 
     startGame() {
         GameMusic.startGame();
-        this.levels.constructFloor();
+        this.levels.constructFloor(this.length, this.boardSize);
         this.block.setPosition(this.levels.currentStartPosition);
         this.timerId = setInterval(this.display.drawTime, 1000);
         document.addEventListener("keydown", this.move);
@@ -70,6 +70,8 @@ class Game {
             levelNumber: this.levels.currentLevel,
             moves: this.moves,
             falls: this.falls,
+            length: this.length,
+            boardSize: this.boardSize,
         };
     }
 
@@ -98,7 +100,7 @@ class Game {
         if (levelData[currentLevel] === undefined) {
             this.endGame();
         } else {
-            this.levels.constructFloor();
+            this.levels.constructFloor(this.length, this.boardSize);
             this.block.setPosition(this.levels.currentStartPosition);
             this.display.render(this.displayOptions());
             this.display.drawBlock(this.block);

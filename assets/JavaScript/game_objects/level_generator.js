@@ -17,8 +17,8 @@ class LevelGenerator {
         this.currentLevel = 1;
     }
 
-    constructFloor(length) {
-        this.constructedFloor = this.generateLevel(length);
+    constructFloor(length, boardSize) {
+        this.constructedFloor = this.generateLevel(length, boardSize);
         this.currentStartPosition = this.getStart(this.constructedFloor);
     }
 
@@ -31,19 +31,19 @@ class LevelGenerator {
         }
     }
 
-    generateLevel(length) {
+    generateLevel(length, boardSize) {
         const level = this.levelData[this.currentLevel];
-        const startPosition = this.centerFloor(level.floorDimensions, length);
+        const startPosition = this.centerFloor(level.floorDimensions, length, boardSize);
         return this.setCoordinates(level.floorData, startPosition, length);
     }
 
-    centerFloor(floorDimensions, length) { // Tiles are positioned relative to the
-        const canvasWidth = 900;     // position of the top-left tile on a floor.
-        const canvasHeight = 500;
+    // Tiles are positioned relative to the position of the top-left tile on a floor.
+    centerFloor(floorDimensions, length, boardSize) {
+        const {width, height } = boardSize;
         const floorWidth = floorDimensions.xRange * length;
         const floorHeight = floorDimensions.yRange * length;
-        const startCornerXPos = Math.floor((canvasWidth - floorWidth) / 2);
-        const startCornerYPos = Math.floor((canvasHeight - floorHeight) / 2);
+        const startCornerXPos = Math.floor((width - floorWidth) / 2);
+        const startCornerYPos = Math.floor((height - floorHeight) / 2);
         return { xPos: startCornerXPos, yPos: startCornerYPos };
     }
 

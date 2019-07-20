@@ -3,6 +3,10 @@ class GameClock {
         this.gameTimeSeconds = 0;
     }
 
+    resetClock() {
+        this.gameTimeSeconds = 0;
+    }
+
     upTick() {
         this.gameTimeSeconds += 1;
     }
@@ -11,7 +15,7 @@ class GameClock {
         const gameTime = this.gameTimeSeconds;
         const seconds = gameTime % 60;
         const minutes = Math.floor(gameTime / 60) % 60;
-        return { minutes: minutes, seconds: seconds };
+        return { minutes, seconds };
     }
 }
 

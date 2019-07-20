@@ -19,20 +19,20 @@ function pauseGame(game) {
     game.display.drawPause();
 }
 
-function getMove(e, block) {
+function getMove(e, block, length) {
     e.preventDefault();
     switch (e.keyCode) {
     case 40: // down arrow key
-        block.transformBlock(0, 1);
+        block.transformBlock(0, 1 * length);
         break;
     case 38: // up arrow key
-        block.transformBlock(0, -1);
+        block.transformBlock(0, -1 * length);
         break;
     case 37: // left arrow key
-        block.transformBlock(-1, 0);
+        block.transformBlock(-1 * length, 0);
         break;
     case 39: // right arrow key
-        block.transformBlock(1, 0);
+        block.transformBlock(1 * length, 0);
     }
 }
 
@@ -40,7 +40,7 @@ function restartGame(e, game) {
     if (e.keyCode === 32) {
         e.preventDefault();
         game.levels.resetCurrentLevel();
-        game.start();
+        game.startGame();
         document.removeEventListener("keydown", game.restart);
     }
 }

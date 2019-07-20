@@ -17,8 +17,8 @@ const colors = {
 };
 
 const fonts = {
-    mediumFontSize: "30px sans-serif",
-    largeFontSize: "50px sans-serif",
+    mediumFontSize: "30px Russo One",
+    largeFontSize: "50px Russo One",
 };
 
 // function resizeCanvas() {
@@ -31,55 +31,58 @@ const fonts = {
 // }
 // window.addEventListener("resize", resizeCanvas);
 
+const clock = new GameClock();
+
 class Display {
-    constructor(ctx, length) {
-        this.clock = new GameClock();
+    constructor(ctx) {
         this.ctx = ctx;
-        this.length = length;
 
         this.drawTime = this.drawTime.bind(this);
     }
 
-    // drawStart() {
+    // drawStart(options) {
+    //     const { width, height } = options.boardSize
     //     this.ctx.fillStyle = colors.backgroundColor;
     //     this.ctx.font = fonts.largeFontSize;
-    //     this.ctx.fillRect(0, 0, 900, 450);
-    //     this.ctx.fillText("Click anywhere to begin", 25, 50);
+    //     this.ctx.fillRect(0, 0, width, height);
+    //     this.ctx.fillText("Click anywhere to begin", width / 2, height / 2);
     // }
 
     render(options) {
+        const { width, height } = options.boardSize;
         this.ctx.fillStyle = colors.backgroundColor;
-        this.ctx.fillRect(0, 0, 900, 450);
-        this.ctx.fillRect(0, 450, 700, 50);
+        this.ctx.fillRect(0, 0, width, height);
+        this.ctx.fillRect(0, width - 50, height - 200, 50);
         this.ctx.font = fonts.mediumFontSize;
         this.ctx.fillStyle = colors.textColor;
-        this.ctx.fillText(`Level ${options.levelNumber}`, 25, 50);
-        this.ctx.fillText(`Moves: ${options.moves}`, 700, 50);
-        this.ctx.fillText(`Falls: ${options.falls}`, 25, 475);
-        this.drawFloor(options.level);
+        this.ctx.fillText(`Level ${options.levelNumber}`, 50, 25);
+        this.ctx.fillText(`Moves: ${options.moves}`, height - 200, 50);
+        this.ctx.fillText(`Falls: ${options.falls}`, 50, width - 25);
+        this.drawFloor(options.level, options.length);
     }
 
-    drawFloor(floor) {
+    drawFloor(floor, length) {
         for (var position in floor) {
             let tile = floor[position];
             this.ctx.fillStyle = colors.tileColors[tile.type];
             const { xPos, yPos } = tile;
-            this.ctx.fillRect(xPos, yPos, this.length, this.length);
-            this.ctx.strokeRect(xPos, yPos, this.length, this.length);
+            this.ctx.fillRect(xPos, yPos, length, length);
+            this.ctx.strokeRect(xPos, yPos, length, length);
         }
     }
 
-    // drawMenu() {
+    // drawMenu(options) {
+    //     const { width, height } = options.boardSize;
     //     this.ctx.font = fonts.largeFontSize;
     //     this.ctx.fillStyle = colors.textColor;
-    //     this.ctx.fillText("Blockhead", 400, 200);
+    //     this.ctx.fillText("Blockhead", width / 2, height / 3);
     //     this.ctx.font = fonts.mediumFontSize;
-    //     this.ctx.fillText("Start", 300, 250);
-    //     this.ctx.fillText("Directions", 300, 300);
+    //     this.ctx.fillText("Start", width / 2, height / 2);
+    //     this.ctx.fillText("Tutorial", width / 2, height * 2 / 3);
     // }
 
     stringifyTime() {
-        const { minutes, seconds } = this.clock.currentTime();
+        const { minutes, seconds } = clock.currentTime();
 
         const minuteString = (minutes < 10) ? `0${minutes}` : minutes;
         const secondString = (seconds < 10) ? `0${seconds}` : seconds;
@@ -87,14 +90,15 @@ class Display {
         return `${minuteString}:${secondString}`;
     }
 
-    drawTime() {
+    drawTime(options) {
+        const { width, height } = options.boardSize;
         const displayTime = this.stringifyTime();
         this.ctx.fillStyle = colors.backgroundColor;
-        this.ctx.fillRect(200, 450, 900, 50);
+        this.ctx.fillRect(200, height - 50, width, 50);
         this.ctx.font = fonts.mediumFontSize;
         this.ctx.fillStyle = colors.textColor;
-        this.ctx.fillText(displayTime, 700, 475);
-        this.clock.upTick();
+        this.ctx.fillText(displayTime, width - 200, height - 25);
+        clock.upTick();
     }
 
     drawBlock(block) {
@@ -126,14 +130,14 @@ class Display {
         return false;
     }
 
-    drawPause() {
+    drawPause(options) {
+        const { width, height } = options.boardSize;
         this.ctx.fillStyle = colors.backgroundColor;
-        this.ctx.fillRect(0, 0, 900, 500);
+        this.ctx.fillRect(0, 0, width, height);
         this.ctx.font = fonts.largeFontSize;
         this.ctx.fillStyle = colors.textColor;
-        this.ctx.fillText("Pause", 400, 200);
+        this.ctx.fillText("Pause", width / 2, height / 2);
         this.ctx.font = fonts.mediumFontSize;
-        this.ctx.fillText("(Press enter to resume)", 300, 300);
     }
 
     drawFail(block) {
@@ -143,16 +147,18 @@ class Display {
     }
 
     drawFinish(options) {
+        clock.resetClock();
+        const { width, height } = options.boardSize;
         this.ctx.fillStyle = colors.backgroundColor;
-        this.ctx.fillRect(0, 0, 900, 500);
+        this.ctx.fillRect(0, 0, width, height);
         this.ctx.font = fonts.largeFontSize;
         this.ctx.fillStyle = colors.textColor;
-        this.ctx.fillText("Final Tally:", 50, 100);
+        this.ctx.fillText("Final Tally:", width / 2, height / 5);
         this.ctx.font = fonts.mediumFontSize;
-        this.ctx.fillText(`Moves: ${options.moves}`, 70, 155);
-        this.ctx.fillText(`Falls: ${options.falls}`, 70, 190);
-        this.ctx.fillText(`Time: ${options.time}`, 70, 225);
-        this.ctx.fillText("Press spacebar to start over", 50, 400);
+        this.ctx.fillText(`Moves: ${options.moves}`, width / 2, height * 3 / 10);
+        this.ctx.fillText(`Falls: ${options.falls}`, width / 2, height * 2 / 5);
+        this.ctx.fillText(`Time: ${options.time}`, width / 2, height / 2);
+        this.ctx.fillText("Press spacebar to start over", width / 2, height * 3 / 5);
     }
 }
 
