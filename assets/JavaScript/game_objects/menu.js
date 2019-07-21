@@ -24,9 +24,6 @@ class Menu {
 
     removeMenuButton(elementId, eventResult) {
         const button = document.getElementById(elementId);
-        console.log(button);
-        console.log(button.parentNode);
-        console.log(button.parentElement);
         button.removeEventListener("click", eventResult);
         button.parentNode.removeChild(button);
     }

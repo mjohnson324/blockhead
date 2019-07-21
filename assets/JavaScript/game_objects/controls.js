@@ -1,22 +1,19 @@
-function pause(e, game) {
-    if (e.keyCode === 13) { // enter key
-        e.preventDefault();
-        game.pauseStatus = !game.pauseStatus;
-        game.pauseStatus === true ? pauseGame(game) : resumeGame(game);
-    }
+function pause(game) {
+    game.pauseStatus = !game.pauseStatus;
+    game.pauseStatus === true ? pauseGame(game) : resumeGame(game);
 }
 
 function resumeGame(game) {
     game.display.render(game.displayOptions());
     game.display.drawBlock(game.block);
     document.addEventListener("keydown", game.move);
-    game.timerId = setInterval(game.display.drawTime, 1000);
+    game.timerId = setInterval(game.runClock, 1000);
 }
 
 function pauseGame(game) {
     clearInterval(game.timerId);
     document.removeEventListener("keydown", game.move);
-    game.display.drawPause();
+    game.display.drawPause(game.boardSize);
 }
 
 function getMove(e, block, length) {
@@ -36,13 +33,15 @@ function getMove(e, block, length) {
     }
 }
 
-function restartGame(e, game) {
-    if (e.keyCode === 32) {
+function restartGame(e, game, music) {
+    if (e.keyCode === 13) {
         e.preventDefault();
         game.moves = 0;
         game.falls = 0;
+        game.pauseStatus = true;
         game.levels.resetCurrentLevel();
-        game.startGame();
+        music.startMenu();
+        game.redrawMenu(e);
         document.removeEventListener("keydown", game.restart);
     }
 }

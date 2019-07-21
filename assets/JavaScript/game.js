@@ -27,6 +27,7 @@ class Game {
         this.startGame = this.startGame.bind(this);
         this.showControls = this.showControls.bind(this);
         this.redrawMenu = this.redrawMenu.bind(this);
+        this.runClock = this.runClock.bind(this);
     }
 
     start() {
@@ -37,13 +38,14 @@ class Game {
 
     startGame(e) {
         e.preventDefault();
+        this.pauseStatus = false;
         this.menu.removeMenuButton("start-button", this.startGame);
-        this.menu.removeMenuButton("tutorial-button", this.startTutorial);
+        // this.menu.removeMenuButton("tutorial-button", this.startTutorial);
         this.menu.removeMenuButton("controls-button", this.showControls);
         GameMusic.startGame();
         this.levels.constructFloor(this.length, this.boardSize);
         this.block.setPosition(this.levels.currentStartPosition);
-        this.timerId = setInterval(this.display.drawTime, 1000);
+        this.timerId = setInterval(this.runClock, 1000);
         document.addEventListener("keydown", this.move);
         document.addEventListener("keydown", this.pause);
         this.display.render(this.displayOptions());
@@ -60,9 +62,9 @@ class Game {
 
     startMenu(e) {
         e.preventDefault();
-        const board = document.getElementById("blockhead");
         this.menu.start(this.display, this, this.boardSize);
         GameMusic.resumeMusic();
+        const board = document.getElementById("canvas-container");
         board.removeEventListener("click", this.startMenu);
     }
 
@@ -81,8 +83,12 @@ class Game {
         this.menu.controlsMenu(this.display, this, this.boardSize);
     }
 
+    runClock() {
+        this.display.drawTime(this.boardSize);
+    }
+
     restart(e) {
-        controls.restartGame(e, this);
+        controls.restartGame(e, this, GameMusic);
     }
 
     move(e) {
@@ -95,7 +101,10 @@ class Game {
     }
 
     pause(e) {
-        controls.pauseButton(e, this);
+        e.preventDefault();
+        if (e.keyCode === 13) { // enter key
+            controls.pause(this);
+        }
     }
 
     displayOptions() {
