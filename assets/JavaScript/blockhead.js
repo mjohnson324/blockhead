@@ -6,8 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const ctx = blockheadBoard.getContext("2d");
 
     const boardSize = {
-        width: blockheadBoardContainer.width,
-        height: blockheadBoardContainer.height,
+        width: blockheadBoardContainer.offsetWidth,
+        height: blockheadBoardContainer.offsetHeight,
     };
     blockheadBoard.width = boardSize.width;
     blockheadBoard.height = boardSize.height;

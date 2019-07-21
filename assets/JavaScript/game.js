@@ -23,13 +23,16 @@ class Game {
         this.move = this.move.bind(this);
         this.pause = this.pause.bind(this);
         this.restart = this.restart.bind(this);
-        this.start = this.start.bind(this);
+        this.startMenu = this.startMenu.bind(this);
+        this.startGame = this.startGame.bind(this);
+        this.showControls = this.showControls.bind(this);
+        this.redrawMenu = this.redrawMenu.bind(this);
     }
 
     start() {
-        this.display.drawStart();
-        const board = document.getElementById("blockhead");
-        board.addEventListener("onclick", this.startMenu);
+        this.display.drawStart(this.boardSize);
+        const board = document.getElementById("canvas-container");
+        board.addEventListener("click", this.startMenu);
     }
 
     startGame(e) {
@@ -59,18 +62,23 @@ class Game {
         e.preventDefault();
         const board = document.getElementById("blockhead");
         this.menu.start(this.display, this, this.boardSize);
-        GameMusic.startMenu();
-        board.removeEventListener("onclick", this.startMenu);
+        GameMusic.resumeMusic();
+        board.removeEventListener("click", this.startMenu);
     }
 
     redrawMenu(e) {
         e.preventDefault();
         const backButton = document.getElementById("back-button");
         if (backButton !== null) {
-            backButton.removeEventListener("onclick", this.reDrawMenu);
+            backButton.removeEventListener("click", this.reDrawMenu);
             backButton.parentNode.removeChild(backButton);
         }
         this.menu.start(this.display, this, this.boardSize);
+    }
+
+    showControls(e) {
+        e.preventDefault();
+        this.menu.controlsMenu(this.display, this, this.boardSize);
     }
 
     restart(e) {

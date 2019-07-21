@@ -8,10 +8,6 @@ const completeLevelSound = document.getElementById("complete-level");
 const gameMusic = document.getElementById("game-song");
 const menuMusic = document.getElementById("menu-song");
 
-const musicDisplay = document.getElementById("music-icon");
-const musicButton = document.getElementById("music");
-musicButton.addEventListener("click", GameMusic.toggleMusic);
-
 menuMusic.loop = true;
 gameMusic.loop = true;
 
@@ -19,8 +15,13 @@ class GameMusic {
     constructor() {
         this.playMusic = true;
         this.currentMusic = menuMusic;
+        this.musicButton = document.getElementById("music");
+        this.musicDisplay = document.getElementById("music-icon");
 
         this.toggleMusic = this.toggleMusic.bind(this);
+
+        this.musicButton = document.getElementById("music");
+        this.musicButton.addEventListener("click", this.toggleMusic);
     }
 
     startGame() {
@@ -43,19 +44,20 @@ class GameMusic {
         }
     }
 
-    toggleMusic() {
+    toggleMusic(e) {
+        e.preventDefault();
         this.playMusic === true ? this.pauseMusic() : this.resumeMusic();
     }
 
     pauseMusic() {
         this.playMusic = false;
-        musicDisplay.className = "fas fa-volume-mute fa-2x";
+        this.musicDisplay.className = "fas fa-volume-mute fa-2x";
         this.currentMusic.pause();
     }
 
     resumeMusic() {
         this.playMusic = true;
-        musicDisplay.className = "fas fa-volume-up fa-2x";
+        this.musicDisplay.className = "fas fa-volume-up fa-2x";
         this.currentMusic.play();
     }
 }

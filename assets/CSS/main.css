@@ -73,17 +73,17 @@ button {
 }
 
 #start-button, #tutorial-button, #controls-button, #back-button {
-    position: relative;
+    position: absolute;
     font-size: 30px;
 }
 
 #back-button {
-    right: 10%;
+    left: 10%;
     top: 10%;
 }
 
 #start-button {
-    right: 50%;
+    right: 48%;
     top: 50%;
 }
 
@@ -93,7 +93,7 @@ button {
 }
 
 #controls-button {
-    right: 50%;
+    right: 46%;
     top: 75%;
 }
 

@@ -17,8 +17,8 @@ const colors = {
 };
 
 const fonts = {
-    mediumFontSize: "30px Russo One",
-    largeFontSize: "50px Russo One",
+    mediumFontSize: "30px Russo One, sans-serif",
+    largeFontSize: "50px Russo One, sans-serif",
 };
 
 // function resizeCanvas() {
@@ -40,12 +40,14 @@ class Display {
         this.drawTime = this.drawTime.bind(this);
     }
 
-    drawStart(options) {
-        const { width, height } = options.boardSize;
+    drawStart(boardSize) {
+        const { width, height } = boardSize;
         this.ctx.fillStyle = colors.backgroundColor;
         this.ctx.font = fonts.largeFontSize;
         this.ctx.fillRect(0, 0, width, height);
-        this.ctx.fillText("Click anywhere to begin", width / 2, height / 2);
+        this.ctx.fillStyle = colors.textColor;
+        this.ctx.fillText("Click anywhere", width / 2 - 200, height / 2);
+        this.ctx.fillText("to begin", width / 2 - 125, height / 2 + 50);
     }
 
     render(options) {
@@ -74,15 +76,19 @@ class Display {
     drawMenu(boardSize) {
         const { width, height } = boardSize;
         this.ctx.font = fonts.largeFontSize;
+        this.ctx.fillStyle = colors.backgroundColor;
+        this.ctx.fillRect(0, 0, width, height);
         this.ctx.fillStyle = colors.textColor;
-        this.ctx.fillText("Blockhead:", width / 2, height / 4);
+        this.ctx.fillText("Blockhead:", width / 2 - 125, height / 4);
         this.ctx.font = fonts.mediumFontSize;
-        this.ctx.fillText("a game by Michael Johnson", width / 2, height / 3);
+        this.ctx.fillText("a game by Michael Johnson", width / 2 - 200, height / 3);
     }
 
     drawControls(boardSize) {
         const { width, height } = boardSize;
         this.ctx.font = fonts.largeFontSize;
+        this.ctx.fillStyle = colors.backgroundColor;
+        this.ctx.fillRect(0,0, width, height);
         this.ctx.fillStyle = colors.textColor;
         this.ctx.fillText("Controls:", width / 2, height / 4);
         this.ctx.font = fonts.mediumFontSize;
