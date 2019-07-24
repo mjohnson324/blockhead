@@ -10,12 +10,6 @@ html, body {
     height: 100%;
 }
 
- /* #00C3E4 turquoise */
- /* #2A2CA5 purple-one */
- /* #312450 purple-two */
- /* #FFF border color */
-
-
  button:hover {
      cursor: pointer;
      cursor: hand;
@@ -40,7 +34,7 @@ button {
     width: 70px;
 }
 
-/* #top, #right, #bottom, #left {
+#top, #right, #bottom, #left {
     position: absolute;
     height: 50px;
     width: 50px;
@@ -53,19 +47,26 @@ button {
 }
 
 #right {
-    top: 50%;
-    right: 20px;
+    top: 70px;
+    left: 50%;
 }
 
 #bottom {
-    bottom: 70px;
+    top: 120px;
     right: 50%;
 }
 
 #left {
-    top: 50%;
-    left: 20px;
-} */
+    top: 70px;
+    left: calc(50% - 100px);
+}
+
+#pause-button {
+    position: absolute;
+    left: calc(50%  - 70px);
+    bottom: 70px;
+    font-size: 30px;
+}
 
 #canvas-container {
     height: calc(100% - 60px);

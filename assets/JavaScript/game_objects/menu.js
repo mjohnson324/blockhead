@@ -1,39 +1,21 @@
 class Menu {
-    constructor() {
-        this.addMenuButton = this.addMenuButton.bind(this);
-        this.removeMenuButton = this.removeMenuButton.bind(this);
+    start(display, game, controls) {
+        display.drawMenu(game.boardSize);
+        const startParams = { id: "start-button", event: game.startGame, text: "Start" };
+        const controlsParams = { id: "controls-button", event: game.showControls, text: "Controls" };
+        // const tutorialParams = { id: "tutorial-button", event: game.startTutorial, text: Tutorial };
+        controls.addButton(startParams);
+        // controls.addButton(tutorialParams);
+        controls.addButton(controlsParams);
     }
 
-    start(display, game, boardSize) {
-        display.drawMenu(boardSize);
-        this.addMenuButton("start-button", game.startGame);
-        // this.addMenuButton("tutorial-button", game.startTutorial);
-        this.addMenuButton("controls-button", game.showControls);
-    }
-
-    addMenuButton(elementId, eventResult) {
-        const container = document.getElementById("canvas-container");
-        const button = document.createElement("button");
-        const word = elementId.split("-")[0];
-        const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
-        button.setAttribute("id", elementId);
-        button.innerText = capitalizedWord;
-        button.addEventListener("click", eventResult);
-        container.appendChild(button);
-    }
-
-    removeMenuButton(elementId, eventResult) {
-        const button = document.getElementById(elementId);
-        button.removeEventListener("click", eventResult);
-        button.parentNode.removeChild(button);
-    }
-
-    controlsMenu(display, game, boardSize) {
-        display.drawControls(boardSize);
-        this.addMenuButton("back-button", game.redrawMenu);
-        this.removeMenuButton("start-button", game.startGame);
-        // this.removeMenuButton("tutorial-button", game.startTutorial);
-        this.removeMenuButton("controls-button", game.showControls);
+    controlsMenu(display, game, controls) {
+        display.drawControls(game.boardSize);
+        const backParams = { id: "back-button", event: game.redrawMenu, text: "Back" };
+        controls.addButton(backParams);
+        controls.removeButton({ id: "start-button", event: game.startGame });
+        // controls.removeButton({ id: "tutorial-button", event: game.startTutorial });
+        controls.removeButton({ id: "controls-button", event: game.showControls });
     }
 }
 

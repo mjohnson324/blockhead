@@ -15,33 +15,30 @@ class GameMusic {
     constructor() {
         this.playMusic = true;
         this.currentMusic = menuMusic;
-        this.musicButton = document.getElementById("music");
-        this.musicDisplay = document.getElementById("music-icon");
 
         this.toggleMusic = this.toggleMusic.bind(this);
+        this.musicButton = null;
+        this.musicDisplay = null;
+    }
 
+    switchTrack(pauseStatus) {
+        const newMusic = pauseStatus === true ? menuMusic : gameMusic;
+        this.currentMusic.currentTime = 0;
+        if (this.playMusic === true) {
+            this.currentMusic.pause();
+            this.currentMusic = newMusic;
+            this.currentMusic.play();
+        } else {
+            this.currentMusic = newMusic;
+        }
+    }
+
+    setupSoundButton(addButton) {
+        addButton({ id: "music", event: this.toggleMusic, text: null });
+        addSoundIcon(this.musicButton);
         this.musicButton = document.getElementById("music");
+        this.musicDisplay = document.getElementById("music-icon");
         this.musicButton.addEventListener("click", this.toggleMusic);
-    }
-
-    startGame() {
-        if (this.playMusic === true) {
-            this.currentMusic.pause();
-            this.currentMusic = gameMusic;
-            this.currentMusic.play();
-        } else {
-            this.currentMusic = gameMusic;
-        }
-    }
-
-    startMenu() {
-        if (this.playMusic === true) {
-            this.currentMusic.pause();
-            this.currentMusic = menuMusic;
-            this.currentMusic.play();
-        } else {
-            this.currentMusic = menuMusic;
-        }
     }
 
     toggleMusic(e) {
@@ -60,6 +57,14 @@ class GameMusic {
         this.musicDisplay.className = "fas fa-volume-up fa-2x";
         this.currentMusic.play();
     }
+}
+
+function addSoundIcon() {
+    const musicIcon = document.createElement("i");
+    musicIcon.setAttribute("id", "music-icon");
+    musicIcon.className = "fas fa-volume-up fa-2x";
+    const musicButton = document.getElementById("music");
+    musicButton.appendChild(musicIcon);
 }
 
 function playBlockSound(block) {

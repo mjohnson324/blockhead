@@ -79,7 +79,7 @@ class Display {
         this.ctx.fillStyle = colors.backgroundColor;
         this.ctx.fillRect(0, 0, width, height);
         this.ctx.fillStyle = colors.textColor;
-        this.ctx.fillText("Blockhead:", width / 2 - 125, height / 4);
+        this.ctx.fillText("Blockhead", width / 2 - 125, height / 4);
         this.ctx.font = fonts.mediumFontSize;
         this.ctx.fillText("a game by Michael Johnson", width / 2 - 200, height / 3);
     }
@@ -96,7 +96,6 @@ class Display {
         this.ctx.fillText("Down: down-arrow", width / 2 - 100, height / 2);
         this.ctx.fillText("Left: left-arrow", width / 2 - 100, height * 5 / 8);
         this.ctx.fillText("Right: right-arrow", width / 2 - 100, height * 3 / 4);
-        this.ctx.fillText("Pause: enter", width / 2 - 100, height * 7 / 8);
     }
 
     stringifyTime() {
@@ -177,7 +176,7 @@ class Display {
         this.ctx.fillText(`Moves: ${options.moves}`, width / 2 - 100, height * 3 / 10);
         this.ctx.fillText(`Falls: ${options.falls}`, width / 2 - 100, height * 2 / 5);
         this.ctx.fillText(`Time: ${timeTaken}`, width / 2 - 100, height / 2);
-        this.ctx.fillText("Press enter to start over", width / 2 - 200, height * 3 / 5);
+        this.ctx.fillText("Click to start over", width / 2 - 200, height * 3 / 5);
     }
 }
 

@@ -18,7 +18,7 @@ class Game {
         this.display = new Display(ctx);
         this.levels = new LevelGenerator();
         this.block = new Block(length, length);
-        this.menu = new Menu(this.display, boardSize);
+        this.menu = new Menu();
 
         this.move = this.move.bind(this);
         this.pause = this.pause.bind(this);
@@ -28,6 +28,10 @@ class Game {
         this.showControls = this.showControls.bind(this);
         this.redrawMenu = this.redrawMenu.bind(this);
         this.runClock = this.runClock.bind(this);
+        this.up = this.up.bind(this);
+        this.right = this.right.bind(this);
+        this.left = this.left.bind(this);
+        this.down = this.down.bind(this);
     }
 
     start() {
@@ -39,48 +43,48 @@ class Game {
     startGame(e) {
         e.preventDefault();
         this.pauseStatus = false;
-        this.menu.removeMenuButton("start-button", this.startGame);
-        // this.menu.removeMenuButton("tutorial-button", this.startTutorial);
-        this.menu.removeMenuButton("controls-button", this.showControls);
-        GameMusic.startGame();
+        controls.removeButton({ id: "start-button", event: this.startGame });
+        // controls.removeButton({ id: "tutorial-button", event: this.startTutorial });
+        controls.removeButton({ id: "controls-button", event: this.showControls });
+        controls.setMoveButtons(this);
+        controls.addButton({id: "pause-button", event: this.pause, text: "Pause" });
+        GameMusic.switchTrack(this.pauseStatus);
         this.levels.constructFloor(this.length, this.boardSize);
         this.block.setPosition(this.levels.currentStartPosition);
         this.timerId = setInterval(this.runClock, 1000);
         document.addEventListener("keydown", this.move);
-        document.addEventListener("keydown", this.pause);
         this.display.render(this.displayOptions());
         this.display.drawBlock(this.block);
     }
 
     // startTutorial(e) {
     //     e.preventDefault();
-    //     this.menu.removeMenuButton("start-button", this.startGame);
-    //     this.menu.removeMenuButton("tutorial-button", this.startTutorial);
-    //     this.menu.removeMenuButton("controls-button", this.showControls);
-    //     GameMusic.startMenu();
+    //     controls.removeButton({ id: "start-button", event: this.startGame });
+    //     controls.removeButton({ id: "tutorial-button", event: this.startTutorial });
+    //     controls.removeButton({ id: "controls-button", event: this.showControls });
     // }
 
     startMenu(e) {
         e.preventDefault();
-        this.menu.start(this.display, this, this.boardSize);
-        GameMusic.resumeMusic();
+        this.menu.start(this.display, this, controls);
+        GameMusic.setupSoundButton(controls.addButton);
+        GameMusic.switchTrack(this.pauseStatus);
         const board = document.getElementById("canvas-container");
         board.removeEventListener("click", this.startMenu);
     }
 
-    redrawMenu(e) {
-        e.preventDefault();
+    redrawMenu() {
         const backButton = document.getElementById("back-button");
         if (backButton !== null) {
             backButton.removeEventListener("click", this.reDrawMenu);
             backButton.parentNode.removeChild(backButton);
         }
-        this.menu.start(this.display, this, this.boardSize);
+        this.menu.start(this.display, this, controls);
     }
 
     showControls(e) {
         e.preventDefault();
-        this.menu.controlsMenu(this.display, this, this.boardSize);
+        this.menu.controlsMenu(this.display, this, controls);
     }
 
     runClock() {
@@ -88,23 +92,46 @@ class Game {
     }
 
     restart(e) {
-        controls.restartGame(e, this, GameMusic);
+        e.preventDefault();
+        controls.restartGame(this, GameMusic);
     }
 
     move(e) {
         const arrowKeycodes = [37, 38, 39, 40];
         if (arrowKeycodes.includes(e.keyCode)) {
-            controls.getMove(e, this.block, this.length);
+            controls.getMove(e, this.block, this.length, null);
             this.moves += 1;
             this.checkBlock();
         }
     }
 
+    up(e) {
+        controls.getMove(e, this.block, this.length, "up");
+        this.moves += 1;
+        this.checkBlock();
+    }
+
+    right(e) {
+        controls.getMove(e, this.block, this.length, "right");
+        this.moves += 1;
+        this.checkBlock();
+    }
+
+    down(e) {
+        controls.getMove(e, this.block, this.length, "down");
+        this.moves += 1;
+        this.checkBlock();
+    }
+
+    left(e) {
+        controls.getMove(e, this.block, this.length, "left");
+        this.moves += 1;
+        this.checkBlock();
+    }
+
     pause(e) {
         e.preventDefault();
-        if (e.keyCode === 13) { // enter key
-            controls.pause(this);
-        }
+        controls.pause(this);
     }
 
     displayOptions() {
@@ -151,11 +178,16 @@ class Game {
     }
 
     endGame() {
+        this.pauseStatus = true;
         document.removeEventListener("keydown", this.move);
-        document.removeEventListener("keydown", this.pause);
+        controls.removeButton({ id: "pause-button", event: this.pause });
+        controls.setMoveButtons(this);
         clearInterval(this.timerId);
         this.display.drawFinish(this.displayOptions());
-        document.addEventListener("keydown", this.restart);
+        setTimeout(() => {
+            const board = document.getElementById("canvas-container");
+            board.addEventListener("click", this.restart);
+        }, 500);
     }
 
     checkBounds() {
@@ -181,7 +213,9 @@ class Game {
     }
 
     resetLevel() {
+        this.pauseStatus = true;
         document.removeEventListener("keydown", this.move);
+        controls.setMoveButtons(this);
         this.falls += 1;
         this.flashFailure();
     }
@@ -192,9 +226,11 @@ class Game {
         sound.playFallSound();
         this.block.resetBlock(this.length, this.levels.currentStartPosition);
         setTimeout(() => {
+            this.pauseStatus = false;
             this.display.render(this.displayOptions());
             this.display.drawBlock(this.block);
             document.addEventListener("keydown", this.move);
+            controls.setMoveButtons(this);
         }, 800);
     }
 }

@@ -7,43 +7,74 @@ function resumeGame(game) {
     game.display.render(game.displayOptions());
     game.display.drawBlock(game.block);
     document.addEventListener("keydown", game.move);
+    setMoveButtons(game);
     game.timerId = setInterval(game.runClock, 1000);
 }
 
 function pauseGame(game) {
     clearInterval(game.timerId);
+    setMoveButtons(game);
     document.removeEventListener("keydown", game.move);
     game.display.drawPause(game.boardSize);
 }
 
-function getMove(e, block, length) {
+function getMove(e, block, length, move) {
     e.preventDefault();
-    switch (e.keyCode) {
-    case 40: // down arrow key
+    if (e.keyCode === 40 || move === "down") { // down arrow
         block.transformBlock(0, 1 * length);
-        break;
-    case 38: // up arrow key
-        block.transformBlock(0, -1 * length);
-        break;
-    case 37: // left arrow key
-        block.transformBlock(-1 * length, 0);
-        break;
-    case 39: // right arrow key
+    } else if (e.keyCode === 39 || move === "right") { // right arrow key
         block.transformBlock(1 * length, 0);
+    } else if (e.keyCode === 38 || move === "up") { // up arrow key
+        block.transformBlock(0, -1 * length);
+    } else if (e.keyCode === 37 || move === "left") { // left arrow key
+        block.transformBlock(-1 * length, 0);
     }
 }
 
-function restartGame(e, game, music) {
-    if (e.keyCode === 13) {
-        e.preventDefault();
-        game.moves = 0;
-        game.falls = 0;
-        game.pauseStatus = true;
-        game.levels.resetCurrentLevel();
-        music.startMenu();
-        game.redrawMenu(e);
-        document.removeEventListener("keydown", game.restart);
+function restartGame(game, music) {
+    game.moves = 0;
+    game.falls = 0;
+    game.levels.resetCurrentLevel();
+    music.switchTrack(game.pauseStatus);
+    game.redrawMenu();
+    const board = document.getElementById("canvas-container");
+    board.removeEventListener("click", game.restart);
+}
+
+function setMoveButtons(game) {
+    const arrows = [
+        { text: "\u2190", id: "left", event: game.left },
+        { text: "\u2191", id: "top", event: game.up },
+        { text: "\u2192", id: "right", event:game.right },
+        { text: "\u2193", id: "bottom", event: game.down }
+    ];
+
+    if (game.pauseStatus === false) {
+        arrows.forEach(props => addButton(props));
+    } else {
+        arrows.forEach(props => removeButton(props));
     }
 }
 
-module.exports = { pause, restartGame, getMove };
+function addButton({ id, text, event }) {
+    const container = document.getElementById("canvas-container");
+    const button = document.createElement("button");
+    button.setAttribute("id", id);
+    button.innerText = text;
+    button.addEventListener("click", event);
+    container.appendChild(button);
+}
+
+function removeButton({ id, event }) {
+    const button = document.getElementById(id);
+    button.removeEventListener("click", event);
+    button.parentNode.removeChild(button);
+}
+
+module.exports = { pause,
+    restartGame,
+    getMove,
+    setMoveButtons,
+    addButton,
+    removeButton,
+};
