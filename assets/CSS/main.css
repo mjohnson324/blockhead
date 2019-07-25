@@ -22,7 +22,6 @@ button {
     display: inline-block;
     background-color: #312450;
     color: white;
-    font-size: 20px;
     padding: 10px;
 }
 
@@ -34,8 +33,15 @@ button {
     width: 70px;
 }
 
-#top, #right, #bottom, #left {
+#top, #right, #bottom, #left, #pause-button, #quit-button, #start-button, #tutorial-button, #controls-button, #back-button, #no-button, #yes-button {
     position: absolute;
+}
+
+#pause-button, #quit-button, #start-button, #tutorial-button, #controls-button, #back-button, #no-button, #yes-button {
+    font-size: 30px;
+}
+
+#top, #right, #bottom, #left {
     height: 50px;
     width: 50px;
     font-weight: 1000;
@@ -61,11 +67,28 @@ button {
     left: calc(50% - 100px);
 }
 
-#pause-button {
-    position: absolute;
-    left: calc(50%  - 70px);
+#pause-button, #quit-button {
     bottom: 70px;
-    font-size: 30px;
+}
+
+#pause-button {
+    left: calc(50%  - 20px);
+}
+
+#quit-button {
+    left: calc(50% - 170px);
+}
+
+#yes-button, #no-button {
+    top: 60%;
+}
+
+#yes-button {
+    right: calc(50% - 50px);
+}
+
+#no-button {
+    right: calc(50% + 50px);
 }
 
 #canvas-container {
@@ -76,11 +99,6 @@ button {
 #blockhead {
     height: 100%;
     width: 100%;
-}
-
-#start-button, #tutorial-button, #controls-button, #back-button {
-    position: absolute;
-    font-size: 30px;
 }
 
 #back-button {

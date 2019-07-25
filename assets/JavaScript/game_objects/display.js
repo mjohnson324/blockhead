@@ -163,6 +163,15 @@ class Display {
         this.ctx.fillRect(xPos, yPos, width, height);
     }
 
+    drawQuit(boardSize) {
+        const { width, height } = boardSize;
+        this.ctx.fillStyle = colors.backgroundColor;
+        this.ctx.fillRect(0, 0, width, height);
+        this.ctx.font = fonts.largeFontSize;
+        this.ctx.fillStyle = colors.textColor;
+        this.ctx.fillText("Really quit?", width / 2 - 100, height / 2);
+    }
+
     drawFinish(options) {
         const timeTaken = this.stringifyTime();
         clock.resetClock();
@@ -173,10 +182,11 @@ class Display {
         this.ctx.fillStyle = colors.textColor;
         this.ctx.fillText("Final Tally:", width / 2 - 200, height / 5);
         this.ctx.font = fonts.mediumFontSize;
-        this.ctx.fillText(`Moves: ${options.moves}`, width / 2 - 100, height * 3 / 10);
-        this.ctx.fillText(`Falls: ${options.falls}`, width / 2 - 100, height * 2 / 5);
-        this.ctx.fillText(`Time: ${timeTaken}`, width / 2 - 100, height / 2);
-        this.ctx.fillText("Click to start over", width / 2 - 200, height * 3 / 5);
+        this.ctx.fillText(`Final Level Completed: ${options.levelNumber - 1}`, width / 2 - 150, height * 3 / 10);
+        this.ctx.fillText(`Moves: ${options.moves}`, width / 2 - 150, height * 2 / 5);
+        this.ctx.fillText(`Falls: ${options.falls}`, width / 2 - 150, height / 2);
+        this.ctx.fillText(`Time: ${timeTaken}`, width / 2 - 150, height * 3 / 5);
+        this.ctx.fillText("Click to start over", width / 2 - 200, height * 7 / 10);
     }
 }
 

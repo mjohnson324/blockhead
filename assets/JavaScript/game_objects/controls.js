@@ -8,12 +8,19 @@ function resumeGame(game) {
     game.display.drawBlock(game.block);
     document.addEventListener("keydown", game.move);
     setMoveButtons(game);
+    removeButton({ id: "quit-button", event: game.quit });
+    if (document.getElementById("pause-button") === null) {
+        addButton({ id: "pause-button", text: "Pause", event: game.pause });
+        removeButton({ id: "yes-button", event: this.endGame });
+        removeButton({ id: "no-button", event: this.pause });
+    }
     game.timerId = setInterval(game.runClock, 1000);
 }
 
 function pauseGame(game) {
     clearInterval(game.timerId);
     setMoveButtons(game);
+    addButton({ id: "quit-button", text: "Quit", event: game.quit });
     document.removeEventListener("keydown", game.move);
     game.display.drawPause(game.boardSize);
 }
@@ -31,12 +38,12 @@ function getMove(e, block, length, move) {
     }
 }
 
-function restartGame(game, music) {
+function restartGame(e, game, music) {
     game.moves = 0;
     game.falls = 0;
     game.levels.resetCurrentLevel();
     music.switchTrack(game.pauseStatus);
-    game.redrawMenu();
+    game.redrawMenu(e);
     const board = document.getElementById("canvas-container");
     board.removeEventListener("click", game.restart);
 }
@@ -67,8 +74,10 @@ function addButton({ id, text, event }) {
 
 function removeButton({ id, event }) {
     const button = document.getElementById(id);
-    button.removeEventListener("click", event);
-    button.parentNode.removeChild(button);
+    if (button !== null) {
+        button.removeEventListener("click", event);
+        button.parentNode.removeChild(button);
+    }
 }
 
 module.exports = { pause,

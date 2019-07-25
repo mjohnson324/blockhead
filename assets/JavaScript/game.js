@@ -32,6 +32,8 @@ class Game {
         this.right = this.right.bind(this);
         this.left = this.left.bind(this);
         this.down = this.down.bind(this);
+        this.quit = this.quit.bind(this);
+        this.endGame = this.endGame.bind(this);
     }
 
     start() {
@@ -73,12 +75,9 @@ class Game {
         board.removeEventListener("click", this.startMenu);
     }
 
-    redrawMenu() {
-        const backButton = document.getElementById("back-button");
-        if (backButton !== null) {
-            backButton.removeEventListener("click", this.reDrawMenu);
-            backButton.parentNode.removeChild(backButton);
-        }
+    redrawMenu(e) {
+        e.preventDefault();
+        controls.removeButton({ id: "back-button", event: this.redrawMenu  });
         this.menu.start(this.display, this, controls);
     }
 
@@ -92,8 +91,7 @@ class Game {
     }
 
     restart(e) {
-        e.preventDefault();
-        controls.restartGame(this, GameMusic);
+        controls.restartGame(e, this, GameMusic);
     }
 
     move(e) {
@@ -132,6 +130,15 @@ class Game {
     pause(e) {
         e.preventDefault();
         controls.pause(this);
+    }
+
+    quit(e) {
+        e.preventDefault();
+        this.display.drawQuit(this.boardSize);
+        controls.removeButton({ id: "pause-button", event: this.pause });
+        controls.removeButton({ id: "quit-button", event: this.quit });
+        controls.addButton({ id: "yes-button", event: this.endGame, text: "Yes" });
+        controls.addButton({ id: "no-button", event: this.pause, text: "No" });
     }
 
     displayOptions() {
@@ -177,12 +184,18 @@ class Game {
         }
     }
 
-    endGame() {
+    endGame(e) {
         this.pauseStatus = true;
-        document.removeEventListener("keydown", this.move);
-        controls.removeButton({ id: "pause-button", event: this.pause });
-        controls.setMoveButtons(this);
-        clearInterval(this.timerId);
+        if (e !== undefined) {
+            e.preventDefault();
+            controls.removeButton({ id: "yes-button", event: this.endGame });
+            controls.removeButton({ id: "no-button", event: this.pause });
+        } else {
+            document.removeEventListener("keydown", this.move);
+            controls.removeButton({ id: "pause-button", event: this.pause });
+            clearInterval(this.timerId);
+            controls.setMoveButtons(this);
+        }
         this.display.drawFinish(this.displayOptions());
         setTimeout(() => {
             const board = document.getElementById("canvas-container");
