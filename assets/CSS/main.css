@@ -13,31 +13,31 @@ html, body {
  button:hover {
      cursor: pointer;
      cursor: hand;
-     color: black;
      background-color: yellow;
+     color: black;
  }
 
 button {
     border: dotted white 2px;
     display: inline-block;
-    background-color: #312450;
+    background-color: purple;
     color: white;
     padding: 10px;
 }
 
 #music {
     position: absolute;
-    left: 20px;
-    top: 20px;
+    left: 30px;
+    top: 50px;
     height: 70px;
     width: 70px;
 }
 
-#top, #right, #bottom, #left, #pause-button, #quit-button, #start-button, #tutorial-button, #controls-button, #back-button, #no-button, #yes-button {
+#top, #right, #bottom, #left, #pause-button, #quit-button, #start-button, #controls-button, #back-button, #no-button, #yes-button {
     position: absolute;
 }
 
-#pause-button, #quit-button, #start-button, #tutorial-button, #controls-button, #back-button, #no-button, #yes-button {
+#pause-button, #quit-button, #start-button, #controls-button, #back-button, #no-button, #yes-button {
     font-size: 30px;
 }
 
@@ -48,47 +48,45 @@ button {
 }
 
 #top {
-    top: 20px;
-    right: 50%;
+    bottom: 200px;
+    left: 90px;
 }
 
 #right {
-    top: 70px;
-    left: 50%;
+    bottom: 140px;
+    left: 150px;
 }
 
 #bottom {
-    top: 120px;
-    right: 50%;
+    bottom: 80px;
+    left: 90px;
 }
 
 #left {
-    top: 70px;
-    left: calc(50% - 100px);
-}
-
-#pause-button, #quit-button {
-    bottom: 70px;
+    bottom: 140px;
+    left: 30px;
 }
 
 #pause-button {
-    left: calc(50%  - 20px);
+    top: 50px;
+    right: 4%;
 }
 
 #quit-button {
-    left: calc(50% - 170px);
+    right: 4%;
+    top: 130px;
 }
 
 #yes-button, #no-button {
-    top: 60%;
+    top: 50%;
 }
 
 #yes-button {
-    right: calc(50% - 50px);
+    left: calc(50% - 100px);
 }
 
 #no-button {
-    right: calc(50% + 50px);
+    left: calc(50% + 30px);
 }
 
 #canvas-container {
@@ -102,22 +100,17 @@ button {
 }
 
 #back-button {
-    left: 10%;
-    top: 10%;
+    left: 43%;
+    bottom: 15%;
 }
 
 #start-button {
-    right: 48%;
+    right: 46%;
     top: 50%;
 }
 
-#tutorial-button {
-    right: 50%;
-    top: 62%;
-}
-
 #controls-button {
-    right: 46%;
+    right: 44%;
     top: 75%;
 }
 

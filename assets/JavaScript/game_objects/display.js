@@ -12,7 +12,7 @@ const colors = {
         collapsible: "rgb(255, 128, 0)",
         warp: "rgb(255, 255, 0)",
         activator: "rgb(255, 255, 255)",
-        bridge: "rgb(128, 0, 0)",
+        bridge: "rgb(160, 0, 0)",
     }
 };
 
@@ -54,12 +54,12 @@ class Display {
         const { width, height } = options.boardSize;
         this.ctx.fillStyle = colors.backgroundColor;
         this.ctx.fillRect(0, 0, width, height - 100);
-        this.ctx.fillRect(0, height - 100, width / 2, 100);
-        this.ctx.font = fonts.mediumFontSize;
         this.ctx.fillStyle = colors.textColor;
-        this.ctx.fillText(`Level ${options.levelNumber}`, 100, 100);
-        this.ctx.fillText(`Moves: ${options.moves}`, width - 200, 100);
-        this.ctx.fillText(`Falls: ${options.falls}`, 100, height - 50);
+        this.ctx.font = fonts.largeFontSize;
+        this.ctx.fillText(`Level ${options.levelNumber}`, width / 2 - 100, 80);
+        this.ctx.font = fonts.mediumFontSize;
+        this.ctx.fillText(`Moves: ${options.moves}`, width - 250, height - 150);
+        this.ctx.fillText(`Falls: ${options.falls}`, width - 250, height - 100);
         this.drawFloor(options.level, options.length);
     }
 
@@ -91,12 +91,12 @@ class Display {
         this.ctx.fillStyle = colors.backgroundColor;
         this.ctx.fillRect(0,0, width, height);
         this.ctx.fillStyle = colors.textColor;
-        this.ctx.fillText("Controls:", width / 2 - 100, height / 4);
+        this.ctx.fillText("Controls:", width / 2 - 110, height / 4);
         this.ctx.font = fonts.mediumFontSize;
-        this.ctx.fillText("Up: up-arrow", width / 2 - 100, height * 3 / 8);
-        this.ctx.fillText("Down: down-arrow", width / 2 - 100, height / 2);
-        this.ctx.fillText("Left: left-arrow", width / 2 - 100, height * 5 / 8);
-        this.ctx.fillText("Right: right-arrow", width / 2 - 100, height * 3 / 4);
+        this.ctx.fillText("Up: up-arrow", width / 2 - 90, height * 3 / 8);
+        this.ctx.fillText("Down: down-arrow", width / 2 - 90, height / 2);
+        this.ctx.fillText("Left: left-arrow", width / 2 - 90, height * 5 / 8);
+        this.ctx.fillText("Right: right-arrow", width / 2 - 90, height * 3 / 4);
     }
 
     stringifyTime() {
@@ -105,7 +105,7 @@ class Display {
         const minuteString = (minutes < 10) ? `0${minutes}` : minutes;
         const secondString = (seconds < 10) ? `0${seconds}` : seconds;
 
-        return `${minuteString}:${secondString}`;
+        return `Time: ${minuteString}:${secondString}`;
     }
 
     drawTime(boardSize) {
@@ -115,7 +115,7 @@ class Display {
         this.ctx.fillRect(width / 2, height - 100, width / 2, 100);
         this.ctx.font = fonts.mediumFontSize;
         this.ctx.fillStyle = colors.textColor;
-        this.ctx.fillText(displayTime, width - 200, height - 50);
+        this.ctx.fillText(displayTime, width - 250, height - 50);
         clock.upTick();
     }
 
@@ -170,7 +170,7 @@ class Display {
         this.ctx.fillRect(0, 0, width, height);
         this.ctx.font = fonts.largeFontSize;
         this.ctx.fillStyle = colors.textColor;
-        this.ctx.fillText("Really quit?", width / 2 - 100, height / 2);
+        this.ctx.fillText("Really quit?", width / 2 - 150, height / 2);
     }
 
     drawFinish(options) {
@@ -186,7 +186,7 @@ class Display {
         this.ctx.fillText(`Final Level Completed: ${options.levelNumber - 1}`, width / 2 - 150, height * 3 / 10);
         this.ctx.fillText(`Moves: ${options.moves}`, width / 2 - 150, height * 2 / 5);
         this.ctx.fillText(`Falls: ${options.falls}`, width / 2 - 150, height / 2);
-        this.ctx.fillText(`Time: ${timeTaken}`, width / 2 - 150, height * 3 / 5);
+        this.ctx.fillText(`${timeTaken}`, width / 2 - 150, height * 3 / 5);
         this.ctx.fillText("Click to start over", width / 2 - 200, height * 7 / 10);
     }
 }
