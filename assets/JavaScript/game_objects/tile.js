@@ -4,6 +4,7 @@ class Tile {
         this.yPos = options.y;
         this.type = this.typeReference(options.type);
         this.active = this.checkActiveStatus(options.active);
+        this.relations = options.relations;
     }
 
     typeReference(type) {

@@ -11,7 +11,7 @@ const colors = {
         none: "rgb(192, 192, 192)",
         collapsible: "rgb(255, 128, 0)",
         warp: "rgb(255, 255, 0)",
-        activator: "#FFF",
+        activator: "rgb(255, 255, 255)",
         bridge: "rgb(128, 0, 0)",
     }
 };
@@ -66,7 +66,8 @@ class Display {
     drawFloor(floor, length) {
         for (var position in floor) {
             let tile = floor[position];
-            this.ctx.fillStyle = colors.tileColors[tile.type];
+            this.ctx.fillStyle = tile.active ?
+                colors.tileColors[tile.type] : colors.backgroundColor;
             const { xPos, yPos } = tile;
             this.ctx.fillRect(xPos, yPos, length, length);
             this.ctx.strokeRect(xPos, yPos, length, length);

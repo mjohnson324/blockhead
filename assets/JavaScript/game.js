@@ -153,21 +153,43 @@ class Game {
     }
 
     checkBlock() {
-        if (this.block.width === this.block.height) {
-            this.checkGoal();
-        }
         const { levelData, currentLevel } = this.levels;
         if (levelData[currentLevel] !== undefined) {
-            this.checkBounds();
+            const coordinates = this.getCoordinates();
+            if (this.display.tileMovesOffFloor(coordinates)) {
+                this.resetLevel();
+            } else if (this.block.width === this.block.height) {
+                this.checkTile();
+            } else {
+                this.reRender();
+            }
         }
     }
 
-    checkGoal() {
+    checkTile() {
         const { xPos, yPos } = this.block;
         const tile = this.levels.lookupTile({ xPos, yPos });
-        if (tile !== undefined && tile.type === "goal") {
+        if (tile.type === "goal") {
             this.nextLevel();
+        } else if (tile.type === "collapsible") {
+            this.resetLevel();
+        } else if (tile.type === "warp") {
+            this.warp(tile.relations[0]);
+        } else {
+            this.reRender();
         }
+    }
+
+    warp(position) {
+        sound.playWarpSound();
+        this.block.setPosition(position);
+        this.reRender();
+    }
+
+    reRender() {
+        this.display.render(this.displayOptions());
+        this.display.drawBlock(this.block);
+        sound.playBlockSound(this.block);
     }
 
     nextLevel() {
@@ -201,18 +223,6 @@ class Game {
             const board = document.getElementById("canvas-container");
             board.addEventListener("click", this.restart);
         }, 500);
-    }
-
-    checkBounds() {
-        const { currentLevel, levelData } = this.levels;
-        const coordinates = this.getCoordinates();
-        if (this.display.tileMovesOffFloor(coordinates)) {
-            this.resetLevel();
-        } else if (levelData[currentLevel] !== undefined) {
-            this.display.render(this.displayOptions());
-            this.display.drawBlock(this.block);
-            sound.playBlockSound(this.block);
-        }
     }
 
     // gets current position of block. Coordinates are set to avoid bugs related

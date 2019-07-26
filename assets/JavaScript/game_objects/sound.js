@@ -4,7 +4,7 @@ const squareSound = document.getElementById("block-square");
 // const bridgeDownSound = document.getElementById("bridge-down");
 const fallSound = document.getElementById("fall");
 const completeLevelSound = document.getElementById("complete-level");
-// const warpSound = document.getElementById("warp");
+const warpSound = document.getElementById("warp");
 const gameMusic = document.getElementById("game-song");
 const menuMusic = document.getElementById("menu-song");
 
@@ -80,9 +80,9 @@ function playGoalSound() {
     completeLevelSound.play();
 }
 
-// function playWarpSound() {
-//     warpSound.play();
-// }
+function playWarpSound() {
+    warpSound.play();
+}
 
 // function playBridgeSound(tile) {
 //     tile.active ?
@@ -93,5 +93,6 @@ module.exports = {
     playBlockSound,
     playFallSound,
     playGoalSound,
+    playWarpSound,
     GameMusic
 };

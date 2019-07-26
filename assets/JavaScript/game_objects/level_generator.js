@@ -5,6 +5,8 @@ class LevelGenerator {
     constructor() {
         this.currentLevel = 1;
         this.levelData = allLevels;
+        this.constructedFloor = null;
+        this.currentStartPosition = null;
 
         this.constructTileCoordinates = this.constructTileCoordinates.bind(this);
     }
@@ -61,7 +63,16 @@ class LevelGenerator {
     constructTileCoordinates(tileData, startPosition, length) {
         const x = startPosition.xPos + length * tileData.x;
         const y = startPosition.yPos + length * tileData.y;
-        return { x: x, y: y, type: tileData.type, active: tileData.active };
+        let relations = null;
+        if (tileData.relations !== undefined) {
+            relations = [];
+            tileData.relations.forEach(relation => {
+                let xPos = startPosition.xPos + length * relation[0];
+                let yPos = startPosition.yPos + length * relation[1];
+                relations.push({ xPos, yPos });
+            });
+        }
+        return { x: x, y: y, type: tileData.type, active: tileData.active, relations };
     }
 
     lookupTile(position) {
