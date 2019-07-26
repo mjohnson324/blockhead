@@ -175,6 +175,10 @@ class Game {
             this.resetLevel();
         } else if (tile.type === "warp") {
             this.warp(tile.relations[0]);
+        } else if (tile.type === "activator") {
+            this.levels.activate(tile.relations);
+            sound.playBridgeSound();
+            this.reRender();
         } else {
             this.reRender();
         }

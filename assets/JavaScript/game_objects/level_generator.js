@@ -79,6 +79,13 @@ class LevelGenerator {
         const currentPosition = `[${position.xPos}, ${position.yPos}]`;
         return this.constructedFloor[currentPosition];
     }
+
+    activate(tiles) {
+        tiles.forEach(position => {
+            let tile = this.lookupTile(position);
+            tile.toggleActive();
+        });
+    }
 }
 
 module.exports = LevelGenerator;

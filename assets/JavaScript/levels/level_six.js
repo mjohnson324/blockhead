@@ -1,10 +1,5 @@
 const levelSix = {
     floorDimensions: { xRange: 16, yRange: 10 },
-    activatorData: {
-        "9.1": [[5, 1], [6, 1]],
-        "6.5": [[8, 5], [9, 5], [5, 8], [6, 8]],
-        "14.6":  [[5, 8], [6, 8]],
-    },
     floorData: [
         { x: 14, y: 1, type: "s" },
         { x: 1, y: 8, type: "g" },
@@ -41,7 +36,7 @@ const levelSix = {
         { x: 5, y: 5, type: "n" },
         { x: 5, y: 8, type: "b", active: true },
         { x: 6, y: 1, type: "b", active: false },
-        { x: 6, y: 5, type: "a" },
+        { x: 6, y: 5, type: "a", relations: [[8, 5], [9, 5], [5, 8], [6, 8]] },
         { x: 6, y: 8, type: "b", active: true },
         { x: 7, y: 1, type: "n" },
         { x: 7, y: 5, type: "n" },
@@ -49,7 +44,7 @@ const levelSix = {
         { x: 8, y: 1, type: "n" },
         { x: 8, y: 5, type: "b", active: false },
         { x: 8, y: 8, type: "n" },
-        { x: 9, y: 1, type: "a" },
+        { x: 9, y: 1, type: "a", relations: [[5, 1], [6, 1]] },
         { x: 9, y: 5, type: "b", active: false },
         { x: 9, y: 8, type: "n" },
         { x: 10, y: 1, type: "n" },
@@ -75,7 +70,7 @@ const levelSix = {
         { x: 13, y: 7, type: "n" },
         { x: 14, y: 0, type: "n" },
         { x: 14, y: 2, type: "n" },
-        { x: 14, y: 6, type: "a" },
+        { x: 14, y: 6, type: "a", relations: [[5, 8], [6, 8]] },
         { x: 14, y: 7, type: "n" },
         { x: 15, y: 0, type: "n" },
         { x: 15, y: 1, type: "n" },
