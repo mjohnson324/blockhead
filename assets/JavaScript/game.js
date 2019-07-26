@@ -46,7 +46,6 @@ class Game {
         e.preventDefault();
         this.pauseStatus = false;
         controls.removeButton({ id: "start-button", event: this.startGame });
-        // controls.removeButton({ id: "tutorial-button", event: this.startTutorial });
         controls.removeButton({ id: "controls-button", event: this.showControls });
         controls.setMoveButtons(this);
         controls.addButton({id: "pause-button", event: this.pause, text: "Pause" });
@@ -58,13 +57,6 @@ class Game {
         this.display.render(this.displayOptions());
         this.display.drawBlock(this.block);
     }
-
-    // startTutorial(e) {
-    //     e.preventDefault();
-    //     controls.removeButton({ id: "start-button", event: this.startGame });
-    //     controls.removeButton({ id: "tutorial-button", event: this.startTutorial });
-    //     controls.removeButton({ id: "controls-button", event: this.showControls });
-    // }
 
     startMenu(e) {
         e.preventDefault();
