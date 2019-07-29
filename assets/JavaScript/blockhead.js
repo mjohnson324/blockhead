@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     blockheadBoard.width = boardSize.width;
     blockheadBoard.height = boardSize.height;
+    let length = 30;
+    if (boardSize.width < 900) {  length = 20; }
 
-    new Game(ctx, 30, boardSize).start();
+    new Game(ctx, length, boardSize).start();
 });

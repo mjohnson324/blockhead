@@ -1,5 +1,5 @@
 const levelNine = {
-    floorDimensions: { xRange: 16, yRange: 10 },
+    floorDimensions: { xRange: 16, yRange: 11 },
     floorData: [
         { x: 14, y: 1, type: "s" },
         { x: 1, y: 8, type: "g" },

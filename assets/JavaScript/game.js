@@ -15,7 +15,7 @@ class Game {
         this.moves = 0;
         this.falls = 0;
 
-        this.display = new Display(ctx);
+        this.display = new Display(ctx, length);
         this.levels = new LevelGenerator();
         this.block = new Block(length, length);
         this.menu = new Menu();
